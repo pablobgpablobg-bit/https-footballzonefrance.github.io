@@ -6,118 +6,305 @@
 
   <title>Football Zone France</title>
 
-  <!-- Aperçu Google / Discord -->
+  <!-- SEO / Discord / Google -->
+  <meta name="description" content="Football Zone France - Matchs en direct, actualités football et communauté Discord.">
+
   <meta property="og:title" content="Football Zone France">
   <meta property="og:description" content="Tous les matchs de football en direct, actualités, résultats et communauté football francophone.">
-  <meta property="og:image" content="https://tonsite.com/logo.png">
+  <meta property="og:image" content="logo.png">
   <meta property="og:type" content="website">
 
+  <link rel="icon" href="logo.png">
+
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-      text-align: center;
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
     }
 
-    header {
-      padding: 80px 20px;
-      background: linear-gradient(135deg, #2563eb, #0f172a);
+    body{
+      font-family:Arial, sans-serif;
+      background:#020617;
+      color:white;
+      overflow-x:hidden;
     }
 
-    h1 {
-      font-size: 50px;
-      margin-bottom: 10px;
+    /* HEADER */
+
+    header{
+      position:relative;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      padding:40px;
+      background:url("banner.png") center center/cover no-repeat;
     }
 
-    p {
-      font-size: 18px;
-      max-width: 700px;
-      margin: auto;
-      line-height: 1.6;
+    header::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,0.70);
+      backdrop-filter:blur(2px);
     }
 
-    .btn {
-      display: inline-block;
-      margin-top: 30px;
-      padding: 15px 35px;
-      background: #2563eb;
-      color: white;
-      text-decoration: none;
-      border-radius: 10px;
-      font-size: 18px;
-      transition: 0.3s;
+    .hero{
+      position:relative;
+      z-index:2;
+      max-width:900px;
     }
 
-    .btn:hover {
-      background: #1d4ed8;
-      transform: scale(1.05);
+    .logo{
+      width:220px;
+      margin-bottom:25px;
+      filter:drop-shadow(0 0 25px rgba(37,99,235,0.8));
+      animation:float 4s ease-in-out infinite;
     }
 
-    .section {
-      padding: 60px 20px;
+    @keyframes float{
+      0%{transform:translateY(0px);}
+      50%{transform:translateY(-10px);}
+      100%{transform:translateY(0px);}
     }
 
-    .card {
-      background: #1e293b;
-      margin: 20px auto;
-      max-width: 700px;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    h1{
+      font-size:72px;
+      font-weight:900;
+      margin-bottom:20px;
+      text-transform:uppercase;
+      letter-spacing:2px;
+      text-shadow:0 0 25px rgba(0,0,0,0.8);
     }
 
-    footer {
-      padding: 30px;
-      background: #020617;
-      font-size: 14px;
-      color: #94a3b8;
+    .subtitle{
+      font-size:22px;
+      line-height:1.8;
+      color:#e2e8f0;
+      margin-bottom:40px;
     }
+
+    .btn{
+      display:inline-block;
+      padding:18px 45px;
+      font-size:20px;
+      font-weight:bold;
+      border-radius:15px;
+      text-decoration:none;
+      color:white;
+      background:linear-gradient(135deg,#2563eb,#dc2626);
+      transition:0.3s;
+      box-shadow:0 0 25px rgba(37,99,235,0.5);
+    }
+
+    .btn:hover{
+      transform:scale(1.08);
+      box-shadow:0 0 35px rgba(220,38,38,0.8);
+    }
+
+    /* SECTION */
+
+    .section{
+      padding:100px 20px;
+      text-align:center;
+      background:#0f172a;
+    }
+
+    .section h2{
+      font-size:50px;
+      margin-bottom:60px;
+    }
+
+    .cards{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:30px;
+    }
+
+    .card{
+      background:#1e293b;
+      width:320px;
+      padding:35px;
+      border-radius:20px;
+      transition:0.3s;
+      box-shadow:0 0 25px rgba(0,0,0,0.35);
+    }
+
+    .card:hover{
+      transform:translateY(-10px);
+      box-shadow:0 0 35px rgba(37,99,235,0.5);
+    }
+
+    .card h3{
+      font-size:28px;
+      margin-bottom:20px;
+      color:#60a5fa;
+    }
+
+    .card p{
+      font-size:17px;
+      line-height:1.7;
+      color:#cbd5e1;
+    }
+
+    /* DISCORD SECTION */
+
+    .discord{
+      padding:100px 20px;
+      background:linear-gradient(135deg,#111827,#020617);
+      text-align:center;
+    }
+
+    .discord h2{
+      font-size:55px;
+      margin-bottom:20px;
+    }
+
+    .discord p{
+      font-size:20px;
+      max-width:700px;
+      margin:auto;
+      color:#cbd5e1;
+      line-height:1.8;
+      margin-bottom:40px;
+    }
+
+    /* FOOTER */
+
+    footer{
+      background:#000814;
+      padding:35px;
+      text-align:center;
+      color:#94a3b8;
+      font-size:15px;
+    }
+
+    /* RESPONSIVE */
+
+    @media(max-width:768px){
+
+      h1{
+        font-size:42px;
+      }
+
+      .subtitle{
+        font-size:18px;
+      }
+
+      .logo{
+        width:160px;
+      }
+
+      .section h2,
+      .discord h2{
+        font-size:36px;
+      }
+
+      .btn{
+        font-size:18px;
+        padding:15px 35px;
+      }
+
+    }
+
   </style>
 </head>
 <body>
 
+  <!-- HERO -->
+
   <header>
-    <h1>⚽ Football Zone France</h1>
 
-    <p>
-      Retrouvez tous les matchs de football en direct,
-      les plus grandes compétitions européennes,
-      les résultats, actualités et une grande communauté
-      de passionnés sur Discord.
-    </p>
+    <div class="hero">
 
-    <a class="btn" href="https://discord.gg/ftzf" target="_blank">
-      Rejoindre le Discord
-    </a>
+      <img src="logo.png" class="logo" alt="Football Zone France">
+
+      <h1>⚽ Football Zone France</h1>
+
+      <p class="subtitle">
+        Retrouvez tous les matchs de football en direct,
+        les meilleures compétitions européennes,
+        les actualités, résultats et une énorme communauté
+        de passionnés sur Discord.
+      </p>
+
+      <a href="https://discord.gg/ftzf"
+         class="btn"
+         target="_blank">
+         Rejoindre le Discord
+      </a>
+
+    </div>
+
   </header>
 
+  <!-- SERVICES -->
+
   <section class="section">
-    <div class="card">
-      <h2>📺 Matchs en Direct</h2>
-      <p>
-        Ligue 1, Ligue des Champions, Premier League,
-        Serie A, Liga et bien plus encore.
-      </p>
+
+    <h2>🔥 Tout le Football au Même Endroit</h2>
+
+    <div class="cards">
+
+      <div class="card">
+        <h3>📺 Matchs en Direct</h3>
+
+        <p>
+          Ligue 1, Ligue des Champions,
+          Premier League, Liga,
+          Serie A, Bundesliga et bien plus.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>💬 Communauté Active</h3>
+
+        <p>
+          Discutez football avec des milliers
+          de passionnés dans une ambiance
+          conviviale et active.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>⚡ Serveur Backup</h3>
+
+        <p>
+          Un serveur de secours est disponible
+          afin de ne jamais manquer
+          les plus gros matchs.
+        </p>
+      </div>
+
     </div>
 
-    <div class="card">
-      <h2>🔥 Communauté Active</h2>
-      <p>
-        Discutez football avec des milliers de passionnés
-        dans une ambiance conviviale.
-      </p>
-    </div>
-
-    <div class="card">
-      <h2>⚡ Serveur de Secours</h2>
-      <p>
-        Un serveur backup est disponible en cas de problème
-        afin de ne jamais rater les matchs.
-      </p>
-    </div>
   </section>
+
+  <!-- DISCORD -->
+
+  <section class="discord">
+
+    <h2>🚀 Rejoins la Communauté</h2>
+
+    <p>
+      Accède aux matchs, discussions football,
+      annonces importantes et événements exclusifs
+      directement sur notre serveur Discord officiel.
+    </p>
+
+    <a href="https://discord.gg/ftzf"
+       class="btn"
+       target="_blank">
+       Rejoindre Maintenant
+    </a>
+
+  </section>
+
+  <!-- FOOTER -->
 
   <footer>
     © 2026 Football Zone France — Tous droits réservés
