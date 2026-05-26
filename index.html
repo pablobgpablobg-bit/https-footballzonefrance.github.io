@@ -1,6 +1,3 @@
-bash
-
-cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="fr" data-theme="dark">
 <head>
@@ -18,11 +15,15 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
       --dark: #020617; --dark2: #0f172a; --dark3: #1e293b;
       --text: #e2e8f0; --muted: #94a3b8; --border: rgba(255,255,255,0.07);
       --card-bg: #1e293b; --nav-bg: rgba(2,6,23,0.92); --theme-toggle-bg: rgba(255,255,255,0.08);
+      --admin-bg: #070f1e; --admin-section-bg: #0d1a2d; --admin-border: rgba(37,99,235,0.15);
+      --admin-input-bg: #111d31; --admin-hover: rgba(37,99,235,0.08);
     }
     [data-theme="light"] {
       --dark: #f1f5f9; --dark2: #ffffff; --dark3: #f8fafc;
       --text: #0f172a; --muted: #64748b; --border: rgba(0,0,0,0.08);
       --card-bg: #ffffff; --nav-bg: rgba(241,245,249,0.95); --theme-toggle-bg: rgba(0,0,0,0.07);
+      --admin-bg: #1e293b; --admin-section-bg: #273549; --admin-border: rgba(37,99,235,0.25);
+      --admin-input-bg: #1a2d44; --admin-hover: rgba(37,99,235,0.12);
     }
     body { font-family: 'Barlow', sans-serif; background: var(--dark); color: var(--text); overflow-x: hidden; transition: background 0.3s, color 0.3s; }
 
@@ -72,111 +73,187 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     footer { background:#000814; padding:30px; text-align:center; color:var(--muted); font-size:14px; }
     [data-theme="light"] footer { background:#0f172a; }
 
-    /* ═══ PAGE LIVE ═══ */
+    /* ═══════════════════════════════
+       ADMIN SIDEBAR — NOUVEAU DESIGN
+       ═══════════════════════════════ */
     #page-live { padding-top: 64px; min-height: 100vh; background: var(--dark); }
-
-    /* Admin sidebar */
     .live-main-layout { display: flex; min-height: calc(100vh - 64px); }
-    .admin-sidebar { width: 0; overflow: hidden; background: var(--dark2); border-right: 1px solid var(--border); transition: width 0.3s ease; flex-shrink: 0; display: flex; flex-direction: column; }
-    .admin-sidebar.open { width: 380px; overflow-y: auto; overflow-x: hidden; }
+
+    .admin-sidebar {
+      width: 0; overflow: hidden; background: var(--admin-bg);
+      border-right: 1px solid var(--admin-border);
+      transition: width 0.35s cubic-bezier(0.4,0,0.2,1);
+      flex-shrink: 0; display: flex; flex-direction: column;
+    }
+    .admin-sidebar.open { width: 360px; overflow-y: auto; overflow-x: hidden; }
+    .admin-sidebar::-webkit-scrollbar { width: 3px; }
+    .admin-sidebar::-webkit-scrollbar-thumb { background: rgba(37,99,235,0.3); border-radius: 3px; }
+
     .live-content-area { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
-    /* Sidebar header */
-    .admin-sidebar-header { padding: 20px 20px 0; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
-    .admin-sidebar-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px; color: var(--text); display: flex; align-items: center; gap: 10px; }
-    .admin-version-badge { font-size: 11px; font-weight: 700; background: rgba(37,99,235,0.2); border: 1px solid rgba(37,99,235,0.4); color: #60a5fa; padding: 2px 8px; border-radius: 20px; }
+    /* Admin header */
+    .admin-header {
+      padding: 20px 20px 16px;
+      background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(37,99,235,0.05));
+      border-bottom: 1px solid var(--admin-border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .admin-header-left { display: flex; flex-direction: column; gap: 3px; }
+    .admin-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; color: #60a5fa; }
+    .admin-subtitle { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; }
+    .admin-status-pill { display: flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 700; color: #4ade80; }
+    .admin-status-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
+
+    /* Admin tabs */
+    .admin-tabs {
+      display: flex; border-bottom: 1px solid var(--admin-border);
+      background: var(--admin-bg); position: sticky; top: 0; z-index: 5;
+    }
+    .admin-tab {
+      flex: 1; padding: 11px 6px; font-size: 11px; font-weight: 800; letter-spacing: 0.8px;
+      text-transform: uppercase; cursor: pointer; border: none; background: transparent;
+      color: var(--muted); font-family: 'Barlow', sans-serif; transition: 0.2s;
+      border-bottom: 2px solid transparent; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    }
+    .admin-tab .tab-icon { font-size: 16px; }
+    .admin-tab:hover { color: var(--text); background: var(--admin-hover); }
+    .admin-tab.active { color: #60a5fa; border-bottom-color: #2563eb; background: rgba(37,99,235,0.08); }
+
+    /* Admin panels */
+    .admin-panel { display: none; flex-direction: column; gap: 0; }
+    .admin-panel.active { display: flex; }
 
     /* Admin sections */
-    .admin-section { padding: 14px 20px; border-bottom: 1px solid var(--border); }
-    .admin-section-header { font-size: 11px; font-weight: 800; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-    .admin-section-header span { font-size: 14px; }
+    .a-section { padding: 16px 18px; border-bottom: 1px solid var(--admin-border); }
+    .a-section:last-child { border-bottom: none; }
+    .a-section-title {
+      font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+    }
+    .a-section-title .dot { width: 3px; height: 3px; border-radius: 50%; background: #2563eb; }
 
     /* Form elements */
-    .a-input { width: 100%; padding: 9px 14px; border-radius: 9px; border: 1px solid var(--border); background: var(--dark3); color: var(--text); font-size: 13px; font-family: 'Barlow', sans-serif; outline: none; transition: border-color 0.2s; margin-bottom: 8px; }
-    .a-input:focus { border-color: var(--blue); }
-    .a-btn { padding: 9px 16px; border-radius: 9px; border: none; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; white-space: nowrap; }
-    .a-btn-blue { background: var(--blue); color: white; }
-    .a-btn-blue:hover { background: #1d4ed8; }
-    .a-btn-red { background: transparent; border: 1px solid rgba(220,38,38,0.5); color: #f87171; }
-    .a-btn-red:hover { background: rgba(220,38,38,0.15); }
-    .a-btn-green { background: #059669; color: white; }
-    .a-btn-green:hover { background: #047857; }
+    .a-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
+    .a-input {
+      width: 100%; padding: 9px 12px; border-radius: 8px;
+      border: 1px solid var(--admin-border); background: var(--admin-input-bg);
+      color: var(--text); font-size: 13px; font-family: 'Barlow', sans-serif;
+      outline: none; transition: border-color 0.2s; margin-bottom: 8px;
+    }
+    .a-input:focus { border-color: #2563eb; background: rgba(37,99,235,0.05); }
+    .a-input::placeholder { color: rgba(148,163,184,0.5); }
+    .a-field { margin-bottom: 8px; }
+
+    /* Buttons */
+    .a-btn {
+      padding: 9px 14px; border-radius: 8px; border: none; font-size: 12px;
+      font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif;
+      transition: 0.2s; white-space: nowrap; letter-spacing: 0.3px;
+    }
+    .a-btn-primary { background: #2563eb; color: white; }
+    .a-btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+    .a-btn-danger { background: transparent; border: 1px solid rgba(220,38,38,0.4); color: #f87171; }
+    .a-btn-danger:hover { background: rgba(220,38,38,0.12); }
+    .a-btn-success { background: #059669; color: white; }
+    .a-btn-success:hover { background: #047857; }
     .a-btn-purple { background: #7c3aed; color: white; }
     .a-btn-purple:hover { background: #6d28d9; }
-    .a-btn-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
-    .a-btn-full { width: 100%; padding: 10px; border-radius: 9px; border: none; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; margin-bottom: 6px; }
+    .a-btn-ghost { background: var(--admin-input-bg); border: 1px solid var(--admin-border); color: var(--text); }
+    .a-btn-ghost:hover { border-color: rgba(37,99,235,0.4); }
+    .a-btn-full { width: 100%; padding: 10px; border-radius: 8px; border: none; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; }
+    .a-btn-row { display: flex; gap: 7px; }
+    .a-btn-row .a-btn { flex: 1; }
 
     /* Toggle switch */
-    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); }
-    .toggle-row:last-child { border-bottom: none; }
-    .toggle-label-group { flex: 1; }
-    .toggle-label { font-size: 13px; font-weight: 700; color: var(--text); }
-    .toggle-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .toggle-switch { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
+    .a-toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .a-toggle-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .a-toggle-info { flex: 1; padding-right: 12px; }
+    .a-toggle-label { font-size: 13px; font-weight: 700; color: var(--text); }
+    .a-toggle-desc { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .toggle-switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
     .toggle-switch input { display: none; }
-    .toggle-slider { position: absolute; inset: 0; background: rgba(255,255,255,0.15); border-radius: 12px; cursor: pointer; transition: 0.3s; }
-    .toggle-slider::before { content: ""; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: white; transition: 0.3s; }
-    .toggle-switch input:checked + .toggle-slider { background: var(--blue); }
+    .toggle-slider { position: absolute; inset: 0; background: rgba(255,255,255,0.1); border-radius: 11px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.08); }
+    .toggle-slider::before { content: ""; position: absolute; left: 3px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: white; transition: 0.3s; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+    .toggle-switch input:checked + .toggle-slider { background: #2563eb; border-color: #3b82f6; }
     .toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); }
 
-    /* Stats bar */
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
-    .stat-mini { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; text-align: center; }
-    [data-theme="light"] .stat-mini { background: rgba(0,0,0,0.04); }
-    .stat-mini-num { font-family: 'Bebas Neue', sans-serif; font-size: 28px; line-height: 1; }
-    .stat-mini-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+    /* Stats grid */
+    .stats-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat-card {
+      background: var(--admin-input-bg); border: 1px solid var(--admin-border);
+      border-radius: 10px; padding: 12px; text-align: center;
+    }
+    .stat-card-num { font-family: 'Bebas Neue', sans-serif; font-size: 30px; line-height: 1; margin-bottom: 2px; }
+    .stat-card-label { font-size: 9px; font-weight: 800; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; }
 
-    /* Planning */
-    .planning-item { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
-    [data-theme="light"] .planning-item { background: rgba(0,0,0,0.04); }
-    .planning-item-disc { width: 10px; height: 10px; border-radius: 50%; background: #5865F2; flex-shrink: 0; }
-    .planning-item-disc.live { background: var(--red); animation: pulse-dot 1.5s infinite; }
-    .planning-item-info { flex: 1; min-width: 0; }
-    .planning-item-match { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .planning-item-date { font-size: 11px; color: var(--muted); }
-    .planning-item-discord { font-size: 10px; color: #818cf8; font-weight: 700; }
-    .planning-delete { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; padding: 2px 6px; border-radius: 6px; transition: 0.2s; flex-shrink: 0; }
-    .planning-delete:hover { color: #f87171; background: rgba(220,38,38,0.1); }
+    /* Planning items */
+    .plan-item {
+      background: var(--admin-input-bg); border: 1px solid var(--admin-border);
+      border-radius: 9px; padding: 10px 12px; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .plan-item-dot { width: 8px; height: 8px; border-radius: 50%; background: #5865F2; flex-shrink: 0; }
+    .plan-item-dot.live { background: var(--red); animation: pulse-dot 1.5s infinite; }
+    .plan-item-info { flex: 1; min-width: 0; }
+    .plan-item-match { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .plan-item-date { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .plan-item-delete { background: none; border: none; color: rgba(148,163,184,0.4); cursor: pointer; font-size: 14px; padding: 3px 7px; border-radius: 5px; transition: 0.2s; flex-shrink: 0; }
+    .plan-item-delete:hover { color: #f87171; background: rgba(220,38,38,0.1); }
 
-    /* Ban list */
-    .ban-item { background: rgba(220,38,38,0.08); border: 1px solid rgba(220,38,38,0.2); border-radius: 8px; padding: 8px 12px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
+    /* Ban items */
+    .ban-item { background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.15); border-radius: 8px; padding: 9px 12px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
     .ban-item-name { font-size: 13px; font-weight: 700; color: #f87171; }
-    .ban-item-reason { font-size: 11px; color: var(--muted); }
+    .ban-item-reason { font-size: 11px; color: var(--muted); margin-top: 1px; }
     .btn-unban { background: none; border: 1px solid rgba(34,197,94,0.3); color: #4ade80; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-family: 'Barlow', sans-serif; }
     .btn-unban:hover { background: rgba(34,197,94,0.1); }
 
     /* Admin footer */
-    .admin-sidebar-footer { padding: 14px 20px; border-top: 1px solid var(--border); margin-top: auto; display: flex; align-items: center; justify-content: space-between; }
-    .admin-logged-as { font-size: 12px; color: #4ade80; }
+    .admin-footer {
+      padding: 14px 18px; border-top: 1px solid var(--admin-border);
+      margin-top: auto; display: flex; align-items: center; justify-content: space-between;
+      background: var(--admin-bg); position: sticky; bottom: 0;
+    }
+    .admin-logged-as { font-size: 12px; color: #4ade80; display: flex; align-items: center; gap: 6px; }
+    .admin-logged-as::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
 
-    /* Live header bar */
-    .live-topbar { background: var(--dark2); border-bottom: 1px solid var(--border); padding: 16px 28px; display: flex; align-items: center; gap: 16px; transition: background 0.3s; flex-wrap: wrap; }
-    .live-topbar-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--text); display: flex; align-items: center; gap: 12px; flex: 1; }
-    .live-badge { background: var(--red); padding: 3px 12px; border-radius: 6px; font-size: 13px; font-weight: 700; letter-spacing: 1px; animation: pulse-dot 1.5s infinite; }
+    /* ═══ LIVE TOPBAR ═══ */
+    .live-topbar { background: var(--dark2); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; gap: 14px; transition: background 0.3s; flex-wrap: wrap; }
+    .live-topbar-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; color: var(--text); display: flex; align-items: center; gap: 12px; flex: 1; }
+    .live-badge { background: var(--red); padding: 3px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; letter-spacing: 1px; animation: pulse-dot 1.5s infinite; }
     .live-no-stream-badge { background: var(--card-bg); border: 1px solid var(--border); padding: 3px 12px; border-radius: 6px; font-size: 12px; color: var(--muted); font-weight: 600; }
-    .btn-admin-toggle { padding: 9px 18px; border-radius: 10px; border: 1px solid rgba(37,99,235,0.4); background: rgba(37,99,235,0.15); color: #60a5fa; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Barlow', sans-serif; display: flex; align-items: center; gap: 6px; }
-    .btn-admin-toggle:hover { background: rgba(37,99,235,0.25); }
-    .btn-admin-toggle.active { background: rgba(37,99,235,0.3); border-color: rgba(37,99,235,0.6); }
 
-    /* Countdown banner */
-    .countdown-banner { display: none; background: linear-gradient(135deg, #0f172a, #1e1b4b); border-bottom: 1px solid rgba(99,102,241,0.4); padding: 18px 28px; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap; }
+    /* Site viewers pill */
+    .site-viewers-pill {
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: #4ade80;
+    }
+    .site-viewers-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
+
+    .btn-admin-toggle { padding: 9px 18px; border-radius: 9px; border: 1px solid rgba(37,99,235,0.35); background: rgba(37,99,235,0.1); color: #60a5fa; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Barlow', sans-serif; display: flex; align-items: center; gap: 6px; }
+    .btn-admin-toggle:hover { background: rgba(37,99,235,0.2); }
+    .btn-admin-toggle.active { background: rgba(37,99,235,0.25); border-color: rgba(37,99,235,0.55); }
+
+    /* Countdown */
+    .countdown-banner { display: none; background: linear-gradient(135deg, #0f172a, #1e1b4b); border-bottom: 1px solid rgba(99,102,241,0.35); padding: 18px 28px; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap; }
     [data-theme="light"] .countdown-banner { background: linear-gradient(135deg,#e0e7ff,#f0f4ff); }
     .countdown-banner.visible { display: flex; }
     .countdown-match-name { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px; color: white; }
     [data-theme="light"] .countdown-match-name { color: #1e1b4b; }
-    .countdown-label-top { font-size: 12px; color: #818cf8; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .countdown-label-top { font-size: 11px; color: #818cf8; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
     .countdown-units { display: flex; align-items: center; gap: 10px; }
     .cd-unit { text-align: center; }
-    .cd-num { font-family: 'Bebas Neue', sans-serif; font-size: 44px; line-height: 1; color: white; background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.5); border-radius: 10px; min-width: 64px; padding: 4px 10px; display: block; }
+    .cd-num { font-family: 'Bebas Neue', sans-serif; font-size: 44px; line-height: 1; color: white; background: rgba(99,102,241,0.18); border: 1px solid rgba(99,102,241,0.45); border-radius: 10px; min-width: 64px; padding: 4px 10px; display: block; }
     [data-theme="light"] .cd-num { color: #1e1b4b; }
     .cd-label { font-size: 10px; font-weight: 700; color: #818cf8; letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
-    .cd-sep { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: rgba(99,102,241,0.6); margin-top: -6px; }
-    .countdown-discord-badge { display: flex; align-items: center; gap: 6px; background: rgba(88,101,242,0.2); border: 1px solid rgba(88,101,242,0.4); border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 700; color: #a5b4fc; }
-    .countdown-discord-badge svg { flex-shrink: 0; }
+    .cd-sep { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: rgba(99,102,241,0.5); margin-top: -6px; }
     .countdown-ended { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: #4ade80; animation: pulse-dot 1s infinite; }
 
-    /* Stream area */
-    .stream-container { padding: 24px 28px; }
+    /* Stream */
+    .stream-container { padding: 22px 28px; }
     .stream-box { background: #000; border-radius: 16px; overflow: hidden; position: relative; width: 100%; aspect-ratio: 16/9; max-height: 68vh; border: 1px solid var(--border); }
     .stream-box iframe, .stream-box video { width: 100%; height: 100%; border: none; }
     .no-stream-placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: var(--dark2); }
@@ -185,7 +262,6 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     .no-stream-placeholder p { font-size: 14px; color: var(--muted); max-width: 320px; text-align: center; line-height: 1.6; opacity: .7; }
     .stream-info-bar { display: flex; align-items: center; gap: 14px; margin-top: 14px; padding: 12px 18px; background: var(--dark2); border-radius: 12px; border: 1px solid var(--border); flex-wrap: wrap; transition: background 0.3s; }
     .stream-match-label { font-size: 15px; font-weight: 700; flex: 1; color: var(--text); }
-    .stream-viewers-public { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
     .btn-discord-chat { padding: 8px 16px; border-radius: 10px; border: none; background: #5865F2; color: white; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
     .btn-discord-chat:hover { background: #4752c4; }
 
@@ -195,9 +271,9 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
 
     /* Live chat panel */
     .live-chat-panel { background: var(--dark2); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: calc(68vh + 56px); max-height: 680px; transition: background 0.3s; position: relative; }
-    .chat-panel-header { padding: 12px 16px; background: rgba(37,99,235,0.12); border-bottom: 1px solid rgba(37,99,235,0.2); display: flex; align-items: center; justify-content: space-between; }
-    .chat-panel-title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1.5px; color: var(--text); display: flex; align-items: center; gap: 8px; }
-    .chat-online-count { font-size: 11px; color: #4ade80; font-weight: 700; background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); padding: 2px 9px; border-radius: 20px; }
+    .chat-panel-header { padding: 12px 16px; background: rgba(37,99,235,0.1); border-bottom: 1px solid rgba(37,99,235,0.18); display: flex; align-items: center; justify-content: space-between; }
+    .chat-panel-title { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 1.5px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .chat-online-count { font-size: 11px; color: #4ade80; font-weight: 700; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.25); padding: 2px 9px; border-radius: 20px; }
     .chat-msgs-area { flex: 1; overflow-y: auto; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
     .chat-msgs-area::-webkit-scrollbar { width: 4px; }
     .chat-msgs-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
@@ -209,6 +285,8 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     .chat-msg-time { font-size: 10px; color: var(--muted); margin-left: auto; }
     .chat-msg-text { font-size: 13px; color: var(--text); line-height: 1.5; padding-left: 28px; word-break: break-word; }
     .chat-msg.system .chat-msg-text { color: #818cf8; font-style: italic; padding-left: 0; font-size: 12px; }
+    .chat-msg.admin-reply .chat-msg-text { color: #fbbf24; padding-left: 28px; }
+    .chat-msg.admin-reply .chat-msg-username { color: #fbbf24 !important; }
     .chat-msg-admin-actions { padding-left: 28px; margin-top: 2px; display: none; }
     .chat-msg:hover .chat-msg-admin-actions { display: flex; gap: 6px; }
     .btn-ban-msg { font-size: 11px; padding: 2px 8px; border-radius: 5px; border: 1px solid rgba(220,38,38,0.4); background: transparent; color: #f87171; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; }
@@ -228,17 +306,25 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     .chat-disabled-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; z-index: 10; border-radius: 16px; }
     .chat-disabled-overlay p { font-size: 14px; color: var(--muted); text-align: center; max-width: 220px; line-height: 1.6; }
     .chat-disabled-overlay .lock-icon { font-size: 36px; opacity: 0.5; }
-
-    /* Pseudo required notice */
     .pseudo-warning { font-size: 11px; color: #fbbf24; display: none; margin-top: 2px; }
     .pseudo-warning.show { display: block; }
+
+    /* Admin reply in chat */
+    .admin-reply-bar { padding: 8px 12px; background: rgba(251,191,36,0.08); border-top: 1px solid rgba(251,191,36,0.15); display: none; flex-direction: column; gap: 7px; }
+    .admin-reply-bar.visible { display: flex; }
+    .admin-reply-to { font-size: 11px; color: #fbbf24; font-weight: 700; display: flex; align-items: center; justify-content: space-between; }
+    .admin-reply-cancel { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; }
+    .admin-reply-row { display: flex; gap: 7px; }
+    .admin-reply-input { flex: 1; padding: 8px 11px; border-radius: 8px; border: 1px solid rgba(251,191,36,0.3); background: rgba(251,191,36,0.05); color: var(--text); font-size: 13px; font-family: 'Barlow', sans-serif; outline: none; }
+    .admin-reply-input:focus { border-color: #fbbf24; }
+    .admin-reply-send { padding: 8px 14px; border-radius: 8px; border: none; background: #f59e0b; color: black; font-size: 12px; font-weight: 800; cursor: pointer; font-family: 'Barlow', sans-serif; }
 
     /* Ban toast */
     .ban-toast { position: fixed; top: 80px; right: 24px; background: rgba(220,38,38,0.9); backdrop-filter: blur(10px); color: white; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 700; z-index: 999; transform: translateX(150%); transition: transform 0.3s; border: 1px solid rgba(255,255,255,0.1); }
     .ban-toast.show { transform: translateX(0); }
 
     /* Planning public section */
-    .planning-public { background: var(--dark2); border-top: 1px solid var(--border); padding: 28px 28px; transition: background 0.3s; }
+    .planning-public { background: var(--dark2); border-top: 1px solid var(--border); padding: 28px; transition: background 0.3s; }
     .planning-public h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--text); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
     .planning-public-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
     .planning-public-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; transition: 0.3s; }
@@ -254,7 +340,7 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     .planning-card-discord:hover { background: rgba(88,101,242,0.25); }
     .planning-empty { color: var(--muted); font-size: 14px; text-align: center; padding: 24px; }
 
-    /* ═══ ADMIN LOGIN MODAL ═══ */
+    /* ═══ MODAL ═══ */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
     .modal { background: var(--dark2); border: 1px solid rgba(37,99,235,0.3); border-radius: 20px; padding: 36px; max-width: 420px; width: 100%; }
@@ -266,10 +352,7 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     .btn-modal-confirm { flex: 1; padding: 12px; border-radius: 10px; border: none; background: var(--blue); color: white; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Barlow', sans-serif; }
     .btn-modal-confirm:hover { background: #1d4ed8; }
     .btn-modal-cancel { padding: 12px 20px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 15px; cursor: pointer; transition: 0.2s; font-family: 'Barlow', sans-serif; }
-    .btn-modal-cancel:hover { color: var(--text); }
     .admin-error { color: #f87171; font-size: 13px; display: none; margin-bottom: 10px; }
-
-    /* Ban modal */
     .ban-modal { background: var(--dark2); border: 1px solid rgba(220,38,38,0.3); border-radius: 20px; padding: 32px; max-width: 380px; width: 100%; }
     .ban-modal h3 { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1.5px; margin-bottom: 8px; color: #f87171; }
     .ban-modal p { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
@@ -277,10 +360,10 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     .ban-reasons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
     .ban-reason-chip { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; }
     .ban-reason-chip:hover, .ban-reason-chip.selected { background: rgba(220,38,38,0.15); border-color: rgba(220,38,38,0.5); color: #f87171; }
-    .btn-confirm-ban { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--red); color: white; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; margin-top: 4px; }
+    .btn-confirm-ban { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--red); color: white; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; }
     .btn-confirm-ban:hover { background: #b91c1c; }
 
-    /* ═══ PAGE IPTV ═══ */
+    /* ═══ IPTV PAGE ═══ */
     #page-iptv { padding-top: 64px; min-height: 100vh; background: var(--dark); }
     .iptv-header { background: linear-gradient(135deg,#0f2a0f,#0a1a0a); border-bottom: 1px solid rgba(34,197,94,0.2); padding: 60px 40px; text-align: center; }
     [data-theme="light"] .iptv-header { background: linear-gradient(135deg,#dcfce7,#f0fdf4); border-color: rgba(34,197,94,0.3); }
@@ -338,7 +421,6 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     .star-input label { font-size: 28px; cursor: pointer; transition: .1s; filter: grayscale(1); opacity: .4; }
     .star-input input { display: none; }
     .star-input label.active { filter: grayscale(0); opacity: 1; }
-    .star-input label:hover { transform: scale(1.2); }
     .star-rating-label { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .8px; text-transform: uppercase; margin-bottom: 8px; }
     .btn-submit-review { width: 100%; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(135deg,var(--blue),#3b82f6); color: white; font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; margin-top: 8px; }
     .btn-submit-review:hover { box-shadow: 0 0 30px rgba(37,99,235,0.5); transform: scale(1.02); }
@@ -358,7 +440,7 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     .chat-bubble-btn.open { animation: none; background: linear-gradient(135deg,#f87171,#dc2626); }
     @keyframes chat-bounce { 0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)} }
     .chat-notif { position: absolute; top: -4px; right: -4px; width: 20px; height: 20px; border-radius: 50%; background: #f59e0b; border: 2px solid var(--dark); font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; color: black; animation: pulse-dot 1.5s infinite; }
-    .chatbot-window { position: fixed; bottom: 104px; right: 28px; width: 370px; max-height: 560px; background: var(--dark2); border: 1px solid rgba(34,197,94,0.3); border-radius: 20px; z-index: 299; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.6); transform: scale(0.85) translateY(20px); opacity: 0; pointer-events: none; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s; transform-origin: bottom right; }
+    .chatbot-window { position: fixed; bottom: 104px; right: 28px; width: 390px; max-height: 600px; background: var(--dark2); border: 1px solid rgba(34,197,94,0.3); border-radius: 20px; z-index: 299; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.6); transform: scale(0.85) translateY(20px); opacity: 0; pointer-events: none; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s; transform-origin: bottom right; }
     .chatbot-window.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
     .chat-header { background: linear-gradient(135deg,#14532d,#166534); padding: 14px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
     .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,#4ade80,#22c55e); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
@@ -367,18 +449,28 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     .chat-header-status { font-size: 11px; color: #4ade80; display: flex; align-items: center; gap: 5px; }
     .chat-status-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
     .chat-ai-badge { font-size: 10px; font-weight: 700; background: rgba(34,197,94,0.2); border: 1px solid rgba(34,197,94,0.4); color: #4ade80; padding: 2px 7px; border-radius: 20px; }
+    .chat-admin-badge { font-size: 10px; font-weight: 700; background: rgba(251,191,36,0.2); border: 1px solid rgba(251,191,36,0.4); color: #fbbf24; padding: 2px 7px; border-radius: 20px; }
     .chat-messages { flex: 1; overflow-y: auto; padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; }
     .chat-messages::-webkit-scrollbar { width: 4px; }
     .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
     .msg-bot, .msg-user { max-width: 88%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.55; animation: msg-in 0.25s ease; }
     .msg-bot { background: var(--dark3); border: 1px solid var(--border); color: var(--text); align-self: flex-start; border-bottom-left-radius: 4px; }
     .msg-user { background: linear-gradient(135deg,#166534,#15803d); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .msg-admin { background: linear-gradient(135deg,#92400e,#b45309); color: white; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid rgba(251,191,36,0.3); }
     .msg-bot strong { color: #4ade80; }
+    .msg-admin strong { color: #fde68a; }
+    .msg-label { font-size: 10px; font-weight: 700; margin-bottom: 4px; display: block; }
+    .msg-label.admin-label { color: #fbbf24; }
+    .msg-label.bot-label { color: #4ade80; }
     .msg-loading { display: flex; align-items: center; gap: 5px; padding: 10px 14px; background: var(--dark3); border: 1px solid var(--border); border-radius: 16px; border-bottom-left-radius: 4px; align-self: flex-start; }
     .typing-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: typing-anim 1.2s infinite; }
     .typing-dot:nth-child(2){animation-delay:.2s} .typing-dot:nth-child(3){animation-delay:.4s}
     @keyframes typing-anim { 0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)} }
-    .chat-quick-btns { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 12px; }
+
+    /* Quick buttons — catégories */
+    .chat-quick-section { padding: 0 14px 12px; }
+    .chat-quick-label { font-size: 10px; font-weight: 800; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+    .chat-quick-btns { display: flex; flex-wrap: wrap; gap: 6px; }
     .quick-btn { padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(34,197,94,0.35); background: transparent; color: #4ade80; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; white-space: nowrap; }
     .quick-btn:hover { background: rgba(34,197,94,0.15); border-color: #4ade80; }
     .chat-footer { padding: 10px 14px; border-top: 1px solid var(--border); display: flex; gap: 8px; background: rgba(0,0,0,0.3); }
@@ -387,6 +479,16 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     .chat-input::placeholder { color: var(--muted); }
     .chat-send-btn { width: 38px; height: 38px; border-radius: 50%; border: none; background: linear-gradient(135deg,#4ade80,#22c55e); color: white; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; flex-shrink: 0; }
     .chat-send-btn:hover { transform: scale(1.1); }
+
+    /* Admin chat reply from chatbot panel */
+    .admin-chatbot-reply { padding: 10px 14px; border-top: 1px solid rgba(251,191,36,0.2); background: rgba(251,191,36,0.05); display: none; flex-direction: column; gap: 7px; }
+    .admin-chatbot-reply.visible { display: flex; }
+    .admin-chatbot-reply-label { font-size: 11px; font-weight: 700; color: #fbbf24; letter-spacing: 0.5px; }
+    .admin-chatbot-reply-row { display: flex; gap: 7px; }
+    .admin-chatbot-reply-input { flex: 1; padding: 8px 12px; border-radius: 20px; border: 1px solid rgba(251,191,36,0.3); background: rgba(251,191,36,0.06); color: var(--text); font-size: 13px; font-family: 'Barlow', sans-serif; outline: none; }
+    .admin-chatbot-reply-input:focus { border-color: #fbbf24; }
+    .admin-chatbot-reply-send { padding: 8px 16px; border-radius: 20px; border: none; background: #f59e0b; color: black; font-size: 12px; font-weight: 800; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; white-space: nowrap; }
+    .admin-chatbot-reply-send:hover { background: #d97706; }
 
     @media(max-width:768px){
       h1{font-size:52px} .section h2,.discord-section h2,.iptv-header h2{font-size:38px}
@@ -400,8 +502,7 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
 </head>
 <body>
 
-<!-- BAN TOAST -->
-<div class="ban-toast" id="ban-toast">🚫 Utilisateur banni du chat</div>
+<div class="ban-toast" id="ban-toast">🚫 Utilisateur banni</div>
 
 <!-- NAV -->
 <nav>
@@ -453,106 +554,209 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
 <div id="page-live" class="page">
   <div class="live-main-layout">
 
-    <!-- ADMIN SIDEBAR -->
+    <!-- ═══ ADMIN SIDEBAR — NOUVEAU DESIGN ═══ -->
     <div class="admin-sidebar" id="admin-sidebar">
-      <div class="admin-sidebar-header">
-        <div class="admin-sidebar-title">🔧 Admin Panel <span class="admin-version-badge">v2.0</span></div>
+
+      <!-- Header -->
+      <div class="admin-header">
+        <div class="admin-header-left">
+          <div class="admin-title">⚙ Panneau Admin</div>
+          <div class="admin-subtitle">Football Zone France v2.0</div>
+        </div>
+        <div class="admin-status-pill">Connecté</div>
       </div>
 
-      <!-- SECTION: STREAM -->
-      <div class="admin-section">
-        <div class="admin-section-header"><span>📺</span> Stream</div>
-        <input type="text" class="a-input" id="stream-url-input" placeholder="URL stream (embed ou .m3u8)" />
-        <input type="text" class="a-input" id="match-label-input" placeholder="Nom du match — Ex: PSG vs Real 21h00" />
-        <div class="a-btn-row">
-          <button class="a-btn a-btn-blue" style="flex:1;" onclick="setStream()">▶ Lancer</button>
-          <button class="a-btn a-btn-red" onclick="stopStream()">⏹ Stop</button>
+      <!-- Tabs -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchAdminTab('stream')" id="tab-stream">
+          <span class="tab-icon">📺</span>Stream
+        </button>
+        <button class="admin-tab" onclick="switchAdminTab('planning')" id="tab-planning">
+          <span class="tab-icon">📅</span>Planning
+        </button>
+        <button class="admin-tab" onclick="switchAdminTab('chat')" id="tab-chat">
+          <span class="tab-icon">💬</span>Chat
+        </button>
+        <button class="admin-tab" onclick="switchAdminTab('tools')" id="tab-tools">
+          <span class="tab-icon">🔧</span>Outils
+        </button>
+      </div>
+
+      <!-- ── TAB STREAM ── -->
+      <div class="admin-panel active" id="panel-stream">
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Source du stream</div>
+          <label class="a-label">URL du flux (embed ou .m3u8)</label>
+          <input type="text" class="a-input" id="stream-url-input" placeholder="https://..." />
+          <label class="a-label">Nom du match</label>
+          <input type="text" class="a-input" id="match-label-input" placeholder="Ex : PSG vs Real Madrid 21h00" />
+          <div class="a-btn-row">
+            <button class="a-btn a-btn-primary" onclick="setStream()">▶ Lancer le stream</button>
+            <button class="a-btn a-btn-danger" onclick="stopStream()">⏹ Stop</button>
+          </div>
+        </div>
+
+        <div class="a-section" id="stats-section" style="display:none;">
+          <div class="a-section-title"><span class="dot"></span>Statistiques en direct</div>
+          <div class="stats-grid-2">
+            <div class="stat-card">
+              <div class="stat-card-num" id="stat-current" style="color:#f87171;">0</div>
+              <div class="stat-card-label">Sur le site</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-num" id="stat-peak" style="color:#fbbf24;">0</div>
+              <div class="stat-card-label">Pic max</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-num" id="stat-duration" style="color:#4ade80;font-size:20px;">00:00</div>
+              <div class="stat-card-label">Durée live</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-num" id="stat-joins" style="color:#60a5fa;">0</div>
+              <div class="stat-card-label">Connexions</div>
+            </div>
+          </div>
+          <button class="a-btn-full a-btn-danger" onclick="resetStats()" style="margin-top:10px;font-size:12px;padding:8px;">🔄 Réinitialiser</button>
+        </div>
+
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Compte à rebours</div>
+          <div class="a-toggle-row">
+            <div class="a-toggle-info">
+              <div class="a-toggle-label">Activer le compte à rebours</div>
+              <div class="a-toggle-desc">Affiche un timer avant le match</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="toggle-countdown" onchange="toggleCountdownAdmin(this.checked)"><span class="toggle-slider"></span></label>
+          </div>
+          <div id="countdown-config" style="display:none;padding-top:12px;">
+            <label class="a-label">Nom du match</label>
+            <input type="text" class="a-input" id="countdown-match-name" placeholder="Ex : PSG vs Barça" />
+            <label class="a-label">Date & Heure du match</label>
+            <input type="datetime-local" class="a-input" id="countdown-datetime" />
+            <button class="a-btn-full a-btn-purple" onclick="setCountdownTime()">⏱ Activer le compte à rebours</button>
+          </div>
         </div>
       </div>
 
-      <!-- SECTION: FONCTIONNALITES -->
-      <div class="admin-section">
-        <div class="admin-section-header"><span>⚙️</span> Fonctionnalités</div>
-        <div class="toggle-row">
-          <div class="toggle-label-group"><div class="toggle-label">💬 Chat Live</div><div class="toggle-desc">Activer le tchat</div></div>
-          <label class="toggle-switch"><input type="checkbox" id="toggle-chat" onchange="toggleLiveChat(this.checked)"><span class="toggle-slider"></span></label>
+      <!-- ── TAB PLANNING ── -->
+      <div class="admin-panel" id="panel-planning">
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Ajouter un match</div>
+          <label class="a-label">Nom du match</label>
+          <input type="text" class="a-input" id="plan-match" placeholder="Ex : Nice vs Lens" />
+          <label class="a-label">Date & Heure</label>
+          <input type="datetime-local" class="a-input" id="plan-date" />
+          <label class="a-label">Compétition</label>
+          <input type="text" class="a-input" id="plan-comp" placeholder="Ex : Ligue 1" />
+          <div class="a-toggle-row" style="margin-bottom:10px;">
+            <div class="a-toggle-info">
+              <div class="a-toggle-label">📡 Badge Discord</div>
+              <div class="a-toggle-desc">Afficher le lien Discord sur la carte</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="plan-discord" checked><span class="toggle-slider"></span></label>
+          </div>
+          <button class="a-btn-full a-btn-primary" onclick="addPlanningMatch()">➕ Ajouter au planning</button>
         </div>
-        <div class="toggle-row">
-          <div class="toggle-label-group"><div class="toggle-label">⏱ Compte à Rebours</div><div class="toggle-desc">Avant le match</div></div>
-          <label class="toggle-switch"><input type="checkbox" id="toggle-countdown" onchange="toggleCountdownAdmin(this.checked)"><span class="toggle-slider"></span></label>
-        </div>
-        <div id="countdown-config" style="display:none;padding-top:10px;">
-          <input type="text" class="a-input" id="countdown-match-name" placeholder="Nom du match (countdown)" />
-          <input type="datetime-local" class="a-input" id="countdown-datetime" />
-          <button class="a-btn-full a-btn-purple" onclick="setCountdownTime()">⏱ Activer le compte à rebours</button>
-        </div>
-        <div class="toggle-row">
-          <div class="toggle-label-group"><div class="toggle-label">🤖 Chatbot IA</div><div class="toggle-desc">Bot assistant</div></div>
-          <label class="toggle-switch"><input type="checkbox" id="toggle-chatbot" onchange="toggleChatbot(this.checked)" checked><span class="toggle-slider"></span></label>
-        </div>
-      </div>
-
-      <!-- SECTION: STATS -->
-      <div class="admin-section" id="stats-section" style="display:none;">
-        <div class="admin-section-header"><span>📊</span> Statistiques Live</div>
-        <div class="stats-grid">
-          <div class="stat-mini"><div class="stat-mini-num" id="stat-current" style="color:#f87171;">0</div><div class="stat-mini-label">Spectateurs</div></div>
-          <div class="stat-mini"><div class="stat-mini-num" id="stat-peak" style="color:#fbbf24;">0</div><div class="stat-mini-label">Pic max</div></div>
-          <div class="stat-mini"><div class="stat-mini-num" id="stat-duration" style="color:#4ade80;font-size:20px;">00:00</div><div class="stat-mini-label">Durée</div></div>
-          <div class="stat-mini"><div class="stat-mini-num" id="stat-joins" style="color:#60a5fa;">0</div><div class="stat-mini-label">Connexions</div></div>
-        </div>
-        <button class="a-btn-full a-btn-red" onclick="resetStats()" style="background:transparent;border:1px solid rgba(220,38,38,0.4);color:#f87171;font-size:12px;padding:7px;">🔄 Réinitialiser les stats</button>
-      </div>
-
-      <!-- SECTION: PLANNING -->
-      <div class="admin-section">
-        <div class="admin-section-header"><span>📅</span> Planning des matchs</div>
-        <input type="text" class="a-input" id="plan-match" placeholder="Ex: Nice vs Lens" />
-        <input type="datetime-local" class="a-input" id="plan-date" />
-        <input type="text" class="a-input" id="plan-comp" placeholder="Compétition — Ex: Ligue 1" />
-        <div class="toggle-row" style="padding:6px 0;">
-          <div class="toggle-label-group"><div class="toggle-label">📡 Diffusion Discord</div><div class="toggle-desc">Visible sur le badge</div></div>
-          <label class="toggle-switch"><input type="checkbox" id="plan-discord" checked><span class="toggle-slider"></span></label>
-        </div>
-        <button class="a-btn-full" style="background:#5865F2;color:white;" onclick="addPlanningMatch()">➕ Ajouter au planning</button>
-        <div style="margin-top:10px;" id="admin-planning-list"></div>
-      </div>
-
-      <!-- SECTION: BANS -->
-      <div class="admin-section">
-        <div class="admin-section-header"><span>🚫</span> Gestion des Bans</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Cliquez sur un message dans le chat pour bannir un utilisateur.</div>
-        <div id="ban-list-admin">
-          <div style="font-size:13px;color:var(--muted);text-align:center;padding:12px;">Aucun utilisateur banni.</div>
-        </div>
-        <button class="a-btn-full" style="background:transparent;border:1px solid rgba(220,38,38,0.3);color:#f87171;font-size:12px;padding:7px;margin-top:6px;" onclick="clearAllBans()">🗑 Supprimer tous les bans</button>
-      </div>
-
-      <!-- SECTION: MESSAGES EPINGLÉS -->
-      <div class="admin-section">
-        <div class="admin-section-header"><span>📌</span> Message épinglé</div>
-        <input type="text" class="a-input" id="pinned-msg-input" placeholder="Message à épingler dans le chat..." />
-        <div class="a-btn-row">
-          <button class="a-btn a-btn-green" style="flex:1;" onclick="setPinnedMsg()">📌 Épingler</button>
-          <button class="a-btn a-btn-red" onclick="clearPinnedMsg()">✕</button>
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Matchs planifiés</div>
+          <div id="admin-planning-list">
+            <div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun match planifié.</div>
+          </div>
         </div>
       </div>
 
-      <!-- SECTION: ANNONCE -->
-      <div class="admin-section">
-        <div class="admin-section-header"><span>📢</span> Annonce Rapide</div>
-        <input type="text" class="a-input" id="announce-input" placeholder="Message système dans le chat..." />
-        <button class="a-btn-full a-btn-blue" onclick="sendAnnounce()">📢 Envoyer dans le chat</button>
+      <!-- ── TAB CHAT ── -->
+      <div class="admin-panel" id="panel-chat">
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Paramètres du chat</div>
+          <div class="a-toggle-row">
+            <div class="a-toggle-info">
+              <div class="a-toggle-label">💬 Activer le chat live</div>
+              <div class="a-toggle-desc">Permet aux visiteurs d'écrire</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="toggle-chat" onchange="toggleLiveChat(this.checked)"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="a-toggle-row">
+            <div class="a-toggle-info">
+              <div class="a-toggle-label">🤖 Bot IA (chatbot)</div>
+              <div class="a-toggle-desc">Assistant sur le site</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="toggle-chatbot" onchange="toggleChatbot(this.checked)" checked><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Répondre depuis le chat live</div>
+          <label class="a-label">Réponse admin (dans le chat live)</label>
+          <input type="text" class="a-input" id="admin-live-reply-input" placeholder="Ton message en tant qu'admin..." maxlength="200" onkeydown="if(event.key==='Enter')sendAdminLiveReply()" />
+          <button class="a-btn-full a-btn-primary" onclick="sendAdminLiveReply()">📢 Envoyer comme Admin</button>
+        </div>
+
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Message épinglé</div>
+          <input type="text" class="a-input" id="pinned-msg-input" placeholder="Message à épingler dans le chat..." />
+          <div class="a-btn-row">
+            <button class="a-btn a-btn-success" onclick="setPinnedMsg()" style="flex:1;">📌 Épingler</button>
+            <button class="a-btn a-btn-danger" onclick="clearPinnedMsg()">✕</button>
+          </div>
+        </div>
+
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Annonce système</div>
+          <input type="text" class="a-input" id="announce-input" placeholder="Message affiché en bleu dans le chat..." />
+          <button class="a-btn-full a-btn-ghost" onclick="sendAnnounce()">📢 Envoyer l'annonce</button>
+        </div>
+
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Utilisateurs bannis</div>
+          <div id="ban-list-admin">
+            <div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun utilisateur banni.</div>
+          </div>
+          <button class="a-btn-full a-btn-danger" onclick="clearAllBans()" style="margin-top:8px;font-size:12px;padding:8px;">🗑 Supprimer tous les bans</button>
+        </div>
       </div>
 
-      <!-- FOOTER -->
-      <div class="admin-sidebar-footer">
-        <span class="admin-logged-as">✅ Admin connecté</span>
-        <button class="a-btn a-btn-red" onclick="logoutAdmin()" style="font-size:12px;padding:7px 14px;">Déconnexion</button>
+      <!-- ── TAB OUTILS ── -->
+      <div class="admin-panel" id="panel-tools">
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Répondre au chatbot IA</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px;">Active le mode "Réponse Admin" dans le chatbot. Les visiteurs verront ton message comme une réponse de l'admin.</div>
+          <div class="a-toggle-row">
+            <div class="a-toggle-info">
+              <div class="a-toggle-label">🔓 Mode réponse admin</div>
+              <div class="a-toggle-desc">Affiche le champ de réponse dans le chatbot</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="toggle-admin-reply" onchange="toggleAdminChatbotReply(this.checked)"><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Informations site</div>
+          <div class="stats-grid-2">
+            <div class="stat-card">
+              <div class="stat-card-num" id="tools-site-viewers" style="color:#4ade80;">0</div>
+              <div class="stat-card-label">Sur le site</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-num" id="tools-chat-msgs" style="color:#60a5fa;">0</div>
+              <div class="stat-card-label">Messages chat</div>
+            </div>
+          </div>
+        </div>
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Actions rapides</div>
+          <button class="a-btn-full a-btn-danger" onclick="clearLiveChat()" style="margin-bottom:8px;font-size:12px;padding:10px;">🗑 Vider le chat live</button>
+          <button class="a-btn-full a-btn-ghost" onclick="logoutAdmin()" style="font-size:12px;padding:10px;">🔒 Se déconnecter</button>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="admin-footer">
+        <span class="admin-logged-as">Admin connecté</span>
+        <button class="a-btn a-btn-danger" onclick="logoutAdmin()" style="font-size:11px;padding:6px 12px;">Déco.</button>
       </div>
     </div>
 
-    <!-- LIVE CONTENT -->
+    <!-- ═══ LIVE CONTENT ═══ -->
     <div class="live-content-area">
 
       <!-- Top bar -->
@@ -561,29 +765,32 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
           📺 Match en Direct
           <span id="live-status-badge" class="live-no-stream-badge">HORS LIGNE</span>
         </div>
+        <div class="site-viewers-pill">
+          <span class="site-viewers-dot"></span>
+          <span id="site-viewer-count">0</span> sur le site
+        </div>
         <button class="btn-admin-toggle" id="admin-toggle-btn" onclick="toggleAdminSidebar()">🔒 Admin</button>
       </div>
 
-      <!-- Countdown -->
+      <!-- Countdown (sans badge Discord) -->
       <div class="countdown-banner" id="countdown-banner">
         <div>
           <div class="countdown-label-top">PROCHAIN MATCH</div>
           <div class="countdown-match-name" id="countdown-match-display">Match à venir</div>
         </div>
-        <div class="countdown-units" id="countdown-units">
-          <div class="cd-unit"><span class="cd-num" id="cd-days">00</span><div class="cd-label">Jours</div></div>
-          <div class="cd-sep">:</div>
-          <div class="cd-unit"><span class="cd-num" id="cd-hours">00</span><div class="cd-label">Heures</div></div>
-          <div class="cd-sep">:</div>
-          <div class="cd-unit"><span class="cd-num" id="cd-mins">00</span><div class="cd-label">Min</div></div>
-          <div class="cd-sep">:</div>
-          <div class="cd-unit"><span class="cd-num" id="cd-secs">00</span><div class="cd-label">Sec</div></div>
+        <div>
+          <div class="countdown-label-top" style="text-align:center;">DANS</div>
+          <div class="countdown-units" id="countdown-units">
+            <div class="cd-unit"><span class="cd-num" id="cd-days">00</span><div class="cd-label">Jours</div></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-unit"><span class="cd-num" id="cd-hours">00</span><div class="cd-label">Heures</div></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-unit"><span class="cd-num" id="cd-mins">00</span><div class="cd-label">Min</div></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-unit"><span class="cd-num" id="cd-secs">00</span><div class="cd-label">Sec</div></div>
+          </div>
+          <div class="countdown-ended" id="countdown-ended" style="display:none;">🔴 C'EST PARTI !</div>
         </div>
-        <div class="countdown-discord-badge">
-          <svg width="16" height="12" viewBox="0 0 18 14" fill="currentColor"><path d="M15.25 1.18A14.8 14.8 0 0 0 11.56 0c-.17.3-.36.7-.49 1.02a13.7 13.7 0 0 0-4.14 0A10.8 10.8 0 0 0 6.44 0 14.85 14.85 0 0 0 2.74 1.18 15.73 15.73 0 0 0 .02 11.36a14.94 14.94 0 0 0 4.57 2.31c.37-.5.7-1.04.98-1.6a9.7 9.7 0 0 1-1.54-.74c.13-.09.25-.19.37-.28a10.65 10.65 0 0 0 9.2 0c.12.1.25.19.37.28-.49.29-1 .54-1.54.74.28.56.61 1.1.98 1.6a14.9 14.9 0 0 0 4.57-2.31 15.7 15.7 0 0 0-2.73-10.18ZM6.01 9.28c-.89 0-1.63-.82-1.63-1.83s.72-1.84 1.63-1.84 1.65.83 1.63 1.84c0 1.01-.72 1.83-1.63 1.83Zm5.98 0c-.89 0-1.63-.82-1.63-1.83s.72-1.84 1.63-1.84 1.65.83 1.63 1.84c0 1.01-.72 1.83-1.63 1.83Z"/></svg>
-          Diffusé sur Discord
-        </div>
-        <div class="countdown-ended" id="countdown-ended" style="display:none;">🔴 C'EST PARTI !</div>
       </div>
 
       <!-- Player -->
@@ -602,7 +809,6 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
         <div class="stream-info-bar" id="stream-info-bar" style="display:none;">
           <span class="live-dot"></span>
           <span class="stream-match-label" id="match-label-display">Match en direct</span>
-          <div class="stream-viewers-public">👁 <span id="public-viewer-count">--</span> spectateurs</div>
           <a href="https://discord.gg/ftzf" class="btn-discord-chat" target="_blank">
             <svg width="14" height="11" viewBox="0 0 18 14" fill="currentColor"><path d="M15.25 1.18A14.8 14.8 0 0 0 11.56 0c-.17.3-.36.7-.49 1.02a13.7 13.7 0 0 0-4.14 0A10.8 10.8 0 0 0 6.44 0 14.85 14.85 0 0 0 2.74 1.18 15.73 15.73 0 0 0 .02 11.36a14.94 14.94 0 0 0 4.57 2.31c.37-.5.7-1.04.98-1.6a9.7 9.7 0 0 1-1.54-.74c.13-.09.25-.19.37-.28a10.65 10.65 0 0 0 9.2 0c.12.1.25.19.37.28-.49.29-1 .54-1.54.74.28.56.61 1.1.98 1.6a14.9 14.9 0 0 0 4.57-2.31 15.7 15.7 0 0 0-2.73-10.18ZM6.01 9.28c-.89 0-1.63-.82-1.63-1.83s.72-1.84 1.63-1.84 1.65.83 1.63 1.84c0 1.01-.72 1.83-1.63 1.83Zm5.98 0c-.89 0-1.63-.82-1.63-1.83s.72-1.84 1.63-1.84 1.65.83 1.63 1.84c0 1.01-.72 1.83-1.63 1.83Z"/></svg>
             Discord
@@ -728,11 +934,11 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
   <footer>© 2026 Football Zone France — Tous droits réservés</footer>
 </div>
 
-<!-- Modal login admin -->
+<!-- Modals -->
 <div class="modal-overlay" id="modal-login">
   <div class="modal">
     <h3>🔒 Accès Admin</h3>
-    <p>Entre le mot de passe administrateur pour accéder au panneau de contrôle complet.</p>
+    <p>Entre le mot de passe administrateur pour accéder au panneau de contrôle.</p>
     <input type="password" id="admin-password-input" placeholder="Mot de passe..." onkeydown="if(event.key==='Enter')checkAdminLogin()" />
     <div class="admin-error" id="admin-error">❌ Mot de passe incorrect</div>
     <div class="modal-btns">
@@ -742,7 +948,6 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
   </div>
 </div>
 
-<!-- Modal ban -->
 <div class="modal-overlay" id="modal-ban">
   <div class="ban-modal">
     <h3>🚫 Bannir un utilisateur</h3>
@@ -751,7 +956,7 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     <div class="ban-reasons">
       <button class="ban-reason-chip" onclick="selectBanReason(this,'Insultes')">😡 Insultes</button>
       <button class="ban-reason-chip" onclick="selectBanReason(this,'Spam')">🔁 Spam</button>
-      <button class="ban-reason-chip" onclick="selectBanReason(this,'Contenu inapproprié')">⛔ Contenu inapproprié</button>
+      <button class="ban-reason-chip" onclick="selectBanReason(this,'Contenu inapproprié')">⛔ Contenu</button>
       <button class="ban-reason-chip" onclick="selectBanReason(this,'Harcèlement')">🎯 Harcèlement</button>
       <button class="ban-reason-chip" onclick="selectBanReason(this,'Autre')">📝 Autre</button>
     </div>
@@ -760,7 +965,7 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
   </div>
 </div>
 
-<!-- CHATBOT -->
+<!-- ═══ CHATBOT ═══ -->
 <button class="chat-bubble-btn" id="chat-btn" onclick="toggleChat()">
   <span id="chat-btn-icon">⚽</span>
   <div class="chat-notif" id="chat-notif">1</div>
@@ -769,23 +974,37 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
   <div class="chat-header">
     <div class="chat-avatar">🤖</div>
     <div class="chat-header-info">
-      <div class="chat-header-name">FZF Assistant <span class="chat-ai-badge">IA</span></div>
+      <div class="chat-header-name">FZF Assistant <span class="chat-ai-badge">IA</span> <span class="chat-admin-badge" id="admin-mode-badge" style="display:none;">ADMIN</span></div>
       <div class="chat-header-status"><span class="chat-status-dot"></span> Propulsé par Claude</div>
     </div>
   </div>
   <div class="chat-messages" id="chat-messages">
-    <div class="msg-bot">👋 Salut ! Je suis le bot IA de <strong>Football Zone France</strong>, propulsé par Claude.<br><br>Je peux répondre à toutes tes questions sur l'IPTV, les matchs ou la communauté ! 🟢</div>
+    <div class="msg-bot">👋 Salut ! Je suis le bot de <strong>Football Zone France</strong>.<br><br>Je peux t'aider avec les abonnements IPTV, les matchs et la communauté. Pose-moi ta question ! ⚽</div>
   </div>
-  <div class="chat-quick-btns" id="quick-btns">
-    <button class="quick-btn" onclick="quickAsk('Prix des abonnements')">💶 Prix</button>
-    <button class="quick-btn" onclick="quickAsk('Comment commander ?')">🛒 Commander</button>
-    <button class="quick-btn" onclick="quickAsk('Appareils compatibles ?')">📱 Compat.</button>
-    <button class="quick-btn" onclick="quickAsk('Starter vs À Vie ?')">⚖️ Comparer</button>
-    <button class="quick-btn" onclick="quickAsk('Comment payer ?')">💳 Paiement</button>
-    <button class="quick-btn" onclick="quickAsk('Qualité du stream ?')">📺 Qualité</button>
+  <!-- Quick buttons avec catégories -->
+  <div class="chat-quick-section" id="quick-section">
+    <div class="chat-quick-label">Questions fréquentes</div>
+    <div class="chat-quick-btns">
+      <button class="quick-btn" onclick="quickAsk('Quel est le prix des abonnements IPTV ?')">💶 Prix</button>
+      <button class="quick-btn" onclick="quickAsk('Comment commander un abonnement ?')">🛒 Commander</button>
+      <button class="quick-btn" onclick="quickAsk('Sur quels appareils fonctionne l\'IPTV ?')">📱 Appareils</button>
+      <button class="quick-btn" onclick="quickAsk('Quelle est la différence entre Starter et À Vie ?')">⚖️ Comparer</button>
+      <button class="quick-btn" onclick="quickAsk('Quels moyens de paiement acceptez-vous ?')">💳 Paiement</button>
+      <button class="quick-btn" onclick="quickAsk('Quelle est la qualité des streams disponibles ?')">📺 Qualité</button>
+      <button class="quick-btn" onclick="quickAsk('Y a-t-il un essai gratuit disponible ?')">🎁 Essai</button>
+      <button class="quick-btn" onclick="quickAsk('Comment rejoindre le Discord FZF ?')">💬 Discord</button>
+    </div>
+  </div>
+  <!-- Zone réponse admin (visible si mode admin activé) -->
+  <div class="admin-chatbot-reply" id="admin-chatbot-reply">
+    <div class="admin-chatbot-reply-label">👑 Répondre en tant qu'Admin</div>
+    <div class="admin-chatbot-reply-row">
+      <input type="text" class="admin-chatbot-reply-input" id="admin-chatbot-reply-input" placeholder="Ta réponse admin..." maxlength="300" onkeydown="if(event.key==='Enter')sendAdminChatbotReply()" />
+      <button class="admin-chatbot-reply-send" onclick="sendAdminChatbotReply()">Envoyer</button>
+    </div>
   </div>
   <div class="chat-footer">
-    <input type="text" class="chat-input" id="chat-input" placeholder="Pose ta question à l'IA..." onkeydown="if(event.key==='Enter')sendChat()" maxlength="300" />
+    <input type="text" class="chat-input" id="chat-input" placeholder="Pose ta question..." onkeydown="if(event.key==='Enter')sendChat()" maxlength="300" />
     <button class="chat-send-btn" onclick="sendChat()">➤</button>
   </div>
 </div>
@@ -799,6 +1018,7 @@ let hlsInstance = null;
 let countdownTarget = null;
 let countdownInterval = null;
 let chatbotEnabled = true;
+let adminChatbotReplyEnabled = false;
 let chatOpen = false;
 let chatHistory = [];
 let liveChatEnabled = false;
@@ -808,9 +1028,43 @@ let pendingBanUsername = '';
 let pendingBanMsgEl = null;
 let selectedBanReason = '';
 let pinnedMsg = '';
-let viewerCount = 0, peakViewers = 0, totalJoins = 0, streamStartTime = null;
-let viewerInterval = null, durationInterval = null;
+let chatMsgCount = 0;
+
+/* Site visitors (simulated — real site, not stream) */
+let siteViewers = Math.floor(Math.random() * 25) + 8;
+let peakViewers = siteViewers;
+let totalJoins = siteViewers;
+let streamStartTime = null;
+let siteViewerInterval = null;
+let streamDurationInterval = null;
+
 const chatColors = ['#60a5fa','#f87171','#4ade80','#fbbf24','#a78bfa','#fb923c','#34d399','#f472b6'];
+
+/* ═══ START SITE VIEWER COUNT ═══ */
+function startSiteViewers() {
+  updateSiteViewerDisplay();
+  siteViewerInterval = setInterval(() => {
+    const delta = Math.floor(Math.random() * 7) - 3;
+    siteViewers = Math.max(3, siteViewers + delta);
+    if (Math.random() > 0.82) { siteViewers += Math.floor(Math.random() * 3) + 1; totalJoins += Math.floor(Math.random()*3)+1; }
+    if (siteViewers > peakViewers) peakViewers = siteViewers;
+    updateSiteViewerDisplay();
+  }, 5000);
+}
+function updateSiteViewerDisplay() {
+  document.getElementById('site-viewer-count').textContent = siteViewers;
+  document.getElementById('chat-online-count').textContent = siteViewers + ' en ligne';
+  document.getElementById('stat-current').textContent = siteViewers;
+  document.getElementById('stat-peak').textContent = peakViewers;
+  document.getElementById('stat-joins').textContent = totalJoins;
+  document.getElementById('tools-site-viewers').textContent = siteViewers;
+}
+function resetStats() {
+  siteViewers = Math.floor(Math.random()*10)+5; peakViewers = siteViewers; totalJoins = siteViewers;
+  streamStartTime = Date.now();
+  updateSiteViewerDisplay();
+}
+startSiteViewers();
 
 /* ═══ THEME ═══ */
 function toggleTheme() {
@@ -835,6 +1089,14 @@ function showPage(name) {
   document.querySelectorAll('.nav-tab')[idx].classList.add('active');
 }
 
+/* ═══ ADMIN TABS ═══ */
+function switchAdminTab(tab) {
+  ['stream','planning','chat','tools'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+    document.getElementById('panel-'+t).classList.toggle('active', t===tab);
+  });
+}
+
 /* ═══ ADMIN SIDEBAR ═══ */
 function toggleAdminSidebar() {
   if (!adminLoggedIn) {
@@ -848,7 +1110,6 @@ function toggleAdminSidebar() {
   document.getElementById('admin-sidebar').classList.toggle('open', adminSidebarOpen);
   document.getElementById('admin-toggle-btn').classList.toggle('active', adminSidebarOpen);
 }
-
 function checkAdminLogin() {
   const pw = document.getElementById('admin-password-input').value;
   if (pw === ADMIN_PASSWORD) {
@@ -864,15 +1125,19 @@ function checkAdminLogin() {
     document.getElementById('admin-password-input').focus();
   }
 }
-
 function logoutAdmin() {
   adminLoggedIn = false;
   adminSidebarOpen = false;
   document.getElementById('admin-sidebar').classList.remove('open');
   document.getElementById('admin-toggle-btn').classList.remove('active');
   document.getElementById('admin-toggle-btn').textContent = '🔒 Admin';
+  // Disable admin reply mode
+  adminChatbotReplyEnabled = false;
+  document.getElementById('admin-chatbot-reply').classList.remove('visible');
+  document.getElementById('admin-mode-badge').style.display = 'none';
+  const tog = document.getElementById('toggle-admin-reply');
+  if (tog) tog.checked = false;
 }
-
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(m => {
   m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
@@ -906,10 +1171,10 @@ function setStream() {
     box.appendChild(iframe);
   }
   if (label) document.getElementById('match-label-display').textContent = label;
-  startViewerSimulation();
+  streamStartTime = Date.now();
   document.getElementById('stats-section').style.display = 'block';
+  if (!streamDurationInterval) streamDurationInterval = setInterval(updateDuration, 1000);
 }
-
 function stopStream() {
   const old = document.getElementById('active-player');
   if (old) old.remove();
@@ -918,46 +1183,15 @@ function stopStream() {
   document.getElementById('stream-info-bar').style.display = 'none';
   const badge = document.getElementById('live-status-badge');
   badge.className='live-no-stream-badge'; badge.textContent='HORS LIGNE';
-  stopViewerSimulation();
+  streamStartTime = null;
   document.getElementById('stats-section').style.display = 'none';
-}
-
-/* ═══ VIEWER STATS ═══ */
-function startViewerSimulation() {
-  streamStartTime = Date.now();
-  viewerCount = Math.floor(Math.random()*40)+15;
-  peakViewers = viewerCount; totalJoins = viewerCount;
-  updateViewerDisplay();
-  viewerInterval = setInterval(() => {
-    const delta = Math.floor(Math.random()*11)-5;
-    viewerCount = Math.max(1, viewerCount+delta);
-    if (Math.random()>.85) { const n=Math.floor(Math.random()*3)+1; totalJoins+=n; viewerCount+=n; }
-    if (viewerCount>peakViewers) peakViewers=viewerCount;
-    updateViewerDisplay();
-    document.getElementById('chat-online-count').textContent = viewerCount+' en ligne';
-  }, 4000);
-  durationInterval = setInterval(updateDuration, 1000);
-}
-function stopViewerSimulation() {
-  clearInterval(viewerInterval); clearInterval(durationInterval);
-  viewerInterval=null; durationInterval=null; viewerCount=0;
-  document.getElementById('public-viewer-count').textContent='--';
-  document.getElementById('chat-online-count').textContent='0 en ligne';
-}
-function updateViewerDisplay() {
-  document.getElementById('stat-current').textContent=viewerCount;
-  document.getElementById('stat-peak').textContent=peakViewers;
-  document.getElementById('stat-joins').textContent=totalJoins;
-  document.getElementById('public-viewer-count').textContent=viewerCount;
+  if (streamDurationInterval) { clearInterval(streamDurationInterval); streamDurationInterval=null; }
+  document.getElementById('stat-duration').textContent = '00:00';
 }
 function updateDuration() {
   if (!streamStartTime) return;
   const e=Math.floor((Date.now()-streamStartTime)/1000);
-  document.getElementById('stat-duration').textContent=Math.floor(e/60).toString().padStart(2,'0')+':'+( e%60).toString().padStart(2,'0');
-}
-function resetStats() {
-  viewerCount=0; peakViewers=0; totalJoins=0; streamStartTime=Date.now();
-  updateViewerDisplay();
+  document.getElementById('stat-duration').textContent=Math.floor(e/60).toString().padStart(2,'0')+':'+(e%60).toString().padStart(2,'0');
 }
 
 /* ═══ COUNTDOWN ═══ */
@@ -1020,29 +1254,26 @@ function renderPlanning() {
   const adminList = document.getElementById('admin-planning-list');
   const publicGrid = document.getElementById('planning-public-grid');
   if (!planningMatches.length) {
-    adminList.innerHTML='';
+    adminList.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun match planifié.</div>';
     publicGrid.innerHTML='<div class="planning-empty">Aucun match planifié pour le moment. Restez connectés !</div>';
     return;
   }
   adminList.innerHTML = planningMatches.map(m => {
     const d = new Date(m.date);
-    const now = new Date();
-    const isLive = Math.abs(d - now) < 7200000 && d < now + 7200000;
-    const dateStr = d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'}) + ' — ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-    return `<div class="planning-item">
-      <div class="planning-item-disc${isLive?' live':''}"></div>
-      <div class="planning-item-info">
-        <div class="planning-item-match">${m.match}</div>
-        <div class="planning-item-date">${dateStr}${m.comp?' · '+m.comp:''}</div>
-        ${m.discord?'<div class="planning-item-discord">📡 Discord</div>':''}
+    const isLive = Math.abs(d - Date.now()) < 7200000 && d < Date.now() + 7200000;
+    const dateStr = d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'}) + ' ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    return `<div class="plan-item">
+      <div class="plan-item-dot${isLive?' live':''}"></div>
+      <div class="plan-item-info">
+        <div class="plan-item-match">${m.match}</div>
+        <div class="plan-item-date">${dateStr}${m.comp?' · '+m.comp:''}</div>
       </div>
-      <button class="planning-delete" onclick="removePlanningMatch(${m.id})">✕</button>
+      <button class="plan-item-delete" onclick="removePlanningMatch(${m.id})">✕</button>
     </div>`;
   }).join('');
   publicGrid.innerHTML = planningMatches.map(m => {
     const d = new Date(m.date);
-    const now = new Date();
-    const isLive = Math.abs(d-now)<7200000;
+    const isLive = Math.abs(d-Date.now())<7200000;
     const dateStr = d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}) + ' à ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
     return `<div class="planning-public-card${isLive?' is-live':''}">
       <div class="planning-card-top">
@@ -1054,7 +1285,7 @@ function renderPlanning() {
           <div class="planning-card-date">${dateStr}</div>
           ${m.comp?`<div style="font-size:11px;color:var(--muted);margin-top:2px;">${m.comp}</div>`:''}
         </div>
-        ${m.discord?`<a href="https://discord.gg/ftzf" class="planning-card-discord" target="_blank"><svg width="14" height="11" viewBox="0 0 18 14" fill="currentColor"><path d="M15.25 1.18A14.8 14.8 0 0 0 11.56 0c-.17.3-.36.7-.49 1.02a13.7 13.7 0 0 0-4.14 0A10.8 10.8 0 0 0 6.44 0 14.85 14.85 0 0 0 2.74 1.18 15.73 15.73 0 0 0 .02 11.36a14.94 14.94 0 0 0 4.57 2.31c.37-.5.7-1.04.98-1.6a9.7 9.7 0 0 1-1.54-.74c.13-.09.25-.19.37-.28a10.65 10.65 0 0 0 9.2 0c.12.1.25.19.37.28-.49.29-1 .54-1.54.74.28.56.61 1.1.98 1.6a14.9 14.9 0 0 0 4.57-2.31 15.7 15.7 0 0 0-2.73-10.18ZM6.01 9.28c-.89 0-1.63-.82-1.63-1.83s.72-1.84 1.63-1.84 1.65.83 1.63 1.84c0 1.01-.72 1.83-1.63 1.83Zm5.98 0c-.89 0-1.63-.82-1.63-1.83s.72-1.84 1.63-1.84 1.65.83 1.63 1.84c0 1.01-.72 1.83-1.63 1.83Z"/></svg> Discord</a>`:''}
+        ${m.discord?`<a href="https://discord.gg/ftzf" class="planning-card-discord" target="_blank">Discord</a>`:''}
       </div>
     </div>`;
   }).join('');
@@ -1069,7 +1300,7 @@ function toggleLiveChat(enabled) {
     overlay.style.display='none';
     inputs.style.display='flex';
     if (pinnedMsg) appendLiveChatMsg('system','',`📌 ${pinnedMsg}`,'');
-    appendLiveChatMsg('system','','🟢 Chat activé par l\'admin. Bienvenue !','');
+    appendLiveChatMsg('system','','🟢 Chat activé. Bienvenue !','');
   } else {
     overlay.style.display='flex';
     inputs.style.display='none';
@@ -1077,20 +1308,28 @@ function toggleLiveChat(enabled) {
 }
 
 function appendLiveChatMsg(type, username, text, time, allowBan=false) {
-  if (type !== 'system' && bannedUsers[username]) return;
+  if (type !== 'system' && type !== 'admin' && bannedUsers[username]) return;
   const area = document.getElementById('live-chat-msgs');
   const div = document.createElement('div');
-  div.className = 'chat-msg' + (type==='system'?' system':'');
+  div.className = 'chat-msg' + (type==='system'?' system':'') + (type==='admin'?' admin-reply':'');
   div.dataset.username = username;
   if (type === 'system') {
     div.innerHTML = `<div class="chat-msg-text">${text}</div>`;
+  } else if (type === 'admin') {
+    div.innerHTML = `
+      <div class="chat-msg-header">
+        <div class="chat-msg-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">👑</div>
+        <span class="chat-msg-username" style="color:#fbbf24;">Admin FZF</span>
+        <span class="chat-msg-time">${time}</span>
+      </div>
+      <div class="chat-msg-text">${text}</div>`;
   } else {
     const color = chatColors[Math.abs(username.split('').reduce((a,c)=>a+c.charCodeAt(0),0)) % chatColors.length];
     const initial = username.charAt(0).toUpperCase() || '?';
     const adminActions = adminLoggedIn && allowBan ? `
       <div class="chat-msg-admin-actions">
         <button class="btn-ban-msg" onclick="openBanModal('${username.replace(/'/g,"\\'")}',this.closest('.chat-msg'))">🚫 Bannir</button>
-        <button class="btn-del-msg" onclick="this.closest('.chat-msg').remove()">🗑 Supprimer</button>
+        <button class="btn-del-msg" onclick="this.closest('.chat-msg').remove()">🗑</button>
       </div>` : '';
     div.innerHTML = `
       <div class="chat-msg-header">
@@ -1103,6 +1342,8 @@ function appendLiveChatMsg(type, username, text, time, allowBan=false) {
   }
   area.appendChild(div);
   area.scrollTop = area.scrollHeight;
+  chatMsgCount++;
+  document.getElementById('tools-chat-msgs').textContent = chatMsgCount;
 }
 
 function sendLiveMsg() {
@@ -1137,6 +1378,24 @@ function sendLiveMsg() {
   }
 }
 
+/* Admin reply in live chat */
+function sendAdminLiveReply() {
+  if (!adminLoggedIn) return;
+  const msg = document.getElementById('admin-live-reply-input').value.trim();
+  if (!msg) return;
+  document.getElementById('admin-live-reply-input').value='';
+  const now = new Date();
+  const time = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  appendLiveChatMsg('admin','Admin',msg,time,false);
+}
+
+function clearLiveChat() {
+  if (!confirm('Vider tout le chat ?')) return;
+  document.getElementById('live-chat-msgs').innerHTML='<div class="chat-msg system"><div class="chat-msg-text">💬 Chat vidé par l\'admin.</div></div>';
+  chatMsgCount = 0;
+  document.getElementById('tools-chat-msgs').textContent = '0';
+}
+
 /* ═══ BAN SYSTEM ═══ */
 function openBanModal(username, msgEl) {
   if (!adminLoggedIn) return;
@@ -1153,35 +1412,26 @@ function selectBanReason(el, reason) {
   el.classList.add('selected');
 }
 function confirmBan() {
-  if (!pendingBanUsername) return;
-  if (!selectedBanReason) { alert('Sélectionne une raison.'); return; }
+  if (!pendingBanUsername || !selectedBanReason) { alert('Sélectionne une raison.'); return; }
   bannedUsers[pendingBanUsername] = selectedBanReason;
   if (pendingBanMsgEl) pendingBanMsgEl.style.opacity='0.3';
   closeModal('modal-ban');
   renderBanList();
   showBanToast(pendingBanUsername);
-  appendLiveChatMsg('system','',`🚫 ${pendingBanUsername} a été banni du chat (${selectedBanReason}).`,'');
+  appendLiveChatMsg('system','',`🚫 ${pendingBanUsername} a été banni (${selectedBanReason}).`,'');
   pendingBanUsername=''; pendingBanMsgEl=null;
 }
 function renderBanList() {
   const list = document.getElementById('ban-list-admin');
   const keys = Object.keys(bannedUsers);
-  if (!keys.length) { list.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:12px;">Aucun utilisateur banni.</div>'; return; }
+  if (!keys.length) { list.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun utilisateur banni.</div>'; return; }
   list.innerHTML = keys.map(u => `<div class="ban-item">
     <div><div class="ban-item-name">🚫 ${u}</div><div class="ban-item-reason">${bannedUsers[u]}</div></div>
     <button class="btn-unban" onclick="unban('${u}')">Débannir</button>
   </div>`).join('');
 }
-function unban(username) {
-  delete bannedUsers[username];
-  renderBanList();
-  appendLiveChatMsg('system','',`✅ ${username} a été débanni.`,'');
-}
-function clearAllBans() {
-  if (!confirm('Supprimer tous les bans ?')) return;
-  bannedUsers={};
-  renderBanList();
-}
+function unban(username) { delete bannedUsers[username]; renderBanList(); }
+function clearAllBans() { if (!confirm('Supprimer tous les bans ?')) return; bannedUsers={}; renderBanList(); }
 function showBanToast(username) {
   const t = document.getElementById('ban-toast');
   t.textContent = `🚫 ${username} banni du chat`;
@@ -1189,7 +1439,7 @@ function showBanToast(username) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-/* ═══ PINNED MSG & ANNOUNCE ═══ */
+/* ═══ PINNED + ANNOUNCE ═══ */
 function setPinnedMsg() {
   const msg = document.getElementById('pinned-msg-input').value.trim();
   if (!msg) return;
@@ -1211,6 +1461,29 @@ function toggleChatbot(enabled) {
   if (!enabled && chatOpen) toggleChat();
 }
 
+/* ═══ ADMIN CHATBOT REPLY MODE ═══ */
+function toggleAdminChatbotReply(enabled) {
+  adminChatbotReplyEnabled = enabled;
+  document.getElementById('admin-chatbot-reply').classList.toggle('visible', enabled);
+  document.getElementById('admin-mode-badge').style.display = enabled ? 'inline-flex' : 'none';
+  if (enabled && !chatOpen) toggleChat();
+}
+function sendAdminChatbotReply() {
+  if (!adminLoggedIn) return;
+  const msg = document.getElementById('admin-chatbot-reply-input').value.trim();
+  if (!msg) return;
+  document.getElementById('admin-chatbot-reply-input').value='';
+  appendChatbotAdminMsg(msg);
+}
+function appendChatbotAdminMsg(text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg-admin';
+  div.innerHTML = `<span class="msg-label admin-label">👑 Admin FZF</span>${text.replace(/\n/g,'<br>')}`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
 /* ═══ REVIEWS ═══ */
 let selectedRating = 0;
 function setRating(n) {
@@ -1221,15 +1494,14 @@ function submitReview() {
   const name=document.getElementById('review-name').value.trim();
   const text=document.getElementById('review-text').value.trim();
   const plan=document.getElementById('review-plan').value;
-  if(!name) { alert('Entre ton prénom.'); return; }
-  if(!text) { alert('Écris ton avis.'); return; }
-  if(!selectedRating) { alert('Donne une note.'); return; }
+  if(!name){alert('Entre ton prénom.');return;}
+  if(!text){alert('Écris ton avis.');return;}
+  if(!selectedRating){alert('Donne une note.');return;}
   const stars='⭐'.repeat(selectedRating);
   const colors=['linear-gradient(135deg,#2563eb,#60a5fa)','linear-gradient(135deg,#dc2626,#f87171)','linear-gradient(135deg,#22c55e,#4ade80)','linear-gradient(135deg,#f59e0b,#fbbf24)','linear-gradient(135deg,#8b5cf6,#a78bfa)'];
   const color=colors[Math.floor(Math.random()*colors.length)];
   const card=document.createElement('div');
-  card.className='review-card';
-  card.style.animation='msg-in 0.4s ease';
+  card.className='review-card';card.style.animation='msg-in 0.4s ease';
   card.innerHTML=`<div class="review-stars">${stars}</div><p class="review-text">"${text}"</p><div class="review-author"><div class="review-avatar" style="background:${color};">${name.charAt(0).toUpperCase()}</div><div><div class="review-name">${name}</div><div class="review-plan">${plan}</div></div></div>`;
   document.getElementById('reviews-grid').insertBefore(card,document.getElementById('reviews-grid').firstChild);
   const wrapper=document.getElementById('review-form-wrapper');
@@ -1238,25 +1510,26 @@ function submitReview() {
   setTimeout(()=>{
     document.getElementById('review-success').style.display='none';
     wrapper.querySelectorAll('h4,p,.star-rating-label,.star-input,.form-row,.form-group,.btn-submit-review').forEach(el=>el.style.display='');
-    document.getElementById('review-name').value='';
-    document.getElementById('review-text').value='';
-    selectedRating=0;
-    for(let i=1;i<=5;i++) document.getElementById('star-'+i).classList.remove('active');
+    document.getElementById('review-name').value='';document.getElementById('review-text').value='';
+    selectedRating=0;for(let i=1;i<=5;i++)document.getElementById('star-'+i).classList.remove('active');
   },3500);
 }
 
-/* ═══ CHATBOT IA — CLAUDE API ═══ */
+/* ═══ CHATBOT IA ═══ */
 const FZF_SYSTEM = `Tu es le bot officiel de Football Zone France (FZF), un service IPTV et streaming foot français.
-Réponds toujours en français, de façon sympathique, concise et enthousiaste.
-Contexte :
-- Plan Starter : 10€ pour 3 mois (Ligue 1, C1, PL, Liga, Serie A, Bundesliga)
+Réponds TOUJOURS en français. Sois sympathique, concis, enthousiaste et direct.
+INFORMATIONS CLÉS :
+- Plan Starter : 10€ pour 3 mois — Ligue 1, C1, Premier League, Liga, Serie A, Bundesliga
 - Plan À Vie : 35€ paiement unique, tout illimité à vie, Coupe du Monde & Euros inclus
-- Commande via Discord : discord.gg/ftzf
-- Paiement : PayPal ou virement
+- Commande via Discord uniquement : discord.gg/ftzf
+- Paiement : PayPal ou virement bancaire
 - Activation sous 24h après paiement
-- Compatible : Smart TV, Android TV, Firestick, Apple TV, smartphone, tablette, PC (apps : Tivimate, IPTV Smarters, GSE IPTV)
-- Support Discord 7j/7, serveur backup inclus
-Sois bref (max 4-5 lignes). Utilise des emojis pertinents. Pour commander, dirige vers discord.gg/ftzf.`;
+- Appareils compatibles : Smart TV, Android TV, Firestick, Apple TV, smartphone, tablette, PC
+- Apps recommandées : Tivimate, IPTV Smarters Pro, GSE IPTV
+- Support Discord 7j/7
+- Serveur backup inclus dans tous les plans
+- Pas d'essai gratuit disponible, mais plan Starter accessible à 10€
+RÈGLES : Sois bref (max 4 lignes). Utilise des emojis pertinents. Pour commander → discord.gg/ftzf.`;
 
 function toggleChat() {
   if (!chatbotEnabled) return;
@@ -1267,11 +1540,19 @@ function toggleChat() {
   document.getElementById('chat-notif').style.display = 'none';
   if (chatOpen) setTimeout(() => document.getElementById('chat-input').focus(), 300);
 }
-function appendMessage(text, isUser) {
+function appendBotMessage(text) {
   const msgs = document.getElementById('chat-messages');
   const div = document.createElement('div');
-  div.className = isUser ? 'msg-user' : 'msg-bot';
-  div.innerHTML = text.replace(/\n/g,'<br>');
+  div.className = 'msg-bot';
+  div.innerHTML = `<span class="msg-label bot-label">🤖 Bot IA</span>${text.replace(/\n/g,'<br>')}`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+function appendUserMessage(text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg-user';
+  div.textContent = text;
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
 }
@@ -1280,10 +1561,9 @@ function showLoadingMsg() {
   const div = document.createElement('div');
   div.className='msg-loading'; div.id='loading-msg';
   div.innerHTML='<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
+  msgs.appendChild(div); msgs.scrollTop=msgs.scrollHeight;
 }
-function removeLoadingMsg() { const el=document.getElementById('loading-msg'); if(el) el.remove(); }
+function removeLoadingMsg() { const el=document.getElementById('loading-msg'); if(el)el.remove(); }
 
 async function sendToClaudeAPI(userMessage) {
   chatHistory.push({ role: 'user', content: userMessage });
@@ -1304,13 +1584,13 @@ async function sendToClaudeAPI(userMessage) {
     if (data.content && data.content[0] && data.content[0].text) {
       const reply = data.content[0].text;
       chatHistory.push({ role: 'assistant', content: reply });
-      appendMessage(reply, false);
+      appendBotMessage(reply);
     } else {
-      appendMessage('Désolé, une erreur est survenue. Essaie de reformuler ta question ! 😅', false);
+      appendBotMessage('Désolé, une erreur est survenue. Reformule ta question ! 😅');
     }
   } catch (err) {
     removeLoadingMsg();
-    appendMessage('Connexion impossible à l\'IA. Pour toute question, rejoins notre Discord → <strong>discord.gg/ftzf</strong> 💬', false);
+    appendBotMessage('Connexion IA impossible. Contacte-nous sur <strong>discord.gg/ftzf</strong> 💬');
   }
 }
 function sendChat() {
@@ -1318,13 +1598,13 @@ function sendChat() {
   const msg = input.value.trim();
   if (!msg) return;
   input.value='';
-  appendMessage(msg, true);
-  document.getElementById('quick-btns').style.display='none';
+  appendUserMessage(msg);
+  document.getElementById('quick-section').style.display='none';
   sendToClaudeAPI(msg);
 }
 function quickAsk(question) {
-  appendMessage(question, true);
-  document.getElementById('quick-btns').style.display='none';
+  appendUserMessage(question);
+  document.getElementById('quick-section').style.display='none';
   sendToClaudeAPI(question);
 }
 </script>
