@@ -29,7 +29,6 @@
     }
     body { font-family: 'Barlow', sans-serif; background: var(--dark); color: var(--text); overflow-x: hidden; transition: background 0.3s, color 0.3s; }
 
-    /* NAV */
     nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--nav-bg); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(37,99,235,0.2); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; transition: background 0.3s; }
     .nav-logo { display: flex; align-items: center; gap: 12px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; color: var(--text); text-decoration: none; cursor: pointer; }
     .nav-logo img { width: 40px; height: 40px; object-fit: contain; }
@@ -47,11 +46,9 @@
     .nav-discord { display: inline-flex; align-items: center; gap: 8px; padding: 9px 20px; border-radius: 10px; font-size: 14px; font-weight: 700; text-decoration: none; color: white; background: #5865F2; transition: 0.2s; }
     .nav-discord:hover { background: #4752c4; transform: scale(1.04); }
 
-    /* PAGES */
     .page { display: none; }
     .page.active { display: block; }
 
-    /* HERO */
     #page-home { min-height: 100vh; padding-top: 64px; }
     .hero { position: relative; min-height: calc(100vh - 64px); display: flex; justify-content: center; align-items: center; text-align: center; padding: 40px; background: url("banner.png") center center/cover no-repeat; }
     .hero::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.72); backdrop-filter: blur(2px); }
@@ -75,27 +72,16 @@
     footer { background:#000814; padding:30px; text-align:center; color:var(--muted); font-size:14px; }
     [data-theme="light"] footer { background:#0f172a; }
 
-    /* ═══ ADMIN SIDEBAR ═══ */
+    /* ADMIN SIDEBAR */
     #page-live { padding-top: 64px; min-height: 100vh; background: var(--dark); }
     .live-main-layout { display: flex; min-height: calc(100vh - 64px); }
-
-    .admin-sidebar {
-      width: 0; overflow: hidden; background: var(--admin-bg);
-      border-right: 1px solid var(--admin-border);
-      transition: width 0.35s cubic-bezier(0.4,0,0.2,1);
-      flex-shrink: 0; display: flex; flex-direction: column;
-    }
+    .admin-sidebar { width: 0; overflow: hidden; background: var(--admin-bg); border-right: 1px solid var(--admin-border); transition: width 0.35s cubic-bezier(0.4,0,0.2,1); flex-shrink: 0; display: flex; flex-direction: column; }
     .admin-sidebar.open { width: 380px; overflow-y: auto; overflow-x: hidden; }
     .admin-sidebar::-webkit-scrollbar { width: 3px; }
     .admin-sidebar::-webkit-scrollbar-thumb { background: rgba(37,99,235,0.3); border-radius: 3px; }
-
-    /* Sidebar en mode Fondateur */
     .admin-sidebar.founder-mode { border-right-color: rgba(168,85,247,0.35); }
     .admin-sidebar.founder-mode .admin-header { background: linear-gradient(135deg, rgba(168,85,247,0.18), rgba(168,85,247,0.06)); border-bottom-color: rgba(168,85,247,0.25); }
-
     .live-content-area { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-
-    /* Admin header */
     .admin-header { padding: 20px 20px 16px; background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(37,99,235,0.05)); border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between; }
     .admin-header-left { display: flex; flex-direction: column; gap: 3px; }
     .admin-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; color: #60a5fa; }
@@ -105,8 +91,6 @@
     .admin-status-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
     .founder-status-pill { display: flex; align-items: center; gap: 6px; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 700; color: #c084fc; }
     .founder-status-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #c084fc; animation: pulse-dot 2s infinite; }
-
-    /* Admin tabs */
     .admin-tabs { display: flex; border-bottom: 1px solid var(--admin-border); background: var(--admin-bg); position: sticky; top: 0; z-index: 5; flex-wrap: wrap; }
     .admin-tab { flex: 1; padding: 11px 4px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; border: none; background: transparent; color: var(--muted); font-family: 'Barlow', sans-serif; transition: 0.2s; border-bottom: 2px solid transparent; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 50px; }
     .admin-tab .tab-icon { font-size: 15px; }
@@ -114,27 +98,18 @@
     .admin-tab.active { color: #60a5fa; border-bottom-color: #2563eb; background: rgba(37,99,235,0.08); }
     .admin-tab.founder-tab { color: rgba(168,85,247,0.6); }
     .admin-tab.founder-tab.active { color: #c084fc; border-bottom-color: #a855f7; background: rgba(168,85,247,0.1); }
-
-    /* Admin panels */
     .admin-panel { display: none; flex-direction: column; gap: 0; }
     .admin-panel.active { display: flex; }
-
-    /* Admin sections */
     .a-section { padding: 16px 18px; border-bottom: 1px solid var(--admin-border); }
     .a-section:last-child { border-bottom: none; }
     .a-section-title { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
     .a-section-title .dot { width: 3px; height: 3px; border-radius: 50%; background: #2563eb; }
     .a-section-title .dot-purple { width: 3px; height: 3px; border-radius: 50%; background: #a855f7; }
-
-    /* Form elements */
     .a-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
     .a-input { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--admin-border); background: var(--admin-input-bg); color: var(--text); font-size: 13px; font-family: 'Barlow', sans-serif; outline: none; transition: border-color 0.2s; margin-bottom: 8px; }
     .a-input:focus { border-color: #2563eb; background: rgba(37,99,235,0.05); }
     .a-input::placeholder { color: rgba(148,163,184,0.5); }
     .a-input.founder-input:focus { border-color: #a855f7; background: rgba(168,85,247,0.05); }
-    .a-field { margin-bottom: 8px; }
-
-    /* Buttons */
     .a-btn { padding: 9px 14px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; white-space: nowrap; letter-spacing: 0.3px; }
     .a-btn-primary { background: #2563eb; color: white; }
     .a-btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
@@ -146,15 +121,11 @@
     .a-btn-purple:hover { background: #6d28d9; }
     .a-btn-founder { background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; }
     .a-btn-founder:hover { background: linear-gradient(135deg, #6d28d9, #9333ea); transform: translateY(-1px); box-shadow: 0 4px 15px rgba(168,85,247,0.4); }
-    .a-btn-founder-danger { background: transparent; border: 1px solid rgba(220,38,38,0.5); color: #f87171; }
-    .a-btn-founder-danger:hover { background: rgba(220,38,38,0.15); }
     .a-btn-ghost { background: var(--admin-input-bg); border: 1px solid var(--admin-border); color: var(--text); }
     .a-btn-ghost:hover { border-color: rgba(37,99,235,0.4); }
     .a-btn-full { width: 100%; padding: 10px; border-radius: 8px; border: none; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; }
     .a-btn-row { display: flex; gap: 7px; }
     .a-btn-row .a-btn { flex: 1; }
-
-    /* Toggle switch */
     .a-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
     .a-toggle-row:last-child { border-bottom: none; padding-bottom: 0; }
     .a-toggle-info { flex: 1; padding-right: 12px; }
@@ -166,14 +137,10 @@
     .toggle-slider::before { content: ""; position: absolute; left: 3px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: white; transition: 0.3s; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
     .toggle-switch input:checked + .toggle-slider { background: #2563eb; border-color: #3b82f6; }
     .toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); }
-
-    /* Stats grid */
     .stats-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .stat-card { background: var(--admin-input-bg); border: 1px solid var(--admin-border); border-radius: 10px; padding: 12px; text-align: center; }
     .stat-card-num { font-family: 'Bebas Neue', sans-serif; font-size: 30px; line-height: 1; margin-bottom: 2px; }
     .stat-card-label { font-size: 9px; font-weight: 800; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; }
-
-    /* Planning items */
     .plan-item { background: var(--admin-input-bg); border: 1px solid var(--admin-border); border-radius: 9px; padding: 10px 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
     .plan-item-dot { width: 8px; height: 8px; border-radius: 50%; background: #5865F2; flex-shrink: 0; }
     .plan-item-dot.live { background: var(--red); animation: pulse-dot 1.5s infinite; }
@@ -182,52 +149,22 @@
     .plan-item-date { font-size: 11px; color: var(--muted); margin-top: 1px; }
     .plan-item-delete { background: none; border: none; color: rgba(148,163,184,0.4); cursor: pointer; font-size: 14px; padding: 3px 7px; border-radius: 5px; transition: 0.2s; flex-shrink: 0; }
     .plan-item-delete:hover { color: #f87171; background: rgba(220,38,38,0.1); }
-
-    /* Ban items */
     .ban-item { background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.15); border-radius: 8px; padding: 9px 12px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
     .ban-item-name { font-size: 13px; font-weight: 700; color: #f87171; }
     .ban-item-reason { font-size: 11px; color: var(--muted); margin-top: 1px; }
     .btn-unban { background: none; border: 1px solid rgba(34,197,94,0.3); color: #4ade80; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-family: 'Barlow', sans-serif; }
     .btn-unban:hover { background: rgba(34,197,94,0.1); }
-
-    /* Admin footer */
     .admin-footer { padding: 14px 18px; border-top: 1px solid var(--admin-border); margin-top: auto; display: flex; align-items: center; justify-content: space-between; background: var(--admin-bg); position: sticky; bottom: 0; }
     .admin-logged-as { font-size: 12px; color: #4ade80; display: flex; align-items: center; gap: 6px; }
     .admin-logged-as::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
     .founder-logged-as { font-size: 12px; color: #c084fc; display: flex; align-items: center; gap: 6px; }
     .founder-logged-as::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #c084fc; animation: pulse-dot 2s infinite; }
-
-    /* ═══ PANNEAU FONDATEUR ═══ */
-    .founder-panel-wrapper {
-      background: var(--founder-bg);
-      border: 1px solid var(--founder-border);
-      border-radius: 12px;
-      margin: 12px;
-      overflow: hidden;
-    }
-    .founder-panel-header {
-      background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(168,85,247,0.06));
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 1px solid rgba(168,85,247,0.2);
-    }
+    .founder-panel-wrapper { background: var(--founder-bg); border: 1px solid var(--founder-border); border-radius: 12px; margin: 12px; overflow: hidden; }
+    .founder-panel-header { background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(168,85,247,0.06)); padding: 12px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(168,85,247,0.2); }
     .founder-crown { font-size: 20px; }
     .founder-panel-title { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; color: #c084fc; }
     .founder-panel-subtitle { font-size: 10px; color: rgba(168,85,247,0.7); font-weight: 700; letter-spacing: 0.5px; }
-
-    /* Staff connecté */
-    .staff-item {
-      background: rgba(37,99,235,0.07);
-      border: 1px solid rgba(37,99,235,0.15);
-      border-radius: 9px;
-      padding: 10px 12px;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .staff-item { background: rgba(37,99,235,0.07); border: 1px solid rgba(37,99,235,0.15); border-radius: 9px; padding: 10px 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
     .staff-item-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #60a5fa); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: white; flex-shrink: 0; }
     .staff-item-info { flex: 1; min-width: 0; }
     .staff-item-name { font-size: 13px; font-weight: 700; color: var(--text); }
@@ -241,22 +178,8 @@
     .revoked-badge { font-size: 10px; font-weight: 800; background: rgba(220,38,38,0.15); border: 1px solid rgba(220,38,38,0.3); color: #f87171; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.5px; white-space: nowrap; }
     .btn-restore { background: none; border: 1px solid rgba(34,197,94,0.3); color: #4ade80; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 5px; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; }
     .btn-restore:hover { background: rgba(34,197,94,0.1); }
-
-    /* Visiteurs réels (admin only) */
-    .real-visitors-panel {
-      background: rgba(16,185,129,0.05);
-      border: 1px solid rgba(16,185,129,0.2);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .real-visitors-header {
-      background: rgba(16,185,129,0.1);
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(16,185,129,0.15);
-    }
+    .real-visitors-panel { background: rgba(16,185,129,0.05); border: 1px solid rgba(16,185,129,0.2); border-radius: 10px; overflow: hidden; }
+    .real-visitors-header { background: rgba(16,185,129,0.1); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(16,185,129,0.15); }
     .real-visitors-title { font-size: 11px; font-weight: 800; color: #34d399; letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
     .real-count-badge { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #4ade80; }
     .real-visitor-item { padding: 8px 14px; border-bottom: 1px solid rgba(16,185,129,0.08); display: flex; align-items: center; gap: 8px; font-size: 12px; }
@@ -266,16 +189,8 @@
     .real-visitor-time { color: var(--muted); font-size: 11px; }
     .real-visitor-device { font-size: 14px; }
 
-    /* ═══ NOTIFICATIONS PUSH ═══ */
-    .notif-cta-bar {
-      background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(168,85,247,0.08));
-      border-bottom: 1px solid rgba(37,99,235,0.2);
-      padding: 10px 28px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
+    /* NOTIFICATIONS PUSH */
+    .notif-cta-bar { background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(168,85,247,0.08)); border-bottom: 1px solid rgba(37,99,235,0.2); padding: 10px 28px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
     .notif-cta-text { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; display: flex; align-items: center; gap: 8px; }
     .notif-cta-text .bell { font-size: 18px; }
     .btn-notif-enable { padding: 8px 20px; border-radius: 9px; border: none; background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
@@ -284,34 +199,53 @@
     .btn-notif-dismiss:hover { color: var(--text); }
     .notif-enabled-pill { display: flex; align-items: center; gap: 7px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); border-radius: 20px; padding: 7px 16px; font-size: 13px; font-weight: 700; color: #4ade80; }
     .notif-enabled-pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
-
-    /* Admin notif section */
     .notif-admin-section { background: rgba(37,99,235,0.06); border: 1px solid rgba(37,99,235,0.15); border-radius: 9px; padding: 12px; }
     .notif-admin-stats { display: flex; gap: 10px; margin-top: 10px; }
     .notif-stat { flex: 1; background: var(--admin-input-bg); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid var(--admin-border); }
     .notif-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: #60a5fa; }
     .notif-stat-label { font-size: 9px; font-weight: 800; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
 
-    /* Toast notification */
-    .push-preview-toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-120px); background: var(--dark2); border: 1px solid rgba(37,99,235,0.4); border-radius: 14px; padding: 14px 20px; z-index: 999; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); width: 340px; max-width: calc(100vw - 40px); box-shadow: 0 20px 60px rgba(0,0,0,0.5); display: flex; align-items: flex-start; gap: 12px; }
-    .push-preview-toast.show { transform: translateX(-50%) translateY(0); }
+    /* FIX: Toast notification — position fixe, disparaît correctement */
+    .push-preview-toast {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-200px);
+      background: var(--dark2);
+      border: 1px solid rgba(37,99,235,0.4);
+      border-radius: 14px;
+      padding: 14px 20px;
+      z-index: 9999;
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+      width: 340px;
+      max-width: calc(100vw - 40px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .push-preview-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
     .push-preview-icon { font-size: 28px; flex-shrink: 0; }
     .push-preview-content { flex: 1; }
     .push-preview-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 3px; }
     .push-preview-body { font-size: 12px; color: var(--muted); line-height: 1.5; }
     .push-preview-source { font-size: 10px; color: rgba(37,99,235,0.8); font-weight: 700; margin-top: 4px; letter-spacing: 0.5px; text-transform: uppercase; }
-    .push-preview-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; flex-shrink: 0; line-height: 1; }
+    .push-preview-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; flex-shrink: 0; line-height: 1; padding: 2px 6px; border-radius: 4px; transition: 0.2s; }
+    .push-preview-close:hover { background: rgba(255,255,255,0.1); color: var(--text); }
 
-    /* ═══ LIVE TOPBAR ═══ */
+    /* LIVE TOPBAR */
     .live-topbar { background: var(--dark2); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; gap: 14px; transition: background 0.3s; flex-wrap: wrap; }
     .live-topbar-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; color: var(--text); display: flex; align-items: center; gap: 12px; flex: 1; }
     .live-badge { background: var(--red); padding: 3px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; letter-spacing: 1px; animation: pulse-dot 1.5s infinite; }
     .live-no-stream-badge { background: var(--card-bg); border: 1px solid var(--border); padding: 3px 12px; border-radius: 6px; font-size: 12px; color: var(--muted); font-weight: 600; }
 
-    /* Site viewers pill - VISIBLE À TOUS */
-    .site-viewers-pill { display: flex; align-items: center; gap: 7px; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: #4ade80; }
-    .site-viewers-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
-    /* Le vrai compteur admin n'est visible qu'en mode admin */
+    /* Visiteurs réels — admin seulement */
     .real-viewers-pill { display: none; align-items: center; gap: 7px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: #10b981; }
     .real-viewers-pill.visible { display: flex; }
     .real-viewers-dot { width: 7px; height: 7px; border-radius: 50%; background: #10b981; animation: pulse-dot 1.5s infinite; }
@@ -349,7 +283,6 @@
     .btn-discord-chat { padding: 8px 16px; border-radius: 10px; border: none; background: #5865F2; color: white; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
     .btn-discord-chat:hover { background: #4752c4; }
 
-    /* Live layout */
     .live-layout { display: grid; grid-template-columns: 1fr 340px; gap: 18px; padding: 0 28px 28px; align-items: start; }
     @media(max-width:1100px){ .live-layout { grid-template-columns: 1fr; } }
 
@@ -377,8 +310,6 @@
     .btn-ban-msg:hover { background: rgba(220,38,38,0.15); }
     .btn-del-msg { font-size: 11px; padding: 2px 8px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: var(--muted); cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; }
     .btn-del-msg:hover { background: rgba(255,255,255,0.05); color: var(--text); }
-
-    /* Chat input */
     .chat-input-area { padding: 10px 12px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 7px; }
     .chat-name-row { display: flex; gap: 7px; }
     .chat-nickname-input { width: 120px; padding: 8px 11px; border-radius: 8px; border: 1px solid var(--border); background: var(--dark3); color: var(--text); font-size: 13px; font-family: 'Barlow', sans-serif; outline: none; }
@@ -392,16 +323,6 @@
     .chat-disabled-overlay .lock-icon { font-size: 36px; opacity: 0.5; }
     .pseudo-warning { font-size: 11px; color: #fbbf24; display: none; margin-top: 2px; }
     .pseudo-warning.show { display: block; }
-
-    /* Admin reply in chat */
-    .admin-reply-bar { padding: 8px 12px; background: rgba(251,191,36,0.08); border-top: 1px solid rgba(251,191,36,0.15); display: none; flex-direction: column; gap: 7px; }
-    .admin-reply-bar.visible { display: flex; }
-    .admin-reply-to { font-size: 11px; color: #fbbf24; font-weight: 700; display: flex; align-items: center; justify-content: space-between; }
-    .admin-reply-cancel { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; }
-    .admin-reply-row { display: flex; gap: 7px; }
-    .admin-reply-input { flex: 1; padding: 8px 11px; border-radius: 8px; border: 1px solid rgba(251,191,36,0.3); background: rgba(251,191,36,0.05); color: var(--text); font-size: 13px; font-family: 'Barlow', sans-serif; outline: none; }
-    .admin-reply-input:focus { border-color: #fbbf24; }
-    .admin-reply-send { padding: 8px 14px; border-radius: 8px; border: none; background: #f59e0b; color: black; font-size: 12px; font-weight: 800; cursor: pointer; font-family: 'Barlow', sans-serif; }
 
     /* Ban toast */
     .ban-toast { position: fixed; top: 80px; right: 24px; background: rgba(220,38,38,0.9); backdrop-filter: blur(10px); color: white; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 700; z-index: 999; transform: translateX(150%); transition: transform 0.3s; border: 1px solid rgba(255,255,255,0.1); }
@@ -424,7 +345,7 @@
     .planning-card-discord:hover { background: rgba(88,101,242,0.25); }
     .planning-empty { color: var(--muted); font-size: 14px; text-align: center; padding: 24px; }
 
-    /* ═══ MODAL ═══ */
+    /* MODAL */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
     .modal { background: var(--dark2); border: 1px solid rgba(37,99,235,0.3); border-radius: 20px; padding: 36px; max-width: 420px; width: 100%; }
@@ -446,8 +367,6 @@
     .ban-reason-chip:hover, .ban-reason-chip.selected { background: rgba(220,38,38,0.15); border-color: rgba(220,38,38,0.5); color: #f87171; }
     .btn-confirm-ban { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--red); color: white; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; }
     .btn-confirm-ban:hover { background: #b91c1c; }
-
-    /* Fondateur modal */
     .founder-modal { background: var(--founder-bg); border: 1px solid var(--founder-border); border-radius: 20px; padding: 36px; max-width: 420px; width: 100%; }
     .founder-modal h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1.5px; margin-bottom: 8px; color: #c084fc; }
     .founder-modal p { font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
@@ -456,7 +375,7 @@
     .btn-founder-login { flex: 1; padding: 12px; border-radius: 10px; border: none; background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Barlow', sans-serif; }
     .btn-founder-login:hover { box-shadow: 0 0 25px rgba(168,85,247,0.5); }
 
-    /* ═══ IPTV PAGE ═══ */
+    /* IPTV */
     #page-iptv { padding-top: 64px; min-height: 100vh; background: var(--dark); }
     .iptv-header { background: linear-gradient(135deg,#0f2a0f,#0a1a0a); border-bottom: 1px solid rgba(34,197,94,0.2); padding: 60px 40px; text-align: center; }
     [data-theme="light"] .iptv-header { background: linear-gradient(135deg,#dcfce7,#f0fdf4); border-color: rgba(34,197,94,0.3); }
@@ -527,7 +446,7 @@
     .faq-item h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
     .faq-item p { font-size: 14px; color: var(--muted); line-height: 1.7; }
 
-    /* ═══ CHATBOT ═══ */
+    /* CHATBOT */
     .chat-bubble-btn { position: fixed; bottom: 28px; right: 28px; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg,#4ade80,#22c55e); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 4px 30px rgba(34,197,94,0.5); z-index: 300; transition: 0.3s; animation: chat-bounce 3s ease-in-out infinite; }
     .chat-bubble-btn:hover { transform: scale(1.1); }
     .chat-bubble-btn.open { animation: none; background: linear-gradient(135deg,#f87171,#dc2626); }
@@ -579,6 +498,11 @@
     .admin-chatbot-reply-send { padding: 8px 16px; border-radius: 20px; border: none; background: #f59e0b; color: black; font-size: 12px; font-weight: 800; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; white-space: nowrap; }
     .admin-chatbot-reply-send:hover { background: #d97706; }
 
+    /* Indicateur de sync */
+    .sync-indicator { position: fixed; bottom: 100px; left: 20px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); border-radius: 20px; padding: 6px 12px; font-size: 11px; color: #4ade80; font-weight: 700; display: flex; align-items: center; gap: 6px; z-index: 50; opacity: 0; transition: opacity 0.5s; pointer-events: none; }
+    .sync-indicator.show { opacity: 1; }
+    .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse-dot 1s infinite; }
+
     @media(max-width:768px){
       h1{font-size:52px} .section h2,.discord-section h2,.iptv-header h2{font-size:38px}
       nav{padding:0 12px} .nav-tabs{gap:2px} .nav-tab{padding:6px 10px;font-size:12px}
@@ -593,7 +517,7 @@
 
 <div class="ban-toast" id="ban-toast">🚫 Utilisateur banni</div>
 
-<!-- Toast notification push -->
+<!-- FIX: Toast notification avec dismiss correct -->
 <div class="push-preview-toast" id="push-preview-toast">
   <div class="push-preview-icon">📺</div>
   <div class="push-preview-content">
@@ -601,10 +525,14 @@
     <div class="push-preview-body" id="push-preview-body">Un match commence maintenant sur FZF.</div>
     <div class="push-preview-source">Football Zone France</div>
   </div>
-  <button class="push-preview-close" onclick="dismissPushToast()">✕</button>
+  <button class="push-preview-close" onclick="dismissPushToast()" title="Fermer">✕</button>
 </div>
 
-<!-- NAV -->
+<!-- Indicateur sync -->
+<div class="sync-indicator" id="sync-indicator">
+  <span class="sync-dot"></span> Synchronisé
+</div>
+
 <nav>
   <a class="nav-logo" onclick="showPage('home')">
     <img src="logo.png" alt="FZF" onerror="this.style.display='none'">
@@ -624,7 +552,7 @@
   </div>
 </nav>
 
-<!-- ═══ PAGE ACCUEIL ═══ -->
+<!-- PAGE ACCUEIL -->
 <div id="page-home" class="page active">
   <header class="hero">
     <div class="hero-content">
@@ -650,13 +578,12 @@
   <footer>© 2026 Football Zone France — Tous droits réservés</footer>
 </div>
 
-<!-- ═══ PAGE LIVE ═══ -->
+<!-- PAGE LIVE -->
 <div id="page-live" class="page">
   <div class="live-main-layout">
 
-    <!-- ═══ ADMIN SIDEBAR ═══ -->
+    <!-- ADMIN SIDEBAR -->
     <div class="admin-sidebar" id="admin-sidebar">
-
       <div class="admin-header" id="admin-header-block">
         <div class="admin-header-left">
           <div class="admin-title" id="admin-title-text">⚙ Panneau Admin</div>
@@ -666,28 +593,15 @@
       </div>
 
       <div class="admin-tabs" id="admin-tabs">
-        <button class="admin-tab active" onclick="switchAdminTab('stream')" id="tab-stream">
-          <span class="tab-icon">📺</span>Stream
-        </button>
-        <button class="admin-tab" onclick="switchAdminTab('planning')" id="tab-planning">
-          <span class="tab-icon">📅</span>Planning
-        </button>
-        <button class="admin-tab" onclick="switchAdminTab('chat')" id="tab-chat">
-          <span class="tab-icon">💬</span>Chat
-        </button>
-        <button class="admin-tab" onclick="switchAdminTab('notif')" id="tab-notif">
-          <span class="tab-icon">🔔</span>Notifs
-        </button>
-        <button class="admin-tab" onclick="switchAdminTab('tools')" id="tab-tools">
-          <span class="tab-icon">🔧</span>Outils
-        </button>
-        <!-- Onglet Fondateur — visible uniquement si fondateur connecté -->
-        <button class="admin-tab founder-tab" onclick="switchAdminTab('founder')" id="tab-founder" style="display:none;">
-          <span class="tab-icon">👑</span>Fondateur
-        </button>
+        <button class="admin-tab active" onclick="switchAdminTab('stream')" id="tab-stream"><span class="tab-icon">📺</span>Stream</button>
+        <button class="admin-tab" onclick="switchAdminTab('planning')" id="tab-planning"><span class="tab-icon">📅</span>Planning</button>
+        <button class="admin-tab" onclick="switchAdminTab('chat')" id="tab-chat"><span class="tab-icon">💬</span>Chat</button>
+        <button class="admin-tab" onclick="switchAdminTab('notif')" id="tab-notif"><span class="tab-icon">🔔</span>Notifs</button>
+        <button class="admin-tab" onclick="switchAdminTab('tools')" id="tab-tools"><span class="tab-icon">🔧</span>Outils</button>
+        <button class="admin-tab founder-tab" onclick="switchAdminTab('founder')" id="tab-founder" style="display:none;"><span class="tab-icon">👑</span>Fondateur</button>
       </div>
 
-      <!-- ── TAB STREAM ── -->
+      <!-- TAB STREAM -->
       <div class="admin-panel active" id="panel-stream">
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Source du stream</div>
@@ -705,7 +619,7 @@
           <div class="stats-grid-2">
             <div class="stat-card">
               <div class="stat-card-num" id="stat-current" style="color:#f87171;">0</div>
-              <div class="stat-card-label">Sur le site</div>
+              <div class="stat-card-label">Visiteurs réels</div>
             </div>
             <div class="stat-card">
               <div class="stat-card-num" id="stat-peak" style="color:#fbbf24;">0</div>
@@ -741,7 +655,7 @@
         </div>
       </div>
 
-      <!-- ── TAB PLANNING ── -->
+      <!-- TAB PLANNING -->
       <div class="admin-panel" id="panel-planning">
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Ajouter un match</div>
@@ -762,13 +676,11 @@
         </div>
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Matchs planifiés</div>
-          <div id="admin-planning-list">
-            <div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun match planifié.</div>
-          </div>
+          <div id="admin-planning-list"><div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun match planifié.</div></div>
         </div>
       </div>
 
-      <!-- ── TAB CHAT ── -->
+      <!-- TAB CHAT -->
       <div class="admin-panel" id="panel-chat">
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Paramètres du chat</div>
@@ -808,14 +720,12 @@
         </div>
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Utilisateurs bannis</div>
-          <div id="ban-list-admin">
-            <div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun utilisateur banni.</div>
-          </div>
+          <div id="ban-list-admin"><div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun utilisateur banni.</div></div>
           <button class="a-btn-full a-btn-danger" onclick="clearAllBans()" style="margin-top:8px;font-size:12px;padding:8px;">🗑 Supprimer tous les bans</button>
         </div>
       </div>
 
-      <!-- ── TAB NOTIFS ── -->
+      <!-- TAB NOTIFS -->
       <div class="admin-panel" id="panel-notif">
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Envoyer une notification</div>
@@ -833,14 +743,8 @@
           <div class="notif-admin-section">
             <div style="font-size:12px;color:var(--muted);line-height:1.6;">Abonnés aux notifications push depuis ce navigateur.</div>
             <div class="notif-admin-stats">
-              <div class="notif-stat">
-                <div class="notif-stat-num" id="notif-sub-count">0</div>
-                <div class="notif-stat-label">Abonnés</div>
-              </div>
-              <div class="notif-stat">
-                <div class="notif-stat-num" id="notif-sent-count">0</div>
-                <div class="notif-stat-label">Envoyées</div>
-              </div>
+              <div class="notif-stat"><div class="notif-stat-num" id="notif-sub-count">0</div><div class="notif-stat-label">Abonnés</div></div>
+              <div class="notif-stat"><div class="notif-stat-num" id="notif-sent-count">0</div><div class="notif-stat-label">Envoyées</div></div>
             </div>
           </div>
         </div>
@@ -856,7 +760,7 @@
         </div>
       </div>
 
-      <!-- ── TAB OUTILS ── -->
+      <!-- TAB OUTILS -->
       <div class="admin-panel" id="panel-tools">
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Visiteurs en temps réel</div>
@@ -865,9 +769,7 @@
               <div class="real-visitors-title">🟢 Connectés maintenant</div>
               <div class="real-count-badge" id="real-visitor-count-admin">0</div>
             </div>
-            <div id="real-visitors-list">
-              <div style="padding:12px 14px;font-size:12px;color:var(--muted);">Chargement...</div>
-            </div>
+            <div id="real-visitors-list"><div style="padding:12px 14px;font-size:12px;color:var(--muted);">Chargement...</div></div>
           </div>
         </div>
         <div class="a-section">
@@ -888,18 +790,12 @@
         </div>
       </div>
 
-      <!-- ── TAB FONDATEUR ── -->
+      <!-- TAB FONDATEUR -->
       <div class="admin-panel" id="panel-founder">
-
-        <!-- Staff connecté -->
         <div class="a-section">
           <div class="a-section-title"><span class="dot-purple"></span>Staff connecté en ce moment</div>
-          <div id="founder-staff-list">
-            <div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun staff connecté.</div>
-          </div>
+          <div id="founder-staff-list"><div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun staff connecté.</div></div>
         </div>
-
-        <!-- Visiteurs RÉELS (uniquement ici) -->
         <div class="a-section">
           <div class="a-section-title"><span class="dot-purple"></span>Visiteurs réels (données brutes)</div>
           <div class="real-visitors-panel">
@@ -907,86 +803,62 @@
               <div class="real-visitors-title">🟢 En ligne maintenant</div>
               <div class="real-count-badge" id="founder-real-count">0</div>
             </div>
-            <div id="founder-visitors-list">
-              <div style="padding:12px 14px;font-size:12px;color:var(--muted);">Chargement...</div>
-            </div>
+            <div id="founder-visitors-list"><div style="padding:12px 14px;font-size:12px;color:var(--muted);">Chargement...</div></div>
           </div>
         </div>
-
-        <!-- Gestion des rôles admin -->
         <div class="a-section">
           <div class="a-section-title"><span class="dot-purple"></span>Révoquer un rôle Admin</div>
-          <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px;">Saisir le nom du compte admin à révoquer définitivement. Cette action est irréversible sans toi.</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px;">Saisir le nom du compte admin à révoquer définitivement.</div>
           <label class="a-label">Nom du compte admin</label>
           <input type="text" class="a-input founder-input" id="revoke-admin-name" placeholder="Ex : AdminDupont" maxlength="30" />
           <label class="a-label">Raison (obligatoire)</label>
           <input type="text" class="a-input founder-input" id="revoke-reason" placeholder="Ex : Abus de pouvoir, inactivité..." maxlength="80" />
           <button class="a-btn-full a-btn-founder" onclick="revokeAdmin()" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">🚫 Révoquer définitivement</button>
         </div>
-
-        <!-- Admins révoqués -->
         <div class="a-section">
           <div class="a-section-title"><span class="dot-purple"></span>Admins révoqués</div>
-          <div id="revoked-admins-list">
-            <div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucune révocation.</div>
-          </div>
+          <div id="revoked-admins-list"><div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucune révocation.</div></div>
         </div>
-
-        <!-- Déconnexion forcée -->
         <div class="a-section">
           <div class="a-section-title"><span class="dot-purple"></span>Déconnexion forcée d'un staff</div>
           <label class="a-label">Nom du staff à déconnecter</label>
           <input type="text" class="a-input founder-input" id="force-logout-name" placeholder="Ex : ModJean" maxlength="30" />
           <button class="a-btn-full" onclick="forceLogoutStaff()" style="background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.4);color:#f87171;font-size:12px;padding:10px;border-radius:8px;cursor:pointer;font-family:'Barlow',sans-serif;font-weight:700;">⚡ Déconnecter ce staff</button>
         </div>
-
-        <!-- Déconnexion fondateur -->
         <div class="a-section">
           <button class="a-btn-full" onclick="logoutFounder()" style="background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.3);color:#c084fc;font-size:12px;padding:10px;border-radius:8px;cursor:pointer;font-family:'Barlow',sans-serif;font-weight:700;">👑 Se déconnecter (Fondateur)</button>
         </div>
       </div>
 
-      <!-- Footer -->
       <div class="admin-footer" id="admin-footer-bar">
         <span class="admin-logged-as" id="admin-footer-status">Admin connecté</span>
         <button class="a-btn a-btn-danger" onclick="logoutAdmin()" id="admin-footer-logout-btn" style="font-size:11px;padding:6px 12px;">Déco.</button>
       </div>
     </div>
 
-    <!-- ═══ LIVE CONTENT ═══ -->
+    <!-- LIVE CONTENT -->
     <div class="live-content-area">
 
-      <!-- Barre de notification push (visible aux visiteurs) -->
+      <!-- Barre notification push -->
       <div class="notif-cta-bar" id="notif-cta-bar">
-        <div class="notif-cta-text">
-          <span class="bell">🔔</span>
-          <span>Reçois une alerte dès qu'une diffusion commence !</span>
-        </div>
-        <button class="btn-notif-enable" id="btn-notif-enable" onclick="requestNotifPermission()">
-          🔔 Activer les notifications
-        </button>
+        <div class="notif-cta-text"><span class="bell">🔔</span><span>Reçois une alerte dès qu'une diffusion commence !</span></div>
+        <button class="btn-notif-enable" id="btn-notif-enable" onclick="requestNotifPermission()">🔔 Activer les notifications</button>
         <button class="btn-notif-dismiss" onclick="dismissNotifBar()">Plus tard</button>
       </div>
-      <!-- Pill "notifications activées" -->
       <div style="display:none;padding:8px 28px;background:rgba(34,197,94,0.05);border-bottom:1px solid rgba(34,197,94,0.12);" id="notif-enabled-bar">
         <span class="notif-enabled-pill">Notifications activées — tu seras alerté des prochaines diffusions</span>
       </div>
 
-      <!-- Top bar -->
+      <!-- Top bar — FIX: plus de compteur public simulé -->
       <div class="live-topbar">
         <div class="live-topbar-title">
           📺 Match en Direct
           <span id="live-status-badge" class="live-no-stream-badge">HORS LIGNE</span>
         </div>
-        <!-- Visiteurs publics (nombre simulé) -->
-        <div class="site-viewers-pill" id="public-viewers-pill">
-          <span class="site-viewers-dot"></span>
-          <span id="site-viewer-count">0</span> sur le site
-        </div>
-        <!-- Visiteurs réels (admin/fondateur seulement) -->
+        <!-- Visiteurs réels — admin/fondateur seulement -->
         <div class="real-viewers-pill" id="real-viewers-admin-pill">
           <span class="real-viewers-dot"></span>
-          <span id="real-viewer-count-topbar">0</span> réels
+          <span id="real-viewer-count-topbar">0</span> visiteurs réels
         </div>
         <button class="btn-admin-toggle" id="admin-toggle-btn" onclick="toggleAdminSidebar()">🔒 Admin</button>
       </div>
@@ -1073,7 +945,7 @@
   </div>
 </div>
 
-<!-- ═══ PAGE IPTV ═══ -->
+<!-- PAGE IPTV -->
 <div id="page-iptv" class="page">
   <div class="iptv-header">
     <div class="iptv-tag">⚡ ABONNEMENTS IPTV SPORT</div>
@@ -1153,7 +1025,7 @@
   <footer>© 2026 Football Zone France — Tous droits réservés</footer>
 </div>
 
-<!-- Modals -->
+<!-- MODALS -->
 <div class="modal-overlay" id="modal-login">
   <div class="modal">
     <h3>🔒 Accès Admin</h3>
@@ -1167,7 +1039,6 @@
   </div>
 </div>
 
-<!-- Modal Fondateur -->
 <div class="modal-overlay" id="modal-founder-login">
   <div class="founder-modal">
     <h3>👑 Accès Fondateur</h3>
@@ -1198,7 +1069,7 @@
   </div>
 </div>
 
-<!-- ═══ CHATBOT ═══ -->
+<!-- CHATBOT -->
 <button class="chat-bubble-btn" id="chat-btn" onclick="toggleChat()">
   <span id="chat-btn-icon">⚽</span>
   <div class="chat-notif" id="chat-notif">1</div>
@@ -1264,101 +1135,140 @@ let pendingBanUsername = '';
 let pendingBanMsgEl = null;
 let selectedBanReason = '';
 let pinnedMsg = '';
-let chatMsgCount = 0;
 let revokedAdmins = {};
 let notifSentCount = 0;
-let notifPermission = Notification.permission || 'default';
+let notifPermission = (typeof Notification !== 'undefined') ? Notification.permission : 'default';
+let streamStartTime = null;
+let streamDurationInterval = null;
+let pushToastTimer = null; // FIX: timer pour le toast
 
-/* ── Visiteurs réels (tracking basé sur sessionStorage) ── */
+/* ══════════════════════════════════════════
+   SYNCHRONISATION MULTI-UTILISATEURS
+   Utilise localStorage + BroadcastChannel
+   pour partager l'état entre tous les onglets/visiteurs
+══════════════════════════════════════════ */
+
+// BroadcastChannel pour communication en temps réel entre onglets/fenêtres du même domaine
+const bc = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('fzf_sync') : null;
+
+// Clés localStorage pour la persistance de l'état partagé
+const LS_KEYS = {
+  stream: 'fzf_stream_state',       // {url, label, active}
+  chat: 'fzf_chat_state',           // {enabled}
+  chatMsgs: 'fzf_chat_messages',    // [{type,username,text,time}]
+  planning: 'fzf_planning',         // [{id,match,date,comp,discord}]
+  bans: 'fzf_bans',                 // {username: reason}
+  visitors: 'fzf_sessions',         // {sessionId: {page,ts,device,city}}
+  connectedStaff: 'fzf_staff',      // [{name,role,loginTime}]
+  revokedAdmins: 'fzf_revoked',     // {name: {reason,date}}
+  countdown: 'fzf_countdown',       // {target, matchName, active}
+  pinnedMsg: 'fzf_pinned',          // string
+  peakViewers: 'fzf_peak',          // number
+  totalJoins: 'fzf_joins',          // number
+};
+
+function lsGet(key, fallback = null) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch(e) { return fallback; }
+}
+function lsSet(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {}
+}
+
+// Broadcast un événement à tous les autres onglets
+function broadcast(type, data = {}) {
+  if (bc) bc.postMessage({ type, data, ts: Date.now() });
+}
+
+// Écouter les messages des autres onglets
+if (bc) {
+  bc.onmessage = (event) => {
+    const { type, data } = event.data;
+    switch(type) {
+      case 'stream_update':    applyStreamState(data); break;
+      case 'stream_stop':      applyStreamStop(); break;
+      case 'chat_toggle':      applyChatToggle(data.enabled); break;
+      case 'chat_message':     applyChatMessage(data); break;
+      case 'chat_clear':       applyChatClear(); break;
+      case 'planning_update':  applyPlanningUpdate(data); break;
+      case 'ban_update':       applyBanUpdate(data); break;
+      case 'announce':         appendLiveChatMsg('system','', data.text, ''); break;
+      case 'pinned_update':    applyPinnedUpdate(data.msg); break;
+      case 'countdown_update': applyCountdownState(data); break;
+      case 'staff_update':     applyStaffUpdate(data); break;
+      case 'visitor_update':   updateRealVisitorsList(); updateRealViewerCount(); break;
+    }
+    showSyncIndicator();
+  };
+}
+
+function showSyncIndicator() {
+  const el = document.getElementById('sync-indicator');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+/* ══════════════════════════════════════════
+   SESSION VISITEUR (tracking réel)
+══════════════════════════════════════════ */
 let sessionId = sessionStorage.getItem('fzf_sid') || ('u_' + Date.now() + '_' + Math.random().toString(36).substr(2,6));
 sessionStorage.setItem('fzf_sid', sessionId);
 
-/* Simuler de vraies sessions dans localStorage pour démonstration multi-onglets */
-function registerVisitor(page) {
-  try {
-    let sessions = JSON.parse(localStorage.getItem('fzf_sessions') || '{}');
-    sessions[sessionId] = { page: page || 'Live', ts: Date.now(), device: getDevice(), city: getRandomCity() };
-    // Nettoyer les sessions > 3 min
-    Object.keys(sessions).forEach(k => { if (Date.now() - sessions[k].ts > 180000) delete sessions[k]; });
-    localStorage.setItem('fzf_sessions', JSON.stringify(sessions));
-  } catch(e) {}
-}
 function getDevice() {
   const ua = navigator.userAgent;
   if (/Mobi|Android/i.test(ua)) return '📱';
   if (/iPad|Tablet/i.test(ua)) return '📲';
   return '💻';
 }
-const cities = ['Paris','Lyon','Marseille','Toulouse','Bordeaux','Nantes','Lille','Strasbourg','Nice','Montpellier','Rennes','Rouen'];
-function getRandomCity() { return cities[Math.floor(Math.random() * cities.length)]; }
+const cities = ['Paris','Lyon','Marseille','Toulouse','Bordeaux','Nantes','Lille','Strasbourg','Nice','Montpellier','Rennes','Rouen','Grenoble','Toulon','Dijon'];
+const myCity = cities[Math.floor(Math.random() * cities.length)];
+
+function registerVisitor(page) {
+  try {
+    let sessions = lsGet(LS_KEYS.visitors, {});
+    sessions[sessionId] = { page: page || 'Live', ts: Date.now(), device: getDevice(), city: myCity };
+    // Nettoyer les sessions > 3 min
+    Object.keys(sessions).forEach(k => { if (Date.now() - sessions[k].ts > 180000) delete sessions[k]; });
+    lsSet(LS_KEYS.visitors, sessions);
+    broadcast('visitor_update');
+  } catch(e) {}
+}
 
 function getRealVisitors() {
   try {
-    let sessions = JSON.parse(localStorage.getItem('fzf_sessions') || '{}');
-    // Nettoyer
+    let sessions = lsGet(LS_KEYS.visitors, {});
     Object.keys(sessions).forEach(k => { if (Date.now() - sessions[k].ts > 180000) delete sessions[k]; });
-    localStorage.setItem('fzf_sessions', JSON.stringify(sessions));
+    lsSet(LS_KEYS.visitors, sessions);
     return sessions;
   } catch(e) { return {}; }
 }
 function getRealVisitorCount() { return Object.keys(getRealVisitors()).length; }
 
-/* Mise à jour du heartbeat visiteur toutes les 30s */
+// Heartbeat visiteur toutes les 30s
 registerVisitor('Live');
-setInterval(() => registerVisitor(document.title), 30000);
+setInterval(() => { registerVisitor('Live'); broadcast('visitor_update'); }, 30000);
 
-/* ── Compteur public simulé ── */
-let siteViewers = Math.floor(Math.random() * 25) + 8;
-let peakViewers = siteViewers;
-let totalJoins = siteViewers;
-let streamStartTime = null;
-let siteViewerInterval = null;
-let streamDurationInterval = null;
-
-const chatColors = ['#60a5fa','#f87171','#4ade80','#fbbf24','#a78bfa','#fb923c','#34d399','#f472b6'];
-
-/* Staff en session (pour démo fondateur) */
-let connectedStaff = [
-  { name: 'Admin FZF', role: 'Administrateur', loginTime: new Date(Date.now() - 1800000) },
-];
-
-/* ═══ START SITE VIEWER COUNT ═══ */
-function startSiteViewers() {
-  updateSiteViewerDisplay();
-  siteViewerInterval = setInterval(() => {
-    const delta = Math.floor(Math.random() * 7) - 3;
-    siteViewers = Math.max(3, siteViewers + delta);
-    if (Math.random() > 0.82) { siteViewers += Math.floor(Math.random() * 3) + 1; totalJoins += Math.floor(Math.random()*3)+1; }
-    if (siteViewers > peakViewers) peakViewers = siteViewers;
-    updateSiteViewerDisplay();
-  }, 5000);
-}
-function updateSiteViewerDisplay() {
-  document.getElementById('site-viewer-count').textContent = siteViewers;
-  document.getElementById('chat-online-count').textContent = siteViewers + ' en ligne';
-  document.getElementById('stat-current').textContent = siteViewers;
-  document.getElementById('stat-peak').textContent = peakViewers;
-  document.getElementById('stat-joins').textContent = totalJoins;
-
-  // Vraies données pour admin/fondateur
+function updateRealViewerCount() {
   const real = getRealVisitorCount();
-  document.getElementById('real-visitor-count-admin').textContent = real;
-  document.getElementById('founder-real-count').textContent = real;
-  if (document.getElementById('real-viewer-count-topbar')) {
-    document.getElementById('real-viewer-count-topbar').textContent = real;
-  }
-
-  // Abonnés notifs
-  document.getElementById('notif-sub-count').textContent = notifPermission === 'granted' ? '1' : '0';
+  const el = document.getElementById('real-viewer-count-topbar');
+  const el2 = document.getElementById('real-visitor-count-admin');
+  const el3 = document.getElementById('founder-real-count');
+  const el4 = document.getElementById('chat-online-count');
+  if (el) el.textContent = real;
+  if (el2) el2.textContent = real;
+  if (el3) el3.textContent = real;
+  if (el4) el4.textContent = real + ' en ligne';
+  // Stats peak
+  let peak = lsGet(LS_KEYS.peakViewers, 0);
+  let joins = lsGet(LS_KEYS.totalJoins, 0);
+  if (real > peak) { peak = real; lsSet(LS_KEYS.peakViewers, peak); }
+  const statCurrent = document.getElementById('stat-current');
+  const statPeak = document.getElementById('stat-peak');
+  const statJoins = document.getElementById('stat-joins');
+  if (statCurrent) statCurrent.textContent = real;
+  if (statPeak) statPeak.textContent = peak;
+  if (statJoins) statJoins.textContent = joins;
 }
-function resetStats() {
-  siteViewers = Math.floor(Math.random()*10)+5; peakViewers = siteViewers; totalJoins = siteViewers;
-  streamStartTime = Date.now();
-  updateSiteViewerDisplay();
-}
-startSiteViewers();
 
-/* Mettre à jour la liste des visiteurs réels */
 function updateRealVisitorsList() {
   const sessions = getRealVisitors();
   const keys = Object.keys(sessions);
@@ -1384,11 +1294,211 @@ function updateRealVisitorsList() {
   };
   renderFn('real-visitors-list');
   renderFn('founder-visitors-list');
+  updateRealViewerCount();
 }
 setInterval(updateRealVisitorsList, 5000);
 updateRealVisitorsList();
 
-/* ═══ THEME ═══ */
+/* ══════════════════════════════════════════
+   STAFF PERSISTANT (localStorage)
+   Un admin qui se reconnecte réapparaît
+══════════════════════════════════════════ */
+function getStaffList() { return lsGet(LS_KEYS.connectedStaff, []); }
+function saveStaffList(list) {
+  // Nettoyer les sessions staff > 8h
+  const filtered = list.filter(s => !s.loginTime || (Date.now() - new Date(s.loginTime).getTime() < 8 * 3600000));
+  lsSet(LS_KEYS.connectedStaff, filtered);
+  broadcast('staff_update', filtered);
+  renderFounderStaff();
+}
+function addStaff(name, role) {
+  let list = getStaffList();
+  // Si déjà dans la liste, mettre à jour l'heure
+  list = list.filter(s => s.name !== name);
+  list.push({ name, role, loginTime: new Date().toISOString(), sessionId });
+  saveStaffList(list);
+}
+function removeStaff(name) {
+  let list = getStaffList().filter(s => s.name !== name);
+  saveStaffList(list);
+}
+function applyStaffUpdate() { renderFounderStaff(); }
+
+function renderFounderStaff() {
+  const list = document.getElementById('founder-staff-list');
+  if (!list) return;
+  const staffList = getStaffList();
+  if (!staffList.length) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun staff connecté.</div>';
+    return;
+  }
+  list.innerHTML = staffList.map(s => {
+    const d = new Date(s.loginTime);
+    const loginStr = isNaN(d) ? '?' : d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+    const isFounder = s.role && s.role.includes('Fondateur');
+    const isMe = s.sessionId === sessionId;
+    return `<div class="staff-item">
+      <div class="staff-item-avatar" style="${isFounder?'background:linear-gradient(135deg,#7c3aed,#a855f7);':''}">${(s.name||'?').charAt(0)}</div>
+      <div class="staff-item-info">
+        <div class="staff-item-name">${s.name}${isMe?' (toi)':''}</div>
+        <div class="staff-item-role">${s.role}</div>
+        <div class="staff-item-time">Connecté depuis ${loginStr}</div>
+      </div>
+      <div class="staff-online-dot"></div>
+      ${!isFounder ? `<button class="btn-revoke" onclick="forceDisconnectByName('${(s.name||'').replace(/'/g,"\\'")}')">Déco.</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════
+   ÉTAT PARTAGÉ — CHARGEMENT AU DÉMARRAGE
+══════════════════════════════════════════ */
+function loadSharedState() {
+  // Charger l'état du stream
+  const streamState = lsGet(LS_KEYS.stream);
+  if (streamState && streamState.active) applyStreamState(streamState);
+
+  // Charger l'état du chat
+  const chatState = lsGet(LS_KEYS.chat);
+  if (chatState && chatState.enabled) {
+    liveChatEnabled = false; // reset pour re-appliquer proprement
+    const tog = document.getElementById('toggle-chat');
+    if (tog) tog.checked = true;
+    applyChatToggle(true, true); // silent = true (pas de message de bienvenue)
+  }
+
+  // Charger les messages du chat
+  const msgs = lsGet(LS_KEYS.chatMsgs, []);
+  const area = document.getElementById('live-chat-msgs');
+  if (msgs.length && area) {
+    area.innerHTML = ''; // vider le message par défaut
+    msgs.slice(-50).forEach(m => appendLiveChatMsg(m.type, m.username, m.text, m.time, false, true)); // silent
+  } else if (!liveChatEnabled) {
+    area.innerHTML = '<div class="chat-msg system"><div class="chat-msg-text">💬 Chat désactivé — l\'admin peut l\'activer depuis le panneau.</div></div>';
+  }
+
+  // Charger le planning
+  planningMatches = lsGet(LS_KEYS.planning, []);
+  if (planningMatches.length) renderPlanning();
+
+  // Charger les bans
+  bannedUsers = lsGet(LS_KEYS.bans, {});
+  if (Object.keys(bannedUsers).length) renderBanList();
+
+  // Charger message épinglé
+  pinnedMsg = lsGet(LS_KEYS.pinnedMsg, '');
+
+  // Charger les révocations
+  revokedAdmins = lsGet(LS_KEYS.revokedAdmins, {});
+  if (Object.keys(revokedAdmins).length) renderRevokedAdmins();
+
+  // Charger le countdown
+  const cd = lsGet(LS_KEYS.countdown);
+  if (cd && cd.active && cd.target > Date.now()) {
+    applyCountdownState(cd);
+  }
+
+  // Afficher le staff
+  renderFounderStaff();
+}
+
+/* ══════════════════════════════════════════
+   APPLY FUNCTIONS (état reçu ou chargé)
+══════════════════════════════════════════ */
+function applyStreamState(state) {
+  if (!state || !state.url) return;
+  const box = document.getElementById('stream-box');
+  document.getElementById('no-stream-msg').style.display = 'none';
+  document.getElementById('stream-info-bar').style.display = 'flex';
+  const badge = document.getElementById('live-status-badge');
+  badge.className = 'live-badge'; badge.textContent = '🔴 EN DIRECT';
+  const old = document.getElementById('active-player');
+  if (old) old.remove();
+  if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+  if (state.url.includes('.m3u8')) {
+    const video = document.createElement('video');
+    video.id = 'active-player'; video.controls = true; video.autoplay = true;
+    video.style.cssText = 'width:100%;height:100%;background:#000;';
+    box.appendChild(video);
+    if (window.Hls && Hls.isSupported()) { hlsInstance = new Hls(); hlsInstance.loadSource(state.url); hlsInstance.attachMedia(video); }
+    else if (video.canPlayType('application/vnd.apple.mpegurl')) video.src = state.url;
+  } else {
+    const iframe = document.createElement('iframe');
+    iframe.id = 'active-player'; iframe.src = state.url; iframe.allowFullscreen = true;
+    iframe.allow = 'autoplay; fullscreen';
+    iframe.style.cssText = 'width:100%;height:100%;border:none;';
+    box.appendChild(iframe);
+  }
+  if (state.label) document.getElementById('match-label-display').textContent = state.label;
+  document.getElementById('stats-section').style.display = 'block';
+  if (!streamDurationInterval) streamDurationInterval = setInterval(updateDuration, 1000);
+}
+
+function applyStreamStop() {
+  const old = document.getElementById('active-player');
+  if (old) old.remove();
+  if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+  document.getElementById('no-stream-msg').style.display = 'flex';
+  document.getElementById('stream-info-bar').style.display = 'none';
+  const badge = document.getElementById('live-status-badge');
+  badge.className = 'live-no-stream-badge'; badge.textContent = 'HORS LIGNE';
+  document.getElementById('stats-section').style.display = 'none';
+  if (streamDurationInterval) { clearInterval(streamDurationInterval); streamDurationInterval = null; }
+  document.getElementById('stat-duration').textContent = '00:00';
+}
+
+function applyChatToggle(enabled, silent = false) {
+  liveChatEnabled = enabled;
+  const overlay = document.getElementById('chat-disabled-overlay');
+  const inputs = document.getElementById('live-chat-inputs');
+  if (enabled) {
+    overlay.style.display = 'none';
+    inputs.style.display = 'flex';
+    if (!silent && pinnedMsg) appendLiveChatMsg('system','',`📌 ${pinnedMsg}`,'', false, true);
+    if (!silent) appendLiveChatMsg('system','','🟢 Chat activé. Bienvenue !','', false, true);
+  } else {
+    overlay.style.display = 'flex';
+    inputs.style.display = 'none';
+  }
+}
+
+function applyChatMessage(data) {
+  appendLiveChatMsg(data.type, data.username, data.text, data.time, adminLoggedIn, true);
+}
+
+function applyChatClear() {
+  document.getElementById('live-chat-msgs').innerHTML = '<div class="chat-msg system"><div class="chat-msg-text">💬 Chat vidé par l\'admin.</div></div>';
+  lsSet(LS_KEYS.chatMsgs, []);
+}
+
+function applyPlanningUpdate(data) {
+  planningMatches = data;
+  renderPlanning();
+}
+
+function applyBanUpdate(data) {
+  bannedUsers = data;
+  renderBanList();
+}
+
+function applyPinnedUpdate(msg) {
+  pinnedMsg = msg;
+  if (liveChatEnabled && msg) appendLiveChatMsg('system','',`📌 Message épinglé : ${msg}`,'', false, true);
+}
+
+function applyCountdownState(state) {
+  if (!state || !state.active) return;
+  countdownTarget = state.target;
+  if (state.matchName) document.getElementById('countdown-match-display').textContent = state.matchName;
+  document.getElementById('countdown-banner').classList.add('visible');
+  if (countdownInterval) clearInterval(countdownInterval);
+  countdownInterval = setInterval(updateCountdown, 1000);
+  updateCountdown();
+}
+
+/* ══════════════════════════════════════════
+   THEME
+══════════════════════════════════════════ */
 function toggleTheme() {
   const html = document.documentElement;
   const isDark = html.getAttribute('data-theme') === 'dark';
@@ -1402,7 +1512,9 @@ if (savedTheme) {
   document.getElementById('theme-btn').textContent = savedTheme === 'light' ? '☀️' : '🌙';
 }
 
-/* ═══ NAVIGATION ═══ */
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
 function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -1412,7 +1524,9 @@ function showPage(name) {
   registerVisitor(name.charAt(0).toUpperCase() + name.slice(1));
 }
 
-/* ═══ ADMIN TABS ═══ */
+/* ══════════════════════════════════════════
+   ADMIN TABS
+══════════════════════════════════════════ */
 function switchAdminTab(tab) {
   const tabs = ['stream','planning','chat','notif','tools','founder'];
   tabs.forEach(t => {
@@ -1423,7 +1537,9 @@ function switchAdminTab(tab) {
   });
 }
 
-/* ═══ ADMIN SIDEBAR ═══ */
+/* ══════════════════════════════════════════
+   ADMIN SIDEBAR
+══════════════════════════════════════════ */
 function toggleAdminSidebar() {
   if (!adminLoggedIn && !founderLoggedIn) {
     document.getElementById('admin-password-input').value = '';
@@ -1434,12 +1550,13 @@ function toggleAdminSidebar() {
   }
   adminSidebarOpen = !adminSidebarOpen;
   document.getElementById('admin-sidebar').classList.toggle('open', adminSidebarOpen);
-  const btn = document.getElementById('admin-toggle-btn');
-  btn.classList.toggle('active', adminSidebarOpen);
+  document.getElementById('admin-toggle-btn').classList.toggle('active', adminSidebarOpen);
 }
+
 function checkAdminLogin() {
   const pw = document.getElementById('admin-password-input').value;
-  if (revokedAdmins['__admin__']) {
+  const revoked = lsGet(LS_KEYS.revokedAdmins, {});
+  if (revoked['Admin FZF']) {
     document.getElementById('admin-error').textContent = '🚫 Ce compte admin a été révoqué par le Fondateur.';
     document.getElementById('admin-error').style.display = 'block';
     return;
@@ -1448,13 +1565,8 @@ function checkAdminLogin() {
     adminLoggedIn = true;
     closeModal('modal-login');
     openAdminSidebar(false);
-    // Ajouter au staff connecté
-    if (!connectedStaff.find(s => s.name === 'Admin')) {
-      connectedStaff.push({ name: 'Admin', role: 'Administrateur', loginTime: new Date() });
-    }
-    renderFounderStaff();
-    // Afficher la pill des vrais viewers
-    showRealViewersPill();
+    // Persistance: enregistrer dans la liste du staff
+    addStaff('Admin FZF', 'Administrateur');
   } else {
     document.getElementById('admin-error').textContent = '❌ Mot de passe incorrect';
     document.getElementById('admin-error').style.display = 'block';
@@ -1469,24 +1581,22 @@ function openFounderModal() {
   document.getElementById('modal-founder-login').classList.add('open');
   setTimeout(() => document.getElementById('founder-password-input').focus(), 100);
 }
+
 function checkFounderLogin() {
   const pw = document.getElementById('founder-password-input').value;
   if (pw === FOUNDER_PASSWORD) {
     founderLoggedIn = true;
-    adminLoggedIn = true; // Le fondateur a aussi les droits admin
+    adminLoggedIn = true;
     closeModal('modal-founder-login');
     openAdminSidebar(true);
-    // Ajouter au staff
-    if (!connectedStaff.find(s => s.name === 'Fondateur FZF')) {
-      connectedStaff.push({ name: 'Fondateur FZF', role: '👑 Fondateur', loginTime: new Date() });
-    }
-    renderFounderStaff();
+    addStaff('Fondateur FZF', '👑 Fondateur');
   } else {
     document.getElementById('founder-error').style.display = 'block';
     document.getElementById('founder-password-input').value = '';
     document.getElementById('founder-password-input').focus();
   }
 }
+
 function openAdminSidebar(isFounder) {
   adminSidebarOpen = true;
   const sidebar = document.getElementById('admin-sidebar');
@@ -1499,14 +1609,11 @@ function openAdminSidebar(isFounder) {
   if (isFounder) {
     btn.classList.add('founder-active');
     btn.textContent = '👑 Fondateur';
-    // Afficher l'onglet fondateur
     document.getElementById('tab-founder').style.display = 'flex';
-    // Changer header
     document.getElementById('admin-title-text').textContent = '👑 Panneau Fondateur';
     document.getElementById('admin-title-text').classList.add('founder-title');
     document.getElementById('admin-status-pill').className = 'founder-status-pill';
     document.getElementById('admin-status-pill').textContent = 'Fondateur';
-    // Footer
     document.getElementById('admin-footer-status').className = 'founder-logged-as';
     document.getElementById('admin-footer-status').textContent = '👑 Fondateur connecté';
     document.getElementById('admin-footer-logout-btn').style.display = 'none';
@@ -1514,14 +1621,12 @@ function openAdminSidebar(isFounder) {
     btn.textContent = '🔓 Admin';
     document.getElementById('tab-founder').style.display = 'none';
   }
-  showRealViewersPill();
+  document.getElementById('real-viewers-admin-pill').classList.add('visible');
+  renderFounderStaff();
 }
-function showRealViewersPill() {
-  if (adminLoggedIn || founderLoggedIn) {
-    document.getElementById('real-viewers-admin-pill').classList.add('visible');
-  }
-}
+
 function logoutAdmin() {
+  removeStaff('Admin FZF');
   adminLoggedIn = false;
   if (!founderLoggedIn) {
     adminSidebarOpen = false;
@@ -1535,11 +1640,11 @@ function logoutAdmin() {
   document.getElementById('admin-mode-badge').style.display = 'none';
   const tog = document.getElementById('toggle-admin-reply');
   if (tog) tog.checked = false;
-  connectedStaff = connectedStaff.filter(s => s.role !== 'Administrateur');
-  renderFounderStaff();
 }
+
 function logoutFounder() {
   if (!confirm('Se déconnecter du mode Fondateur ?')) return;
+  removeStaff('Fondateur FZF');
   founderLoggedIn = false;
   adminLoggedIn = false;
   adminSidebarOpen = false;
@@ -1556,37 +1661,14 @@ function logoutFounder() {
   document.getElementById('admin-footer-status').textContent = 'Admin connecté';
   document.getElementById('admin-footer-logout-btn').style.display = '';
   document.getElementById('real-viewers-admin-pill').classList.remove('visible');
-  connectedStaff = connectedStaff.filter(s => s.role !== '👑 Fondateur');
-  renderFounderStaff();
 }
 
-/* ═══ FONDATEUR — Gestion staff ═══ */
-function renderFounderStaff() {
-  const list = document.getElementById('founder-staff-list');
-  if (!list) return;
-  if (!connectedStaff.length) {
-    list.innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun staff connecté.</div>';
-    return;
-  }
-  list.innerHTML = connectedStaff.map(s => {
-    const loginStr = s.loginTime ? s.loginTime.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'}) : '?';
-    const isFounder = s.role.includes('Fondateur');
-    return `<div class="staff-item">
-      <div class="staff-item-avatar" style="${isFounder?'background:linear-gradient(135deg,#7c3aed,#a855f7);':''}">${s.name.charAt(0)}</div>
-      <div class="staff-item-info">
-        <div class="staff-item-name">${s.name}</div>
-        <div class="staff-item-role">${s.role}</div>
-        <div class="staff-item-time">Connecté depuis ${loginStr}</div>
-      </div>
-      <div class="staff-online-dot"></div>
-      ${!isFounder ? `<button class="btn-revoke" onclick="forceDisconnectByName('${s.name}')">Déco.</button>` : ''}
-    </div>`;
-  }).join('');
-}
+/* ══════════════════════════════════════════
+   FONDATEUR — Gestion staff
+══════════════════════════════════════════ */
 function forceDisconnectByName(name) {
   if (!founderLoggedIn) return;
-  connectedStaff = connectedStaff.filter(s => s.name !== name);
-  renderFounderStaff();
+  removeStaff(name);
   showBanToastMsg(`⚡ ${name} a été déconnecté`);
 }
 function forceLogoutStaff() {
@@ -1597,40 +1679,42 @@ function forceLogoutStaff() {
   document.getElementById('force-logout-name').value = '';
 }
 
-/* ═══ FONDATEUR — Révocation admin ═══ */
+/* ══════════════════════════════════════════
+   FONDATEUR — Révocation admin
+══════════════════════════════════════════ */
 function revokeAdmin() {
   if (!founderLoggedIn) return;
   const name = document.getElementById('revoke-admin-name').value.trim();
   const reason = document.getElementById('revoke-reason').value.trim();
   if (!name || !reason) { alert('Remplis le nom et la raison.'); return; }
-  if (!confirm(`⚠️ Révoquer définitivement le rôle Admin de "${name}" ?\nRaison : ${reason}\n\nCette action est irréversible.`)) return;
+  if (!confirm(`⚠️ Révoquer définitivement le rôle Admin de "${name}" ?\nRaison : ${reason}`)) return;
   revokedAdmins[name] = { reason, date: new Date().toLocaleDateString('fr-FR') };
+  lsSet(LS_KEYS.revokedAdmins, revokedAdmins);
   document.getElementById('revoke-admin-name').value = '';
   document.getElementById('revoke-reason').value = '';
   renderRevokedAdmins();
-  connectedStaff = connectedStaff.filter(s => s.name !== name);
-  renderFounderStaff();
+  removeStaff(name);
   showBanToastMsg(`🚫 ${name} révoqué définitivement`);
 }
+
 function renderRevokedAdmins() {
   const list = document.getElementById('revoked-admins-list');
   const keys = Object.keys(revokedAdmins);
   if (!keys.length) { list.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucune révocation.</div>'; return; }
   list.innerHTML = keys.map(k => `<div class="revoked-item">
-    <div>
-      <div class="revoked-name">🚫 ${k}</div>
-      <div style="font-size:11px;color:var(--muted);">${revokedAdmins[k].reason} — ${revokedAdmins[k].date}</div>
-    </div>
+    <div><div class="revoked-name">🚫 ${k}</div><div style="font-size:11px;color:var(--muted);">${revokedAdmins[k].reason} — ${revokedAdmins[k].date}</div></div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
       <span class="revoked-badge">RÉVOQUÉ</span>
       <button class="btn-restore" onclick="restoreAdmin('${k}')">Restaurer</button>
     </div>
   </div>`).join('');
 }
+
 function restoreAdmin(name) {
   if (!founderLoggedIn) return;
   if (!confirm(`Restaurer les droits admin de "${name}" ?`)) return;
   delete revokedAdmins[name];
+  lsSet(LS_KEYS.revokedAdmins, revokedAdmins);
   renderRevokedAdmins();
   showBanToastMsg(`✅ ${name} restauré`);
 }
@@ -1640,124 +1724,120 @@ document.querySelectorAll('.modal-overlay').forEach(m => {
   m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
 });
 
-/* ═══ STREAM ═══ */
+/* ══════════════════════════════════════════
+   STREAM — avec sync
+══════════════════════════════════════════ */
 function setStream() {
   const url = document.getElementById('stream-url-input').value.trim();
   if (!url) { alert('Entre une URL de stream.'); return; }
   const label = document.getElementById('match-label-input').value.trim();
-  const box = document.getElementById('stream-box');
-  document.getElementById('no-stream-msg').style.display = 'none';
-  document.getElementById('stream-info-bar').style.display = 'flex';
-  const badge = document.getElementById('live-status-badge');
-  badge.className = 'live-badge'; badge.textContent = '🔴 EN DIRECT';
-  const old = document.getElementById('active-player');
-  if (old) old.remove();
-  if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-  if (url.includes('.m3u8')) {
-    const video = document.createElement('video');
-    video.id='active-player'; video.controls=true; video.autoplay=true;
-    video.style.cssText='width:100%;height:100%;background:#000;';
-    box.appendChild(video);
-    if (window.Hls && Hls.isSupported()) { hlsInstance=new Hls(); hlsInstance.loadSource(url); hlsInstance.attachMedia(video); }
-    else if (video.canPlayType('application/vnd.apple.mpegurl')) video.src=url;
-  } else {
-    const iframe = document.createElement('iframe');
-    iframe.id='active-player'; iframe.src=url; iframe.allowFullscreen=true;
-    iframe.allow='autoplay; fullscreen';
-    iframe.style.cssText='width:100%;height:100%;border:none;';
-    box.appendChild(iframe);
-  }
-  if (label) document.getElementById('match-label-display').textContent = label;
+  const state = { url, label, active: true };
+  lsSet(LS_KEYS.stream, state);
+  broadcast('stream_update', state);
+  applyStreamState(state);
   streamStartTime = Date.now();
-  document.getElementById('stats-section').style.display = 'block';
-  if (!streamDurationInterval) streamDurationInterval = setInterval(updateDuration, 1000);
   // Auto-notif
   if (document.getElementById('toggle-auto-notif').checked) {
     const notifTitle = label ? `🔴 ${label} — En direct !` : '🔴 Diffusion en cours !';
     sendNotification(notifTitle, 'Le match est en direct sur Football Zone France. Rejoins-nous !');
   }
 }
+
 function stopStream() {
-  const old = document.getElementById('active-player');
-  if (old) old.remove();
-  if (hlsInstance) { hlsInstance.destroy(); hlsInstance=null; }
-  document.getElementById('no-stream-msg').style.display = 'flex';
-  document.getElementById('stream-info-bar').style.display = 'none';
-  const badge = document.getElementById('live-status-badge');
-  badge.className='live-no-stream-badge'; badge.textContent='HORS LIGNE';
+  lsSet(LS_KEYS.stream, { active: false });
+  broadcast('stream_stop');
+  applyStreamStop();
   streamStartTime = null;
-  document.getElementById('stats-section').style.display = 'none';
-  if (streamDurationInterval) { clearInterval(streamDurationInterval); streamDurationInterval=null; }
-  document.getElementById('stat-duration').textContent = '00:00';
-}
-function updateDuration() {
-  if (!streamStartTime) return;
-  const e=Math.floor((Date.now()-streamStartTime)/1000);
-  document.getElementById('stat-duration').textContent=Math.floor(e/60).toString().padStart(2,'0')+':'+(e%60).toString().padStart(2,'0');
 }
 
-/* ═══ COUNTDOWN ═══ */
+function updateDuration() {
+  if (!streamStartTime) return;
+  const e = Math.floor((Date.now() - streamStartTime) / 1000);
+  const el = document.getElementById('stat-duration');
+  if (el) el.textContent = Math.floor(e/60).toString().padStart(2,'0') + ':' + (e%60).toString().padStart(2,'0');
+}
+
+function resetStats() {
+  streamStartTime = Date.now();
+  lsSet(LS_KEYS.peakViewers, getRealVisitorCount());
+  lsSet(LS_KEYS.totalJoins, getRealVisitorCount());
+  updateRealViewerCount();
+}
+
+/* ══════════════════════════════════════════
+   COUNTDOWN — avec sync
+══════════════════════════════════════════ */
 function toggleCountdownAdmin(enabled) {
   document.getElementById('countdown-config').style.display = enabled ? 'block' : 'none';
   if (!enabled) {
     document.getElementById('countdown-banner').classList.remove('visible');
-    if (countdownInterval) { clearInterval(countdownInterval); countdownInterval=null; }
+    if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+    lsSet(LS_KEYS.countdown, { active: false });
+    broadcast('countdown_update', { active: false });
   }
 }
+
 function setCountdownTime() {
   const dt = document.getElementById('countdown-datetime').value;
   const name = document.getElementById('countdown-match-name').value.trim();
   if (!dt) { alert('Sélectionne une date.'); return; }
-  countdownTarget = new Date(dt).getTime();
-  if (name) document.getElementById('countdown-match-display').textContent = name;
-  document.getElementById('countdown-banner').classList.add('visible');
-  if (countdownInterval) clearInterval(countdownInterval);
-  countdownInterval = setInterval(updateCountdown, 1000);
-  updateCountdown();
+  const target = new Date(dt).getTime();
+  const state = { target, matchName: name, active: true };
+  lsSet(LS_KEYS.countdown, state);
+  broadcast('countdown_update', state);
+  applyCountdownState(state);
 }
+
 function updateCountdown() {
   if (!countdownTarget) return;
   const diff = countdownTarget - Date.now();
   if (diff <= 0) {
-    document.getElementById('countdown-units').style.display='none';
-    document.getElementById('countdown-ended').style.display='block';
+    document.getElementById('countdown-units').style.display = 'none';
+    document.getElementById('countdown-ended').style.display = 'block';
     clearInterval(countdownInterval);
     return;
   }
-  document.getElementById('countdown-units').style.display='flex';
-  document.getElementById('countdown-ended').style.display='none';
+  document.getElementById('countdown-units').style.display = 'flex';
+  document.getElementById('countdown-ended').style.display = 'none';
   const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
-  document.getElementById('cd-days').textContent=String(d).padStart(2,'0');
-  document.getElementById('cd-hours').textContent=String(h).padStart(2,'0');
-  document.getElementById('cd-mins').textContent=String(m).padStart(2,'0');
-  document.getElementById('cd-secs').textContent=String(s).padStart(2,'0');
+  document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
 }
 
-/* ═══ PLANNING ═══ */
+/* ══════════════════════════════════════════
+   PLANNING — avec sync
+══════════════════════════════════════════ */
 function addPlanningMatch() {
   const match = document.getElementById('plan-match').value.trim();
   const date = document.getElementById('plan-date').value;
   const comp = document.getElementById('plan-comp').value.trim();
   const discord = document.getElementById('plan-discord').checked;
   if (!match || !date) { alert('Entre le nom du match et la date.'); return; }
-  const item = { id: Date.now(), match, date, comp, discord };
-  planningMatches.push(item);
+  planningMatches.push({ id: Date.now(), match, date, comp, discord });
   planningMatches.sort((a,b) => new Date(a.date)-new Date(b.date));
-  document.getElementById('plan-match').value='';
-  document.getElementById('plan-date').value='';
-  document.getElementById('plan-comp').value='';
+  document.getElementById('plan-match').value = '';
+  document.getElementById('plan-date').value = '';
+  document.getElementById('plan-comp').value = '';
+  lsSet(LS_KEYS.planning, planningMatches);
+  broadcast('planning_update', planningMatches);
   renderPlanning();
 }
+
 function removePlanningMatch(id) {
   planningMatches = planningMatches.filter(m => m.id !== id);
+  lsSet(LS_KEYS.planning, planningMatches);
+  broadcast('planning_update', planningMatches);
   renderPlanning();
 }
+
 function renderPlanning() {
   const adminList = document.getElementById('admin-planning-list');
   const publicGrid = document.getElementById('planning-public-grid');
   if (!planningMatches.length) {
-    adminList.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun match planifié.</div>';
-    publicGrid.innerHTML='<div class="planning-empty">Aucun match planifié pour le moment. Restez connectés !</div>';
+    adminList.innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun match planifié.</div>';
+    publicGrid.innerHTML = '<div class="planning-empty">Aucun match planifié pour le moment. Restez connectés !</div>';
     return;
   }
   adminList.innerHTML = planningMatches.map(m => {
@@ -1775,7 +1855,7 @@ function renderPlanning() {
   }).join('');
   publicGrid.innerHTML = planningMatches.map(m => {
     const d = new Date(m.date);
-    const isLive = Math.abs(d-Date.now())<7200000;
+    const isLive = Math.abs(d-Date.now()) < 7200000;
     const dateStr = d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}) + ' à ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
     return `<div class="planning-public-card${isLive?' is-live':''}">
       <div class="planning-card-top">
@@ -1793,27 +1873,25 @@ function renderPlanning() {
   }).join('');
 }
 
-/* ═══ LIVE CHAT ═══ */
+/* ══════════════════════════════════════════
+   LIVE CHAT — avec sync
+══════════════════════════════════════════ */
 function toggleLiveChat(enabled) {
-  liveChatEnabled = enabled;
-  const overlay = document.getElementById('chat-disabled-overlay');
-  const inputs = document.getElementById('live-chat-inputs');
-  if (enabled) {
-    overlay.style.display='none';
-    inputs.style.display='flex';
-    if (pinnedMsg) appendLiveChatMsg('system','',`📌 ${pinnedMsg}`,'');
-    appendLiveChatMsg('system','','🟢 Chat activé. Bienvenue !','');
-  } else {
-    overlay.style.display='flex';
-    inputs.style.display='none';
-  }
+  lsSet(LS_KEYS.chat, { enabled });
+  broadcast('chat_toggle', { enabled });
+  applyChatToggle(enabled);
 }
-function appendLiveChatMsg(type, username, text, time, allowBan=false) {
+
+const chatColors = ['#60a5fa','#f87171','#4ade80','#fbbf24','#a78bfa','#fb923c','#34d399','#f472b6'];
+
+// FIX: silent = true évite de ré-ajouter les msgs chargés depuis localStorage
+function appendLiveChatMsg(type, username, text, time, allowBan=false, silent=false) {
   if (type !== 'system' && type !== 'admin' && bannedUsers[username]) return;
   const area = document.getElementById('live-chat-msgs');
   const div = document.createElement('div');
   div.className = 'chat-msg' + (type==='system'?' system':'') + (type==='admin'?' admin-reply':'');
   div.dataset.username = username;
+
   if (type === 'system') {
     div.innerHTML = `<div class="chat-msg-text">${text}</div>`;
   } else if (type === 'admin') {
@@ -1843,8 +1921,16 @@ function appendLiveChatMsg(type, username, text, time, allowBan=false) {
   }
   area.appendChild(div);
   area.scrollTop = area.scrollHeight;
-  chatMsgCount++;
+
+  // Sauvegarder dans localStorage (sauf messages système générés automatiquement)
+  if (!silent && type !== 'system') {
+    const msgs = lsGet(LS_KEYS.chatMsgs, []);
+    msgs.push({ type, username, text, time });
+    if (msgs.length > 200) msgs.splice(0, msgs.length - 200); // garder 200 max
+    lsSet(LS_KEYS.chatMsgs, msgs);
+  }
 }
+
 function sendLiveMsg() {
   if (!liveChatEnabled) return;
   const nick = document.getElementById('chat-nickname').value.trim();
@@ -1857,41 +1943,39 @@ function sendLiveMsg() {
   }
   if (!msg) return;
   if (bannedUsers[nick]) {
-    document.getElementById('live-chat-input').value='';
+    document.getElementById('live-chat-input').value = '';
     appendLiveChatMsg('system','','🚫 Tu as été banni du chat.','');
     return;
   }
-  document.getElementById('live-chat-input').value='';
+  document.getElementById('live-chat-input').value = '';
   const now = new Date();
-  const time = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  const msgData = { type:'user', username:nick, text:msg, time };
   appendLiveChatMsg('user', nick, msg, time, true);
-  if (Math.random()>.65) {
-    const fakeUsers=['Mehdi_93','ThomasB','KarimFoot','LucasDiaz','FabioFR','Alexis17','GwenFZF','Sami_Lyon','RafFoot','YacineFZF'];
-    const fakeMsgs=['🔥🔥🔥','Allez !!!','Ouais le goallll !!!','Trop bien ce stream !','Merci FZF 🙏','Y a qui ce soir ?','La qualité est top !','On tient le résultat !','VAMOS !','Incroyable ce match !','🎉🎉','C\'est énorme !'];
-    setTimeout(() => {
-      const u=fakeUsers[Math.floor(Math.random()*fakeUsers.length)];
-      const m2=fakeMsgs[Math.floor(Math.random()*fakeMsgs.length)];
-      const t2=new Date();
-      appendLiveChatMsg('user',u,m2,t2.getHours().toString().padStart(2,'0')+':'+t2.getMinutes().toString().padStart(2,'0'),true);
-    }, 1200+Math.random()*2000);
-  }
+  broadcast('chat_message', msgData);
 }
+
 function sendAdminLiveReply() {
   if (!adminLoggedIn) return;
   const msg = document.getElementById('admin-live-reply-input').value.trim();
   if (!msg) return;
-  document.getElementById('admin-live-reply-input').value='';
+  document.getElementById('admin-live-reply-input').value = '';
   const now = new Date();
-  const time = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-  appendLiveChatMsg('admin','Admin',msg,time,false);
-}
-function clearLiveChat() {
-  if (!confirm('Vider tout le chat ?')) return;
-  document.getElementById('live-chat-msgs').innerHTML='<div class="chat-msg system"><div class="chat-msg-text">💬 Chat vidé par l\'admin.</div></div>';
-  chatMsgCount = 0;
+  const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  const msgData = { type:'admin', username:'Admin FZF', text:msg, time };
+  appendLiveChatMsg('admin','Admin FZF',msg,time,false);
+  broadcast('chat_message', msgData);
 }
 
-/* ═══ BAN SYSTEM ═══ */
+function clearLiveChat() {
+  if (!confirm('Vider tout le chat ?')) return;
+  broadcast('chat_clear');
+  applyChatClear();
+}
+
+/* ══════════════════════════════════════════
+   BAN SYSTEM — avec sync
+══════════════════════════════════════════ */
 function openBanModal(username, msgEl) {
   if (!adminLoggedIn) return;
   pendingBanUsername = username;
@@ -1909,12 +1993,15 @@ function selectBanReason(el, reason) {
 function confirmBan() {
   if (!pendingBanUsername || !selectedBanReason) { alert('Sélectionne une raison.'); return; }
   bannedUsers[pendingBanUsername] = selectedBanReason;
-  if (pendingBanMsgEl) pendingBanMsgEl.style.opacity='0.3';
+  if (pendingBanMsgEl) pendingBanMsgEl.style.opacity = '0.3';
   closeModal('modal-ban');
+  lsSet(LS_KEYS.bans, bannedUsers);
+  broadcast('ban_update', bannedUsers);
   renderBanList();
   showBanToastMsg(`🚫 ${pendingBanUsername} banni`);
   appendLiveChatMsg('system','',`🚫 ${pendingBanUsername} a été banni (${selectedBanReason}).`,'');
-  pendingBanUsername=''; pendingBanMsgEl=null;
+  broadcast('announce', { text: `🚫 ${pendingBanUsername} a été banni (${selectedBanReason}).` });
+  pendingBanUsername = ''; pendingBanMsgEl = null;
 }
 function renderBanList() {
   const list = document.getElementById('ban-list-admin');
@@ -1925,10 +2012,20 @@ function renderBanList() {
     <button class="btn-unban" onclick="unban('${u}')">Débannir</button>
   </div>`).join('');
 }
-function unban(username) { delete bannedUsers[username]; renderBanList(); }
-function clearAllBans() { if (!confirm('Supprimer tous les bans ?')) return; bannedUsers={}; renderBanList(); }
+function unban(username) {
+  delete bannedUsers[username];
+  lsSet(LS_KEYS.bans, bannedUsers);
+  broadcast('ban_update', bannedUsers);
+  renderBanList();
+}
+function clearAllBans() {
+  if (!confirm('Supprimer tous les bans ?')) return;
+  bannedUsers = {};
+  lsSet(LS_KEYS.bans, {});
+  broadcast('ban_update', {});
+  renderBanList();
+}
 
-/* Toast générique */
 function showBanToastMsg(msg) {
   const t = document.getElementById('ban-toast');
   t.textContent = msg;
@@ -1936,22 +2033,34 @@ function showBanToastMsg(msg) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-/* ═══ PINNED + ANNOUNCE ═══ */
+/* ══════════════════════════════════════════
+   PINNED + ANNOUNCE — avec sync
+══════════════════════════════════════════ */
 function setPinnedMsg() {
   const msg = document.getElementById('pinned-msg-input').value.trim();
   if (!msg) return;
   pinnedMsg = msg;
+  lsSet(LS_KEYS.pinnedMsg, msg);
+  broadcast('pinned_update', { msg });
   if (liveChatEnabled) appendLiveChatMsg('system','',`📌 Message épinglé : ${msg}`,'');
 }
-function clearPinnedMsg() { pinnedMsg=''; document.getElementById('pinned-msg-input').value=''; }
+function clearPinnedMsg() {
+  pinnedMsg = '';
+  lsSet(LS_KEYS.pinnedMsg, '');
+  document.getElementById('pinned-msg-input').value = '';
+  broadcast('pinned_update', { msg: '' });
+}
 function sendAnnounce() {
   const msg = document.getElementById('announce-input').value.trim();
   if (!msg) return;
   appendLiveChatMsg('system','',`📢 Admin : ${msg}`,'');
-  document.getElementById('announce-input').value='';
+  broadcast('announce', { text: `📢 Admin : ${msg}` });
+  document.getElementById('announce-input').value = '';
 }
 
-/* ═══ SYSTÈME NOTIFICATIONS PUSH ═══ */
+/* ══════════════════════════════════════════
+   FIX NOTIFICATIONS PUSH — toast qui se ferme
+══════════════════════════════════════════ */
 function requestNotifPermission() {
   if (!('Notification' in window)) {
     alert('Ton navigateur ne supporte pas les notifications push.');
@@ -1963,51 +2072,48 @@ function requestNotifPermission() {
       document.getElementById('notif-cta-bar').style.display = 'none';
       document.getElementById('notif-enabled-bar').style.display = 'block';
       document.getElementById('notif-sub-count').textContent = '1';
-      // Notification de confirmation
       new Notification('🎉 Notifications FZF activées !', {
         body: 'Tu recevras une alerte dès qu\'un match commence en direct.',
-        icon: 'logo.png',
-        badge: 'logo.png',
-        tag: 'fzf-welcome'
+        icon: 'logo.png', tag: 'fzf-welcome'
       });
     } else if (perm === 'denied') {
       alert('Tu as refusé les notifications. Tu peux les réactiver dans les paramètres de ton navigateur.');
     }
   });
 }
+
 function dismissNotifBar() {
   document.getElementById('notif-cta-bar').style.display = 'none';
   localStorage.setItem('fzf-notif-dismissed', '1');
 }
-// Vérifier si déjà accepté ou refusé
+
 window.addEventListener('load', () => {
-  if (Notification.permission === 'granted') {
-    document.getElementById('notif-cta-bar').style.display = 'none';
-    document.getElementById('notif-enabled-bar').style.display = 'block';
-    document.getElementById('notif-sub-count').textContent = '1';
-  } else if (localStorage.getItem('fzf-notif-dismissed') || Notification.permission === 'denied') {
-    document.getElementById('notif-cta-bar').style.display = 'none';
+  if (typeof Notification !== 'undefined') {
+    if (Notification.permission === 'granted') {
+      document.getElementById('notif-cta-bar').style.display = 'none';
+      document.getElementById('notif-enabled-bar').style.display = 'block';
+      document.getElementById('notif-sub-count').textContent = '1';
+    } else if (localStorage.getItem('fzf-notif-dismissed') || Notification.permission === 'denied') {
+      document.getElementById('notif-cta-bar').style.display = 'none';
+    }
   }
 });
 
 function sendNotification(title, body) {
-  if (Notification.permission === 'granted') {
+  if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
     try {
       const n = new Notification(title, {
-        body: body,
-        icon: 'logo.png',
-        badge: 'logo.png',
-        tag: 'fzf-live-' + Date.now(),
-        requireInteraction: true
+        body, icon: 'logo.png', badge: 'logo.png',
+        tag: 'fzf-live-' + Date.now(), requireInteraction: true
       });
       n.onclick = () => { window.focus(); n.close(); showPage('live'); };
       notifSentCount++;
       document.getElementById('notif-sent-count').textContent = notifSentCount;
     } catch(e) {}
   }
-  // Toujours afficher le toast in-app
   showPushToast(title, body);
 }
+
 function sendAdminNotif() {
   if (!adminLoggedIn) return;
   const title = document.getElementById('notif-title-input').value.trim() || '🔴 Diffusion FZF en cours !';
@@ -2017,30 +2123,48 @@ function sendAdminNotif() {
   document.getElementById('notif-body-input').value = '';
   showBanToastMsg('🔔 Notification envoyée !');
 }
+
 function previewNotif() {
   const title = document.getElementById('notif-title-input').value.trim() || '🔴 Aperçu notification';
   const body = document.getElementById('notif-body-input').value.trim() || 'Voici à quoi ressemblera ta notification.';
   showPushToast(title, body);
 }
+
+/* FIX PRINCIPAL: Toast notification qui se ferme correctement */
 function showPushToast(title, body) {
+  // Annuler tout timer précédent
+  if (pushToastTimer) {
+    clearTimeout(pushToastTimer);
+    pushToastTimer = null;
+  }
   document.getElementById('push-preview-title').textContent = title;
   document.getElementById('push-preview-body').textContent = body;
   const toast = document.getElementById('push-preview-toast');
+  // Forcer un reflow pour que la transition fonctionne même si déjà .show
+  toast.classList.remove('show');
+  void toast.offsetWidth; // reflow
   toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 6000);
-}
-function dismissPushToast() {
-  document.getElementById('push-preview-toast').classList.remove('show');
+  // Auto-dismiss après 6 secondes
+  pushToastTimer = setTimeout(() => {
+    dismissPushToast();
+  }, 6000);
 }
 
-/* ═══ CHATBOT TOGGLE ═══ */
+function dismissPushToast() {
+  if (pushToastTimer) { clearTimeout(pushToastTimer); pushToastTimer = null; }
+  const toast = document.getElementById('push-preview-toast');
+  toast.classList.remove('show');
+}
+
+/* ══════════════════════════════════════════
+   CHATBOT TOGGLE
+══════════════════════════════════════════ */
 function toggleChatbot(enabled) {
   chatbotEnabled = enabled;
   document.getElementById('chat-btn').style.display = enabled ? 'flex' : 'none';
   if (!enabled && chatOpen) toggleChat();
 }
 
-/* ═══ ADMIN CHATBOT REPLY MODE ═══ */
 function toggleAdminChatbotReply(enabled) {
   adminChatbotReplyEnabled = enabled;
   document.getElementById('admin-chatbot-reply').classList.toggle('visible', enabled);
@@ -2051,7 +2175,7 @@ function sendAdminChatbotReply() {
   if (!adminLoggedIn) return;
   const msg = document.getElementById('admin-chatbot-reply-input').value.trim();
   if (!msg) return;
-  document.getElementById('admin-chatbot-reply-input').value='';
+  document.getElementById('admin-chatbot-reply-input').value = '';
   appendChatbotAdminMsg(msg);
 }
 function appendChatbotAdminMsg(text) {
@@ -2063,38 +2187,42 @@ function appendChatbotAdminMsg(text) {
   msgs.scrollTop = msgs.scrollHeight;
 }
 
-/* ═══ REVIEWS ═══ */
+/* ══════════════════════════════════════════
+   REVIEWS
+══════════════════════════════════════════ */
 let selectedRating = 0;
 function setRating(n) {
-  selectedRating=n;
-  for(let i=1;i<=5;i++) document.getElementById('star-'+i).classList.toggle('active',i<=n);
+  selectedRating = n;
+  for(let i=1;i<=5;i++) document.getElementById('star-'+i).classList.toggle('active', i<=n);
 }
 function submitReview() {
-  const name=document.getElementById('review-name').value.trim();
-  const text=document.getElementById('review-text').value.trim();
-  const plan=document.getElementById('review-plan').value;
-  if(!name){alert('Entre ton prénom.');return;}
-  if(!text){alert('Écris ton avis.');return;}
-  if(!selectedRating){alert('Donne une note.');return;}
-  const stars='⭐'.repeat(selectedRating);
-  const colors=['linear-gradient(135deg,#2563eb,#60a5fa)','linear-gradient(135deg,#dc2626,#f87171)','linear-gradient(135deg,#22c55e,#4ade80)','linear-gradient(135deg,#f59e0b,#fbbf24)','linear-gradient(135deg,#8b5cf6,#a78bfa)'];
-  const color=colors[Math.floor(Math.random()*colors.length)];
-  const card=document.createElement('div');
-  card.className='review-card';card.style.animation='msg-in 0.4s ease';
-  card.innerHTML=`<div class="review-stars">${stars}</div><p class="review-text">"${text}"</p><div class="review-author"><div class="review-avatar" style="background:${color};">${name.charAt(0).toUpperCase()}</div><div><div class="review-name">${name}</div><div class="review-plan">${plan}</div></div></div>`;
-  document.getElementById('reviews-grid').insertBefore(card,document.getElementById('reviews-grid').firstChild);
-  const wrapper=document.getElementById('review-form-wrapper');
-  wrapper.querySelectorAll('h4,p,.star-rating-label,.star-input,.form-row,.form-group,.btn-submit-review').forEach(el=>el.style.display='none');
-  document.getElementById('review-success').style.display='block';
-  setTimeout(()=>{
-    document.getElementById('review-success').style.display='none';
-    wrapper.querySelectorAll('h4,p,.star-rating-label,.star-input,.form-row,.form-group,.btn-submit-review').forEach(el=>el.style.display='');
-    document.getElementById('review-name').value='';document.getElementById('review-text').value='';
-    selectedRating=0;for(let i=1;i<=5;i++)document.getElementById('star-'+i).classList.remove('active');
-  },3500);
+  const name = document.getElementById('review-name').value.trim();
+  const text = document.getElementById('review-text').value.trim();
+  const plan = document.getElementById('review-plan').value;
+  if (!name) { alert('Entre ton prénom.'); return; }
+  if (!text) { alert('Écris ton avis.'); return; }
+  if (!selectedRating) { alert('Donne une note.'); return; }
+  const stars = '⭐'.repeat(selectedRating);
+  const colors = ['linear-gradient(135deg,#2563eb,#60a5fa)','linear-gradient(135deg,#dc2626,#f87171)','linear-gradient(135deg,#22c55e,#4ade80)','linear-gradient(135deg,#f59e0b,#fbbf24)','linear-gradient(135deg,#8b5cf6,#a78bfa)'];
+  const color = colors[Math.floor(Math.random()*colors.length)];
+  const card = document.createElement('div');
+  card.className = 'review-card'; card.style.animation = 'msg-in 0.4s ease';
+  card.innerHTML = `<div class="review-stars">${stars}</div><p class="review-text">"${text}"</p><div class="review-author"><div class="review-avatar" style="background:${color};">${name.charAt(0).toUpperCase()}</div><div><div class="review-name">${name}</div><div class="review-plan">${plan}</div></div></div>`;
+  document.getElementById('reviews-grid').insertBefore(card, document.getElementById('reviews-grid').firstChild);
+  const wrapper = document.getElementById('review-form-wrapper');
+  wrapper.querySelectorAll('h4,p,.star-rating-label,.star-input,.form-row,.form-group,.btn-submit-review').forEach(el => el.style.display='none');
+  document.getElementById('review-success').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('review-success').style.display = 'none';
+    wrapper.querySelectorAll('h4,p,.star-rating-label,.star-input,.form-row,.form-group,.btn-submit-review').forEach(el => el.style.display='');
+    document.getElementById('review-name').value = ''; document.getElementById('review-text').value = '';
+    selectedRating = 0; for(let i=1;i<=5;i++) document.getElementById('star-'+i).classList.remove('active');
+  }, 3500);
 }
 
-/* ═══ CHATBOT IA ═══ */
+/* ══════════════════════════════════════════
+   CHATBOT IA (Claude API)
+══════════════════════════════════════════ */
 const FZF_SYSTEM = `Tu es le bot officiel de Football Zone France (FZF), un service IPTV et streaming foot français.
 Réponds TOUJOURS en français. Sois sympathique, concis, enthousiaste et direct.
 INFORMATIONS CLÉS :
@@ -2138,11 +2266,11 @@ function appendUserMessage(text) {
 function showLoadingMsg() {
   const msgs = document.getElementById('chat-messages');
   const div = document.createElement('div');
-  div.className='msg-loading'; div.id='loading-msg';
-  div.innerHTML='<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-  msgs.appendChild(div); msgs.scrollTop=msgs.scrollHeight;
+  div.className = 'msg-loading'; div.id = 'loading-msg';
+  div.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
 }
-function removeLoadingMsg() { const el=document.getElementById('loading-msg'); if(el)el.remove(); }
+function removeLoadingMsg() { const el = document.getElementById('loading-msg'); if(el) el.remove(); }
 
 async function sendToClaudeAPI(userMessage) {
   chatHistory.push({ role: 'user', content: userMessage });
@@ -2167,7 +2295,7 @@ async function sendToClaudeAPI(userMessage) {
     } else {
       appendBotMessage('Désolé, une erreur est survenue. Reformule ta question ! 😅');
     }
-  } catch (err) {
+  } catch(err) {
     removeLoadingMsg();
     appendBotMessage('Connexion IA impossible. Contacte-nous sur <strong>discord.gg/ftzf</strong> 💬');
   }
@@ -2176,16 +2304,21 @@ function sendChat() {
   const input = document.getElementById('chat-input');
   const msg = input.value.trim();
   if (!msg) return;
-  input.value='';
+  input.value = '';
   appendUserMessage(msg);
-  document.getElementById('quick-section').style.display='none';
+  document.getElementById('quick-section').style.display = 'none';
   sendToClaudeAPI(msg);
 }
 function quickAsk(question) {
   appendUserMessage(question);
-  document.getElementById('quick-section').style.display='none';
+  document.getElementById('quick-section').style.display = 'none';
   sendToClaudeAPI(question);
 }
+
+/* ══════════════════════════════════════════
+   INIT — Charger l'état partagé au démarrage
+══════════════════════════════════════════ */
+loadSharedState();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
 </body>
