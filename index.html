@@ -76,7 +76,7 @@
     #page-live { padding-top: 64px; min-height: 100vh; background: var(--dark); }
     .live-main-layout { display: flex; min-height: calc(100vh - 64px); }
     .admin-sidebar { width: 0; overflow: hidden; background: var(--admin-bg); border-right: 1px solid var(--admin-border); transition: width 0.35s cubic-bezier(0.4,0,0.2,1); flex-shrink: 0; display: flex; flex-direction: column; }
-    .admin-sidebar.open { width: 380px; overflow-y: auto; overflow-x: hidden; }
+    .admin-sidebar.open { width: 390px; overflow-y: auto; overflow-x: hidden; }
     .admin-sidebar::-webkit-scrollbar { width: 3px; }
     .admin-sidebar::-webkit-scrollbar-thumb { background: rgba(37,99,235,0.3); border-radius: 3px; }
     .admin-sidebar.founder-mode { border-right-color: rgba(168,85,247,0.35); }
@@ -159,11 +159,6 @@
     .admin-logged-as::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
     .founder-logged-as { font-size: 12px; color: #c084fc; display: flex; align-items: center; gap: 6px; }
     .founder-logged-as::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #c084fc; animation: pulse-dot 2s infinite; }
-    .founder-panel-wrapper { background: var(--founder-bg); border: 1px solid var(--founder-border); border-radius: 12px; margin: 12px; overflow: hidden; }
-    .founder-panel-header { background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(168,85,247,0.06)); padding: 12px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(168,85,247,0.2); }
-    .founder-crown { font-size: 20px; }
-    .founder-panel-title { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; color: #c084fc; }
-    .founder-panel-subtitle { font-size: 10px; color: rgba(168,85,247,0.7); font-weight: 700; letter-spacing: 0.5px; }
     .staff-item { background: rgba(37,99,235,0.07); border: 1px solid rgba(37,99,235,0.15); border-radius: 9px; padding: 10px 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
     .staff-item-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #60a5fa); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: white; flex-shrink: 0; }
     .staff-item-info { flex: 1; min-width: 0; }
@@ -205,32 +200,18 @@
     .notif-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: #60a5fa; }
     .notif-stat-label { font-size: 9px; font-weight: 800; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
 
-    /* FIX: Toast notification — position fixe, disparaît correctement */
     .push-preview-toast {
-      position: fixed;
-      top: 80px;
-      left: 50%;
+      position: fixed; top: 80px; left: 50%;
       transform: translateX(-50%) translateY(-200px);
-      background: var(--dark2);
-      border: 1px solid rgba(37,99,235,0.4);
-      border-radius: 14px;
-      padding: 14px 20px;
-      z-index: 9999;
+      background: var(--dark2); border: 1px solid rgba(37,99,235,0.4);
+      border-radius: 14px; padding: 14px 20px; z-index: 9999;
       transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
-      width: 340px;
-      max-width: calc(100vw - 40px);
+      width: 340px; max-width: calc(100vw - 40px);
       box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      opacity: 0;
-      pointer-events: none;
+      display: flex; align-items: flex-start; gap: 12px;
+      opacity: 0; pointer-events: none;
     }
-    .push-preview-toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-      pointer-events: all;
-    }
+    .push-preview-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: all; }
     .push-preview-icon { font-size: 28px; flex-shrink: 0; }
     .push-preview-content { flex: 1; }
     .push-preview-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 3px; }
@@ -244,12 +225,9 @@
     .live-topbar-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; color: var(--text); display: flex; align-items: center; gap: 12px; flex: 1; }
     .live-badge { background: var(--red); padding: 3px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; letter-spacing: 1px; animation: pulse-dot 1.5s infinite; }
     .live-no-stream-badge { background: var(--card-bg); border: 1px solid var(--border); padding: 3px 12px; border-radius: 6px; font-size: 12px; color: var(--muted); font-weight: 600; }
-
-    /* Visiteurs réels — admin seulement */
     .real-viewers-pill { display: none; align-items: center; gap: 7px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: #10b981; }
     .real-viewers-pill.visible { display: flex; }
     .real-viewers-dot { width: 7px; height: 7px; border-radius: 50%; background: #10b981; animation: pulse-dot 1.5s infinite; }
-
     .btn-admin-toggle { padding: 9px 18px; border-radius: 9px; border: 1px solid rgba(37,99,235,0.35); background: rgba(37,99,235,0.1); color: #60a5fa; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Barlow', sans-serif; display: flex; align-items: center; gap: 6px; }
     .btn-admin-toggle:hover { background: rgba(37,99,235,0.2); }
     .btn-admin-toggle.active { background: rgba(37,99,235,0.25); border-color: rgba(37,99,235,0.55); }
@@ -498,7 +476,20 @@
     .admin-chatbot-reply-send { padding: 8px 16px; border-radius: 20px; border: none; background: #f59e0b; color: black; font-size: 12px; font-weight: 800; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; white-space: nowrap; }
     .admin-chatbot-reply-send:hover { background: #d97706; }
 
-    /* Indicateur de sync */
+    /* Admin chatbot monitor panel */
+    .chatbot-monitor-panel { background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; max-height: 280px; overflow-y: auto; }
+    .chatbot-monitor-panel::-webkit-scrollbar { width: 3px; }
+    .chatbot-monitor-panel::-webkit-scrollbar-thumb { background: rgba(251,191,36,0.3); border-radius: 3px; }
+    .chatbot-monitor-header { padding: 8px 12px; background: rgba(251,191,36,0.08); border-bottom: 1px solid rgba(251,191,36,0.15); display: flex; align-items: center; justify-content: space-between; }
+    .chatbot-monitor-title { font-size: 10px; font-weight: 800; color: #fbbf24; letter-spacing: 1px; text-transform: uppercase; }
+    .chatbot-monitor-count { font-size: 10px; color: var(--muted); }
+    .chatbot-monitor-item { padding: 8px 12px; border-bottom: 1px solid rgba(251,191,36,0.07); font-size: 12px; }
+    .chatbot-monitor-item:last-child { border-bottom: none; }
+    .chatbot-monitor-user { font-weight: 700; color: #fbbf24; margin-bottom: 2px; }
+    .chatbot-monitor-text { color: var(--muted); line-height: 1.4; }
+    .chatbot-monitor-empty { padding: 16px 12px; text-align: center; font-size: 12px; color: var(--muted); }
+
+    /* Sync indicator */
     .sync-indicator { position: fixed; bottom: 100px; left: 20px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); border-radius: 20px; padding: 6px 12px; font-size: 11px; color: #4ade80; font-weight: 700; display: flex; align-items: center; gap: 6px; z-index: 50; opacity: 0; transition: opacity 0.5s; pointer-events: none; }
     .sync-indicator.show { opacity: 1; }
     .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse-dot 1s infinite; }
@@ -517,7 +508,6 @@
 
 <div class="ban-toast" id="ban-toast">🚫 Utilisateur banni</div>
 
-<!-- FIX: Toast notification avec dismiss correct -->
 <div class="push-preview-toast" id="push-preview-toast">
   <div class="push-preview-icon">📺</div>
   <div class="push-preview-content">
@@ -528,7 +518,6 @@
   <button class="push-preview-close" onclick="dismissPushToast()" title="Fermer">✕</button>
 </div>
 
-<!-- Indicateur sync -->
 <div class="sync-indicator" id="sync-indicator">
   <span class="sync-dot"></span> Synchronisé
 </div>
@@ -617,32 +606,17 @@
         <div class="a-section" id="stats-section" style="display:none;">
           <div class="a-section-title"><span class="dot"></span>Statistiques en direct</div>
           <div class="stats-grid-2">
-            <div class="stat-card">
-              <div class="stat-card-num" id="stat-current" style="color:#f87171;">0</div>
-              <div class="stat-card-label">Visiteurs réels</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-card-num" id="stat-peak" style="color:#fbbf24;">0</div>
-              <div class="stat-card-label">Pic max</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-card-num" id="stat-duration" style="color:#4ade80;font-size:20px;">00:00</div>
-              <div class="stat-card-label">Durée live</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-card-num" id="stat-joins" style="color:#60a5fa;">0</div>
-              <div class="stat-card-label">Connexions</div>
-            </div>
+            <div class="stat-card"><div class="stat-card-num" id="stat-current" style="color:#f87171;">0</div><div class="stat-card-label">Visiteurs réels</div></div>
+            <div class="stat-card"><div class="stat-card-num" id="stat-peak" style="color:#fbbf24;">0</div><div class="stat-card-label">Pic max</div></div>
+            <div class="stat-card"><div class="stat-card-num" id="stat-duration" style="color:#4ade80;font-size:20px;">00:00</div><div class="stat-card-label">Durée live</div></div>
+            <div class="stat-card"><div class="stat-card-num" id="stat-joins" style="color:#60a5fa;">0</div><div class="stat-card-label">Connexions</div></div>
           </div>
           <button class="a-btn-full a-btn-danger" onclick="resetStats()" style="margin-top:10px;font-size:12px;padding:8px;">🔄 Réinitialiser</button>
         </div>
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Compte à rebours</div>
           <div class="a-toggle-row">
-            <div class="a-toggle-info">
-              <div class="a-toggle-label">Activer le compte à rebours</div>
-              <div class="a-toggle-desc">Affiche un timer avant le match</div>
-            </div>
+            <div class="a-toggle-info"><div class="a-toggle-label">Activer le compte à rebours</div><div class="a-toggle-desc">Affiche un timer avant le match</div></div>
             <label class="toggle-switch"><input type="checkbox" id="toggle-countdown" onchange="toggleCountdownAdmin(this.checked)"><span class="toggle-slider"></span></label>
           </div>
           <div id="countdown-config" style="display:none;padding-top:12px;">
@@ -666,10 +640,7 @@
           <label class="a-label">Compétition</label>
           <input type="text" class="a-input" id="plan-comp" placeholder="Ex : Ligue 1" />
           <div class="a-toggle-row" style="margin-bottom:10px;">
-            <div class="a-toggle-info">
-              <div class="a-toggle-label">📡 Badge Discord</div>
-              <div class="a-toggle-desc">Afficher le lien Discord sur la carte</div>
-            </div>
+            <div class="a-toggle-info"><div class="a-toggle-label">📡 Badge Discord</div><div class="a-toggle-desc">Afficher le lien Discord sur la carte</div></div>
             <label class="toggle-switch"><input type="checkbox" id="plan-discord" checked><span class="toggle-slider"></span></label>
           </div>
           <button class="a-btn-full a-btn-primary" onclick="addPlanningMatch()">➕ Ajouter au planning</button>
@@ -685,17 +656,11 @@
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Paramètres du chat</div>
           <div class="a-toggle-row">
-            <div class="a-toggle-info">
-              <div class="a-toggle-label">💬 Activer le chat live</div>
-              <div class="a-toggle-desc">Permet aux visiteurs d'écrire</div>
-            </div>
+            <div class="a-toggle-info"><div class="a-toggle-label">💬 Activer le chat live</div><div class="a-toggle-desc">Permet aux visiteurs d'écrire</div></div>
             <label class="toggle-switch"><input type="checkbox" id="toggle-chat" onchange="toggleLiveChat(this.checked)"><span class="toggle-slider"></span></label>
           </div>
           <div class="a-toggle-row">
-            <div class="a-toggle-info">
-              <div class="a-toggle-label">🤖 Bot IA (chatbot)</div>
-              <div class="a-toggle-desc">Assistant sur le site</div>
-            </div>
+            <div class="a-toggle-info"><div class="a-toggle-label">🤖 Bot IA (chatbot)</div><div class="a-toggle-desc">Assistant sur le site</div></div>
             <label class="toggle-switch"><input type="checkbox" id="toggle-chatbot" onchange="toggleChatbot(this.checked)" checked><span class="toggle-slider"></span></label>
           </div>
         </div>
@@ -751,10 +716,7 @@
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Notification automatique</div>
           <div class="a-toggle-row">
-            <div class="a-toggle-info">
-              <div class="a-toggle-label">🚀 Auto-notif au démarrage du stream</div>
-              <div class="a-toggle-desc">Notifie automatiquement au lancement</div>
-            </div>
+            <div class="a-toggle-info"><div class="a-toggle-label">🚀 Auto-notif au démarrage du stream</div><div class="a-toggle-desc">Notifie automatiquement au lancement</div></div>
             <label class="toggle-switch"><input type="checkbox" id="toggle-auto-notif" checked><span class="toggle-slider"></span></label>
           </div>
         </div>
@@ -773,12 +735,17 @@
           </div>
         </div>
         <div class="a-section">
-          <div class="a-section-title"><span class="dot"></span>Répondre au chatbot IA</div>
-          <div class="a-toggle-row">
-            <div class="a-toggle-info">
-              <div class="a-toggle-label">🔓 Mode réponse admin</div>
-              <div class="a-toggle-desc">Affiche le champ dans le chatbot</div>
+          <div class="a-section-title"><span class="dot"></span>📋 Messages du chatbot IA (lecture admin)</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5;">Voici les questions posées au bot — active le mode réponse pour y répondre directement.</div>
+          <div class="chatbot-monitor-panel" id="chatbot-monitor-panel">
+            <div class="chatbot-monitor-header">
+              <span class="chatbot-monitor-title">🤖 Conversations Bot</span>
+              <span class="chatbot-monitor-count" id="chatbot-monitor-count">0 message(s)</span>
             </div>
+            <div id="chatbot-monitor-list"><div class="chatbot-monitor-empty">Aucune question posée au bot pour l'instant.</div></div>
+          </div>
+          <div class="a-toggle-row" style="margin-top:12px;">
+            <div class="a-toggle-info"><div class="a-toggle-label">🔓 Mode réponse admin (dans le bot)</div><div class="a-toggle-desc">Affiche le champ dans le chatbot</div></div>
             <label class="toggle-switch"><input type="checkbox" id="toggle-admin-reply" onchange="toggleAdminChatbotReply(this.checked)"><span class="toggle-slider"></span></label>
           </div>
         </div>
@@ -808,7 +775,6 @@
         </div>
         <div class="a-section">
           <div class="a-section-title"><span class="dot-purple"></span>Révoquer un rôle Admin</div>
-          <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px;">Saisir le nom du compte admin à révoquer définitivement.</div>
           <label class="a-label">Nom du compte admin</label>
           <input type="text" class="a-input founder-input" id="revoke-admin-name" placeholder="Ex : AdminDupont" maxlength="30" />
           <label class="a-label">Raison (obligatoire)</label>
@@ -849,13 +815,11 @@
         <span class="notif-enabled-pill">Notifications activées — tu seras alerté des prochaines diffusions</span>
       </div>
 
-      <!-- Top bar — FIX: plus de compteur public simulé -->
       <div class="live-topbar">
         <div class="live-topbar-title">
           📺 Match en Direct
           <span id="live-status-badge" class="live-no-stream-badge">HORS LIGNE</span>
         </div>
-        <!-- Visiteurs réels — admin/fondateur seulement -->
         <div class="real-viewers-pill" id="real-viewers-admin-pill">
           <span class="real-viewers-dot"></span>
           <span id="real-viewer-count-topbar">0</span> visiteurs réels
@@ -891,23 +855,16 @@
             <div class="icon-tv">📺</div>
             <h3>Aucun match en ce moment</h3>
             <p>Le prochain stream sera annoncé sur notre serveur Discord. Rejoins la communauté pour ne rien manquer !</p>
-            <a href="https://discord.gg/ftzf" class="btn-discord-chat" target="_blank">
-              <svg width="16" height="12" viewBox="0 0 18 14" fill="currentColor"><path d="M15.25 1.18A14.8 14.8 0 0 0 11.56 0c-.17.3-.36.7-.49 1.02a13.7 13.7 0 0 0-4.14 0A10.8 10.8 0 0 0 6.44 0 14.85 14.85 0 0 0 2.74 1.18 15.73 15.73 0 0 0 .02 11.36a14.94 14.94 0 0 0 4.57 2.31c.37-.5.7-1.04.98-1.6a9.7 9.7 0 0 1-1.54-.74c.13-.09.25-.19.37-.28a10.65 10.65 0 0 0 9.2 0c.12.1.25.19.37.28-.49.29-1 .54-1.54.74.28.56.61 1.1.98 1.6a14.9 14.9 0 0 0 4.57-2.31 15.7 15.7 0 0 0-2.73-10.18ZM6.01 9.28c-.89 0-1.63-.82-1.63-1.83s.72-1.84 1.63-1.84 1.65.83 1.63 1.84c0 1.01-.72 1.83-1.63 1.83Zm5.98 0c-.89 0-1.63-.82-1.63-1.83s.72-1.84 1.63-1.84 1.65.83 1.63 1.84c0 1.01-.72 1.83-1.63 1.83Z"/></svg>
-              Annonces Discord
-            </a>
+            <a href="https://discord.gg/ftzf" class="btn-discord-chat" target="_blank">Annonces Discord</a>
           </div>
         </div>
         <div class="stream-info-bar" id="stream-info-bar" style="display:none;">
           <span class="live-dot"></span>
           <span class="stream-match-label" id="match-label-display">Match en direct</span>
-          <a href="https://discord.gg/ftzf" class="btn-discord-chat" target="_blank">
-            <svg width="14" height="11" viewBox="0 0 18 14" fill="currentColor"><path d="M15.25 1.18A14.8 14.8 0 0 0 11.56 0c-.17.3-.36.7-.49 1.02a13.7 13.7 0 0 0-4.14 0A10.8 10.8 0 0 0 6.44 0 14.85 14.85 0 0 0 2.74 1.18 15.73 15.73 0 0 0 .02 11.36a14.94 14.94 0 0 0 4.57 2.31c.37-.5.7-1.04.98-1.6a9.7 9.7 0 0 1-1.54-.74c.13-.09.25-.19.37-.28a10.65 10.65 0 0 0 9.2 0c.12.1.25.19.37.28-.49.29-1 .54-1.54.74.28.56.61 1.1.98 1.6a14.9 14.9 0 0 0 4.57-2.31 15.7 15.7 0 0 0-2.73-10.18ZM6.01 9.28c-.89 0-1.63-.82-1.63-1.83s.72-1.84 1.63-1.84 1.65.83 1.63 1.84c0 1.01-.72 1.83-1.63 1.83Zm5.98 0c-.89 0-1.63-.82-1.63-1.83s.72-1.84 1.63-1.84 1.65.83 1.63 1.84c0 1.01-.72 1.83-1.63 1.83Z"/></svg>
-            Discord
-          </a>
+          <a href="https://discord.gg/ftzf" class="btn-discord-chat" target="_blank">Discord</a>
         </div>
       </div>
 
-      <!-- Player + Chat -->
       <div class="live-layout">
         <div></div>
         <div class="live-chat-panel" id="live-chat-panel">
@@ -932,7 +889,6 @@
         </div>
       </div>
 
-      <!-- Planning public -->
       <div class="planning-public" id="planning-public">
         <h3>📅 Prochains Matchs</h3>
         <div class="planning-public-grid" id="planning-public-grid">
@@ -1019,7 +975,7 @@
     <h3>❓ Questions Fréquentes</h3>
     <div class="faq-item"><h4>Comment accéder à l'IPTV après l'achat ?</h4><p>Après ta commande sur Discord, tu reçois les identifiants d'accès en message privé sous 24h maximum.</p></div>
     <div class="faq-item"><h4>Sur quels appareils puis-je utiliser l'IPTV ?</h4><p>Compatible TV (Android TV, Firestick, Apple TV), smartphone, tablette, PC — via une app IPTV standard.</p></div>
-    <div class="faq-item"><h4>Comment payer ?</h4><p>Paiement via PayPal, virement ou autre moyen à définir sur le Discord. Contacte un admin pour commander.</p></div>
+    <div class="faq-item"><h4>Comment payer ?</h4><p>Paiement via PayPal uniquement. Contacte un admin sur Discord pour commander et recevoir l'adresse PayPal.</p></div>
     <div class="faq-item"><h4>Le plan "À Vie" est vraiment à vie ?</h4><p>Oui — un paiement unique de 35€ te donne accès définitif, sans renouvellement ni frais cachés.</p></div>
   </div>
   <footer>© 2026 Football Zone France — Tous droits réservés</footer>
@@ -1042,7 +998,7 @@
 <div class="modal-overlay" id="modal-founder-login">
   <div class="founder-modal">
     <h3>👑 Accès Fondateur</h3>
-    <p>Espace réservé au fondateur de Football Zone France. Accès avec permissions élargies.</p>
+    <p>Espace réservé au fondateur de Football Zone France.</p>
     <input type="password" id="founder-password-input" placeholder="Mot de passe fondateur..." onkeydown="if(event.key==='Enter')checkFounderLogin()" />
     <div class="admin-error" id="founder-error">❌ Mot de passe incorrect</div>
     <div class="modal-btns">
@@ -1089,10 +1045,10 @@
     <div class="chat-quick-label">Questions fréquentes</div>
     <div class="chat-quick-btns">
       <button class="quick-btn" onclick="quickAsk('Quel est le prix des abonnements IPTV ?')">💶 Prix</button>
+      <button class="quick-btn" onclick="quickAsk('Comment payer ? Vous prenez PayPal ?')">💳 Paiement</button>
       <button class="quick-btn" onclick="quickAsk('Comment commander un abonnement ?')">🛒 Commander</button>
       <button class="quick-btn" onclick="quickAsk('Sur quels appareils fonctionne l\'IPTV ?')">📱 Appareils</button>
       <button class="quick-btn" onclick="quickAsk('Quelle est la différence entre Starter et À Vie ?')">⚖️ Comparer</button>
-      <button class="quick-btn" onclick="quickAsk('Quels moyens de paiement acceptez-vous ?')">💳 Paiement</button>
       <button class="quick-btn" onclick="quickAsk('Quelle est la qualité des streams disponibles ?')">📺 Qualité</button>
       <button class="quick-btn" onclick="quickAsk('Y a-t-il un essai gratuit disponible ?')">🎁 Essai</button>
       <button class="quick-btn" onclick="quickAsk('Comment rejoindre le Discord FZF ?')">💬 Discord</button>
@@ -1137,66 +1093,67 @@ let selectedBanReason = '';
 let pinnedMsg = '';
 let revokedAdmins = {};
 let notifSentCount = 0;
-let notifPermission = (typeof Notification !== 'undefined') ? Notification.permission : 'default';
 let streamStartTime = null;
 let streamDurationInterval = null;
-let pushToastTimer = null; // FIX: timer pour le toast
+let pushToastTimer = null;
+
+// Suivi des messages bot pour admin
+let chatbotConversations = [];
+let chatbotMonitorCount = 0;
 
 /* ══════════════════════════════════════════
-   SYNCHRONISATION MULTI-UTILISATEURS
-   Utilise localStorage + BroadcastChannel
-   pour partager l'état entre tous les onglets/visiteurs
+   LOCALSTORAGE + BROADCASTCHANNEL (SYNC)
+   Tout passe par localStorage → tout le monde
+   voit les mêmes données à l'actualisation.
+   BroadcastChannel pousse les mises à jour
+   en temps réel aux autres onglets/fenêtres.
 ══════════════════════════════════════════ */
+const bc = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('fzf_sync_v2') : null;
 
-// BroadcastChannel pour communication en temps réel entre onglets/fenêtres du même domaine
-const bc = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('fzf_sync') : null;
-
-// Clés localStorage pour la persistance de l'état partagé
-const LS_KEYS = {
-  stream: 'fzf_stream_state',       // {url, label, active}
-  chat: 'fzf_chat_state',           // {enabled}
-  chatMsgs: 'fzf_chat_messages',    // [{type,username,text,time}]
-  planning: 'fzf_planning',         // [{id,match,date,comp,discord}]
-  bans: 'fzf_bans',                 // {username: reason}
-  visitors: 'fzf_sessions',         // {sessionId: {page,ts,device,city}}
-  connectedStaff: 'fzf_staff',      // [{name,role,loginTime}]
-  revokedAdmins: 'fzf_revoked',     // {name: {reason,date}}
-  countdown: 'fzf_countdown',       // {target, matchName, active}
-  pinnedMsg: 'fzf_pinned',          // string
-  peakViewers: 'fzf_peak',          // number
-  totalJoins: 'fzf_joins',          // number
+const LS = {
+  stream:    'fzf2_stream',
+  chat:      'fzf2_chat_toggle',
+  chatMsgs:  'fzf2_chat_msgs',
+  planning:  'fzf2_planning',
+  bans:      'fzf2_bans',
+  visitors:  'fzf2_sessions',
+  staff:     'fzf2_staff',
+  revoked:   'fzf2_revoked',
+  countdown: 'fzf2_countdown',
+  pinned:    'fzf2_pinned',
+  peak:      'fzf2_peak',
+  joins:     'fzf2_joins',
+  adminSess: 'fzf2_admin_session',
+  botMsgs:   'fzf2_bot_msgs',
 };
 
-function lsGet(key, fallback = null) {
-  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch(e) { return fallback; }
+function lsGet(k, fb = null) {
+  try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : fb; } catch(e) { return fb; }
 }
-function lsSet(key, value) {
-  try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {}
+function lsSet(k, v) {
+  try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {}
 }
 
-// Broadcast un événement à tous les autres onglets
 function broadcast(type, data = {}) {
   if (bc) bc.postMessage({ type, data, ts: Date.now() });
 }
 
-// Écouter les messages des autres onglets
 if (bc) {
-  bc.onmessage = (event) => {
-    const { type, data } = event.data;
-    switch(type) {
-      case 'stream_update':    applyStreamState(data); break;
-      case 'stream_stop':      applyStreamStop(); break;
-      case 'chat_toggle':      applyChatToggle(data.enabled); break;
-      case 'chat_message':     applyChatMessage(data); break;
-      case 'chat_clear':       applyChatClear(); break;
-      case 'planning_update':  applyPlanningUpdate(data); break;
-      case 'ban_update':       applyBanUpdate(data); break;
-      case 'announce':         appendLiveChatMsg('system','', data.text, ''); break;
-      case 'pinned_update':    applyPinnedUpdate(data.msg); break;
-      case 'countdown_update': applyCountdownState(data); break;
-      case 'staff_update':     applyStaffUpdate(data); break;
-      case 'visitor_update':   updateRealVisitorsList(); updateRealViewerCount(); break;
-    }
+  bc.onmessage = ({ data: ev }) => {
+    const { type, data } = ev;
+    if (type === 'stream_update')    applyStreamState(data);
+    if (type === 'stream_stop')      applyStreamStop();
+    if (type === 'chat_toggle')      { document.getElementById('toggle-chat').checked = data.enabled; applyChatToggle(data.enabled, true); }
+    if (type === 'chat_message')     appendLiveChatMsg(data.type, data.username, data.text, data.time, false, true);
+    if (type === 'chat_clear')       applyChatClear();
+    if (type === 'planning_update')  { planningMatches = data; renderPlanning(); }
+    if (type === 'ban_update')       { bannedUsers = data; renderBanList(); }
+    if (type === 'announce')         appendLiveChatMsg('system', '', data.text, '', false, true);
+    if (type === 'pinned_update')    { pinnedMsg = data.msg; if (liveChatEnabled && data.msg) appendLiveChatMsg('system','',`📌 ${data.msg}`,'',false,true); }
+    if (type === 'countdown_update') applyCountdownState(data);
+    if (type === 'staff_update')     renderFounderStaff();
+    if (type === 'visitor_update')   { updateRealVisitorsList(); updateRealViewerCount(); }
+    if (type === 'bot_msg_update')   updateChatbotMonitor();
     showSyncIndicator();
   };
 }
@@ -1208,133 +1165,120 @@ function showSyncIndicator() {
 }
 
 /* ══════════════════════════════════════════
-   SESSION VISITEUR (tracking réel)
+   SESSION VISITEUR
 ══════════════════════════════════════════ */
-let sessionId = sessionStorage.getItem('fzf_sid') || ('u_' + Date.now() + '_' + Math.random().toString(36).substr(2,6));
-sessionStorage.setItem('fzf_sid', sessionId);
+let sessionId = sessionStorage.getItem('fzf_sid2') || ('u_' + Date.now() + '_' + Math.random().toString(36).substr(2,6));
+sessionStorage.setItem('fzf_sid2', sessionId);
 
 function getDevice() {
-  const ua = navigator.userAgent;
-  if (/Mobi|Android/i.test(ua)) return '📱';
-  if (/iPad|Tablet/i.test(ua)) return '📲';
-  return '💻';
+  return /Mobi|Android/i.test(navigator.userAgent) ? '📱' : /iPad|Tablet/i.test(navigator.userAgent) ? '📲' : '💻';
 }
-const cities = ['Paris','Lyon','Marseille','Toulouse','Bordeaux','Nantes','Lille','Strasbourg','Nice','Montpellier','Rennes','Rouen','Grenoble','Toulon','Dijon'];
-const myCity = cities[Math.floor(Math.random() * cities.length)];
+const CITIES = ['Paris','Lyon','Marseille','Toulouse','Bordeaux','Nantes','Lille','Strasbourg','Nice','Montpellier','Rennes','Rouen','Grenoble','Toulon','Dijon'];
+const myCity = CITIES[Math.floor(Math.random() * CITIES.length)];
 
 function registerVisitor(page) {
-  try {
-    let sessions = lsGet(LS_KEYS.visitors, {});
-    sessions[sessionId] = { page: page || 'Live', ts: Date.now(), device: getDevice(), city: myCity };
-    // Nettoyer les sessions > 3 min
-    Object.keys(sessions).forEach(k => { if (Date.now() - sessions[k].ts > 180000) delete sessions[k]; });
-    lsSet(LS_KEYS.visitors, sessions);
-    broadcast('visitor_update');
-  } catch(e) {}
+  let sessions = lsGet(LS.visitors, {});
+  sessions[sessionId] = { page, ts: Date.now(), device: getDevice(), city: myCity };
+  Object.keys(sessions).forEach(k => { if (Date.now() - sessions[k].ts > 180000) delete sessions[k]; });
+  lsSet(LS.visitors, sessions);
+  broadcast('visitor_update');
 }
 
 function getRealVisitors() {
-  try {
-    let sessions = lsGet(LS_KEYS.visitors, {});
-    Object.keys(sessions).forEach(k => { if (Date.now() - sessions[k].ts > 180000) delete sessions[k]; });
-    lsSet(LS_KEYS.visitors, sessions);
-    return sessions;
-  } catch(e) { return {}; }
+  let s = lsGet(LS.visitors, {});
+  Object.keys(s).forEach(k => { if (Date.now() - s[k].ts > 180000) delete s[k]; });
+  lsSet(LS.visitors, s);
+  return s;
 }
 function getRealVisitorCount() { return Object.keys(getRealVisitors()).length; }
 
-// Heartbeat visiteur toutes les 30s
 registerVisitor('Live');
 setInterval(() => { registerVisitor('Live'); broadcast('visitor_update'); }, 30000);
 
 function updateRealViewerCount() {
   const real = getRealVisitorCount();
-  const el = document.getElementById('real-viewer-count-topbar');
-  const el2 = document.getElementById('real-visitor-count-admin');
-  const el3 = document.getElementById('founder-real-count');
+  ['real-viewer-count-topbar','real-visitor-count-admin','founder-real-count'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = real;
+  });
   const el4 = document.getElementById('chat-online-count');
-  if (el) el.textContent = real;
-  if (el2) el2.textContent = real;
-  if (el3) el3.textContent = real;
   if (el4) el4.textContent = real + ' en ligne';
-  // Stats peak
-  let peak = lsGet(LS_KEYS.peakViewers, 0);
-  let joins = lsGet(LS_KEYS.totalJoins, 0);
-  if (real > peak) { peak = real; lsSet(LS_KEYS.peakViewers, peak); }
-  const statCurrent = document.getElementById('stat-current');
-  const statPeak = document.getElementById('stat-peak');
-  const statJoins = document.getElementById('stat-joins');
-  if (statCurrent) statCurrent.textContent = real;
-  if (statPeak) statPeak.textContent = peak;
-  if (statJoins) statJoins.textContent = joins;
+  let peak = lsGet(LS.peak, 0);
+  if (real > peak) { peak = real; lsSet(LS.peak, peak); }
+  const sc = document.getElementById('stat-current'); if (sc) sc.textContent = real;
+  const sp = document.getElementById('stat-peak');    if (sp) sp.textContent = peak;
+  const sj = document.getElementById('stat-joins');   if (sj) sj.textContent = lsGet(LS.joins, 0);
 }
 
 function updateRealVisitorsList() {
   const sessions = getRealVisitors();
   const keys = Object.keys(sessions);
-  const renderFn = (containerId) => {
-    const el = document.getElementById(containerId);
+  ['real-visitors-list','founder-visitors-list'].forEach(cid => {
+    const el = document.getElementById(cid);
     if (!el) return;
-    if (!keys.length) {
-      el.innerHTML = '<div style="padding:12px 14px;font-size:12px;color:var(--muted);">Aucun visiteur actif.</div>';
-      return;
-    }
+    if (!keys.length) { el.innerHTML='<div style="padding:12px 14px;font-size:12px;color:var(--muted);">Aucun visiteur actif.</div>'; return; }
     el.innerHTML = keys.map(k => {
       const v = sessions[k];
-      const ago = Math.floor((Date.now() - v.ts) / 1000);
-      const agoStr = ago < 60 ? ago + 's' : Math.floor(ago/60) + 'min';
+      const ago = Math.floor((Date.now()-v.ts)/1000);
+      const agoStr = ago < 60 ? ago+'s' : Math.floor(ago/60)+'min';
       const isMe = k === sessionId;
       return `<div class="real-visitor-item">
         <span class="real-visitor-dot"></span>
         <span class="real-visitor-device">${v.device}</span>
-        <span class="real-visitor-page">${v.city || '?'} — ${v.page}${isMe?' (toi)':''}</span>
+        <span class="real-visitor-page">${v.city||'?'} — ${v.page}${isMe?' <b>(toi)</b>':''}</span>
         <span class="real-visitor-time">${agoStr}</span>
       </div>`;
     }).join('');
-  };
-  renderFn('real-visitors-list');
-  renderFn('founder-visitors-list');
+  });
   updateRealViewerCount();
 }
 setInterval(updateRealVisitorsList, 5000);
 updateRealVisitorsList();
 
 /* ══════════════════════════════════════════
-   STAFF PERSISTANT (localStorage)
-   Un admin qui se reconnecte réapparaît
+   PERSISTANCE SESSION ADMIN
+   L'admin reste connecté après actualisation
 ══════════════════════════════════════════ */
-function getStaffList() { return lsGet(LS_KEYS.connectedStaff, []); }
+function saveAdminSession(role) {
+  lsSet(LS.adminSess, { role, ts: Date.now(), sessionId });
+}
+function loadAdminSession() {
+  const s = lsGet(LS.adminSess, null);
+  if (!s) return null;
+  // Session valide 8h
+  if (Date.now() - s.ts > 8 * 3600000) { localStorage.removeItem(LS.adminSess); return null; }
+  return s;
+}
+function clearAdminSession() {
+  localStorage.removeItem(LS.adminSess);
+}
+
+/* ══════════════════════════════════════════
+   STAFF PERSISTANT
+══════════════════════════════════════════ */
+function getStaffList() { return lsGet(LS.staff, []); }
 function saveStaffList(list) {
-  // Nettoyer les sessions staff > 8h
-  const filtered = list.filter(s => !s.loginTime || (Date.now() - new Date(s.loginTime).getTime() < 8 * 3600000));
-  lsSet(LS_KEYS.connectedStaff, filtered);
-  broadcast('staff_update', filtered);
+  const filtered = list.filter(s => !s.loginTime || (Date.now() - new Date(s.loginTime).getTime() < 8*3600000));
+  lsSet(LS.staff, filtered);
+  broadcast('staff_update');
   renderFounderStaff();
 }
 function addStaff(name, role) {
-  let list = getStaffList();
-  // Si déjà dans la liste, mettre à jour l'heure
-  list = list.filter(s => s.name !== name);
+  let list = getStaffList().filter(s => s.sessionId !== sessionId);
   list.push({ name, role, loginTime: new Date().toISOString(), sessionId });
   saveStaffList(list);
 }
-function removeStaff(name) {
-  let list = getStaffList().filter(s => s.name !== name);
-  saveStaffList(list);
+function removeStaff(sid) {
+  saveStaffList(getStaffList().filter(s => s.sessionId !== sid));
 }
-function applyStaffUpdate() { renderFounderStaff(); }
-
 function renderFounderStaff() {
-  const list = document.getElementById('founder-staff-list');
-  if (!list) return;
-  const staffList = getStaffList();
-  if (!staffList.length) {
-    list.innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun staff connecté.</div>';
-    return;
-  }
-  list.innerHTML = staffList.map(s => {
+  const el = document.getElementById('founder-staff-list');
+  if (!el) return;
+  const list = getStaffList();
+  if (!list.length) { el.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun staff connecté.</div>'; return; }
+  el.innerHTML = list.map(s => {
     const d = new Date(s.loginTime);
-    const loginStr = isNaN(d) ? '?' : d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+    const loginStr = isNaN(d) ? '?' : d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
     const isFounder = s.role && s.role.includes('Fondateur');
     const isMe = s.sessionId === sessionId;
     return `<div class="staff-item">
@@ -1345,69 +1289,108 @@ function renderFounderStaff() {
         <div class="staff-item-time">Connecté depuis ${loginStr}</div>
       </div>
       <div class="staff-online-dot"></div>
-      ${!isFounder ? `<button class="btn-revoke" onclick="forceDisconnectByName('${(s.name||'').replace(/'/g,"\\'")}')">Déco.</button>` : ''}
+      ${!isFounder ? `<button class="btn-revoke" onclick="forceDisconnectBySid('${s.sessionId}','${(s.name||'').replace(/'/g,"\\'")}')">Déco.</button>` : ''}
     </div>`;
   }).join('');
 }
 
 /* ══════════════════════════════════════════
-   ÉTAT PARTAGÉ — CHARGEMENT AU DÉMARRAGE
+   CHATBOT MONITOR (admin voit les messages bot)
 ══════════════════════════════════════════ */
-function loadSharedState() {
-  // Charger l'état du stream
-  const streamState = lsGet(LS_KEYS.stream);
-  if (streamState && streamState.active) applyStreamState(streamState);
+function addBotConversationEntry(userMsg, botReply) {
+  const entries = lsGet(LS.botMsgs, []);
+  entries.push({ user: userMsg, bot: botReply, ts: Date.now() });
+  if (entries.length > 50) entries.splice(0, entries.length - 50);
+  lsSet(LS.botMsgs, entries);
+  broadcast('bot_msg_update');
+  updateChatbotMonitor();
+}
 
-  // Charger l'état du chat
-  const chatState = lsGet(LS_KEYS.chat);
-  if (chatState && chatState.enabled) {
-    liveChatEnabled = false; // reset pour re-appliquer proprement
-    const tog = document.getElementById('toggle-chat');
-    if (tog) tog.checked = true;
-    applyChatToggle(true, true); // silent = true (pas de message de bienvenue)
+function updateChatbotMonitor() {
+  const entries = lsGet(LS.botMsgs, []);
+  const el = document.getElementById('chatbot-monitor-list');
+  const count = document.getElementById('chatbot-monitor-count');
+  if (!el) return;
+  if (count) count.textContent = entries.length + ' message(s)';
+  if (!entries.length) {
+    el.innerHTML = '<div class="chatbot-monitor-empty">Aucune question posée au bot pour l\'instant.</div>';
+    return;
   }
-
-  // Charger les messages du chat
-  const msgs = lsGet(LS_KEYS.chatMsgs, []);
-  const area = document.getElementById('live-chat-msgs');
-  if (msgs.length && area) {
-    area.innerHTML = ''; // vider le message par défaut
-    msgs.slice(-50).forEach(m => appendLiveChatMsg(m.type, m.username, m.text, m.time, false, true)); // silent
-  } else if (!liveChatEnabled) {
-    area.innerHTML = '<div class="chat-msg system"><div class="chat-msg-text">💬 Chat désactivé — l\'admin peut l\'activer depuis le panneau.</div></div>';
-  }
-
-  // Charger le planning
-  planningMatches = lsGet(LS_KEYS.planning, []);
-  if (planningMatches.length) renderPlanning();
-
-  // Charger les bans
-  bannedUsers = lsGet(LS_KEYS.bans, {});
-  if (Object.keys(bannedUsers).length) renderBanList();
-
-  // Charger message épinglé
-  pinnedMsg = lsGet(LS_KEYS.pinnedMsg, '');
-
-  // Charger les révocations
-  revokedAdmins = lsGet(LS_KEYS.revokedAdmins, {});
-  if (Object.keys(revokedAdmins).length) renderRevokedAdmins();
-
-  // Charger le countdown
-  const cd = lsGet(LS_KEYS.countdown);
-  if (cd && cd.active && cd.target > Date.now()) {
-    applyCountdownState(cd);
-  }
-
-  // Afficher le staff
-  renderFounderStaff();
+  // Afficher les 10 derniers, les plus récents en premier
+  el.innerHTML = [...entries].reverse().slice(0, 10).map(e => {
+    const t = new Date(e.ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    return `<div class="chatbot-monitor-item">
+      <div class="chatbot-monitor-user">👤 ${t} — ${e.user}</div>
+      <div class="chatbot-monitor-text">🤖 ${(e.bot||'').substring(0,100)}${(e.bot||'').length>100?'…':''}</div>
+    </div>`;
+  }).join('');
 }
 
 /* ══════════════════════════════════════════
-   APPLY FUNCTIONS (état reçu ou chargé)
+   CHARGEMENT ÉTAT AU DÉMARRAGE
+══════════════════════════════════════════ */
+function loadSharedState() {
+  // Stream
+  const ss = lsGet(LS.stream);
+  if (ss && ss.active) applyStreamState(ss);
+
+  // Chat toggle
+  const cs = lsGet(LS.chat);
+  if (cs && cs.enabled) {
+    document.getElementById('toggle-chat').checked = true;
+    applyChatToggle(true, true);
+  }
+
+  // Messages chat
+  const msgs = lsGet(LS.chatMsgs, []);
+  if (msgs.length) {
+    document.getElementById('live-chat-msgs').innerHTML = '';
+    msgs.slice(-50).forEach(m => appendLiveChatMsg(m.type, m.username, m.text, m.time, false, true));
+  }
+
+  // Planning
+  planningMatches = lsGet(LS.planning, []);
+  if (planningMatches.length) renderPlanning();
+
+  // Bans
+  bannedUsers = lsGet(LS.bans, {});
+  if (Object.keys(bannedUsers).length) renderBanList();
+
+  // Pinned
+  pinnedMsg = lsGet(LS.pinned, '');
+
+  // Revoked
+  revokedAdmins = lsGet(LS.revoked, {});
+  if (Object.keys(revokedAdmins).length) renderRevokedAdmins();
+
+  // Countdown
+  const cd = lsGet(LS.countdown);
+  if (cd && cd.active && cd.target > Date.now()) applyCountdownState(cd);
+
+  // Session admin persistante
+  const adminSess = loadAdminSession();
+  if (adminSess) {
+    if (adminSess.role === 'founder') {
+      adminLoggedIn = true;
+      founderLoggedIn = true;
+      openAdminSidebar(true);
+      addStaff('Fondateur FZF', '👑 Fondateur');
+    } else {
+      adminLoggedIn = true;
+      openAdminSidebar(false);
+      addStaff('Admin FZF', 'Administrateur');
+    }
+  }
+
+  renderFounderStaff();
+  updateChatbotMonitor();
+}
+
+/* ══════════════════════════════════════════
+   APPLY FUNCTIONS
 ══════════════════════════════════════════ */
 function applyStreamState(state) {
   if (!state || !state.url) return;
-  const box = document.getElementById('stream-box');
   document.getElementById('no-stream-msg').style.display = 'none';
   document.getElementById('stream-info-bar').style.display = 'flex';
   const badge = document.getElementById('live-status-badge');
@@ -1415,6 +1398,7 @@ function applyStreamState(state) {
   const old = document.getElementById('active-player');
   if (old) old.remove();
   if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+  const box = document.getElementById('stream-box');
   if (state.url.includes('.m3u8')) {
     const video = document.createElement('video');
     video.id = 'active-player'; video.controls = true; video.autoplay = true;
@@ -1432,6 +1416,8 @@ function applyStreamState(state) {
   if (state.label) document.getElementById('match-label-display').textContent = state.label;
   document.getElementById('stats-section').style.display = 'block';
   if (!streamDurationInterval) streamDurationInterval = setInterval(updateDuration, 1000);
+  // Rétablir l'heure de démarrage
+  if (state.startTime) streamStartTime = state.startTime;
 }
 
 function applyStreamStop() {
@@ -1445,6 +1431,7 @@ function applyStreamStop() {
   document.getElementById('stats-section').style.display = 'none';
   if (streamDurationInterval) { clearInterval(streamDurationInterval); streamDurationInterval = null; }
   document.getElementById('stat-duration').textContent = '00:00';
+  streamStartTime = null;
 }
 
 function applyChatToggle(enabled, silent = false) {
@@ -1454,36 +1441,17 @@ function applyChatToggle(enabled, silent = false) {
   if (enabled) {
     overlay.style.display = 'none';
     inputs.style.display = 'flex';
-    if (!silent && pinnedMsg) appendLiveChatMsg('system','',`📌 ${pinnedMsg}`,'', false, true);
-    if (!silent) appendLiveChatMsg('system','','🟢 Chat activé. Bienvenue !','', false, true);
+    if (!silent && pinnedMsg) appendLiveChatMsg('system','',`📌 ${pinnedMsg}`,'',false,true);
+    if (!silent) appendLiveChatMsg('system','','🟢 Chat activé. Bienvenue !','',false,true);
   } else {
     overlay.style.display = 'flex';
     inputs.style.display = 'none';
   }
 }
 
-function applyChatMessage(data) {
-  appendLiveChatMsg(data.type, data.username, data.text, data.time, adminLoggedIn, true);
-}
-
 function applyChatClear() {
   document.getElementById('live-chat-msgs').innerHTML = '<div class="chat-msg system"><div class="chat-msg-text">💬 Chat vidé par l\'admin.</div></div>';
-  lsSet(LS_KEYS.chatMsgs, []);
-}
-
-function applyPlanningUpdate(data) {
-  planningMatches = data;
-  renderPlanning();
-}
-
-function applyBanUpdate(data) {
-  bannedUsers = data;
-  renderBanList();
-}
-
-function applyPinnedUpdate(msg) {
-  pinnedMsg = msg;
-  if (liveChatEnabled && msg) appendLiveChatMsg('system','',`📌 Message épinglé : ${msg}`,'', false, true);
+  lsSet(LS.chatMsgs, []);
 }
 
 function applyCountdownState(state) {
@@ -1493,6 +1461,9 @@ function applyCountdownState(state) {
   document.getElementById('countdown-banner').classList.add('visible');
   if (countdownInterval) clearInterval(countdownInterval);
   countdownInterval = setInterval(updateCountdown, 1000);
+  // Sync le toggle admin si on est admin
+  const tog = document.getElementById('toggle-countdown');
+  if (tog && !tog.checked) { tog.checked = true; document.getElementById('countdown-config').style.display = 'block'; }
   updateCountdown();
 }
 
@@ -1519,22 +1490,23 @@ function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
-  const idx = name==='home'?0:name==='live'?1:2;
+  const idx = {home:0, live:1, iptv:2}[name] || 0;
   document.querySelectorAll('.nav-tab')[idx].classList.add('active');
-  registerVisitor(name.charAt(0).toUpperCase() + name.slice(1));
+  registerVisitor(name.charAt(0).toUpperCase()+name.slice(1));
 }
 
 /* ══════════════════════════════════════════
    ADMIN TABS
 ══════════════════════════════════════════ */
 function switchAdminTab(tab) {
-  const tabs = ['stream','planning','chat','notif','tools','founder'];
-  tabs.forEach(t => {
-    const tabEl = document.getElementById('tab-'+t);
-    const panelEl = document.getElementById('panel-'+t);
-    if (tabEl) tabEl.classList.toggle('active', t===tab);
-    if (panelEl) panelEl.classList.toggle('active', t===tab);
+  ['stream','planning','chat','notif','tools','founder'].forEach(t => {
+    const te = document.getElementById('tab-'+t);
+    const pe = document.getElementById('panel-'+t);
+    if (te) te.classList.toggle('active', t===tab);
+    if (pe) pe.classList.toggle('active', t===tab);
   });
+  if (tab === 'tools') updateChatbotMonitor();
+  if (tab === 'founder') renderFounderStaff();
 }
 
 /* ══════════════════════════════════════════
@@ -1555,7 +1527,7 @@ function toggleAdminSidebar() {
 
 function checkAdminLogin() {
   const pw = document.getElementById('admin-password-input').value;
-  const revoked = lsGet(LS_KEYS.revokedAdmins, {});
+  const revoked = lsGet(LS.revoked, {});
   if (revoked['Admin FZF']) {
     document.getElementById('admin-error').textContent = '🚫 Ce compte admin a été révoqué par le Fondateur.';
     document.getElementById('admin-error').style.display = 'block';
@@ -1565,8 +1537,8 @@ function checkAdminLogin() {
     adminLoggedIn = true;
     closeModal('modal-login');
     openAdminSidebar(false);
-    // Persistance: enregistrer dans la liste du staff
     addStaff('Admin FZF', 'Administrateur');
+    saveAdminSession('admin');
   } else {
     document.getElementById('admin-error').textContent = '❌ Mot de passe incorrect';
     document.getElementById('admin-error').style.display = 'block';
@@ -1590,6 +1562,7 @@ function checkFounderLogin() {
     closeModal('modal-founder-login');
     openAdminSidebar(true);
     addStaff('Fondateur FZF', '👑 Fondateur');
+    saveAdminSession('founder');
   } else {
     document.getElementById('founder-error').style.display = 'block';
     document.getElementById('founder-password-input').value = '';
@@ -1601,13 +1574,11 @@ function openAdminSidebar(isFounder) {
   adminSidebarOpen = true;
   const sidebar = document.getElementById('admin-sidebar');
   sidebar.classList.add('open');
-  if (isFounder) sidebar.classList.add('founder-mode');
-  else sidebar.classList.remove('founder-mode');
-
+  sidebar.classList.toggle('founder-mode', isFounder);
   const btn = document.getElementById('admin-toggle-btn');
   btn.classList.add('active');
+  btn.classList.toggle('founder-active', isFounder);
   if (isFounder) {
-    btn.classList.add('founder-active');
     btn.textContent = '👑 Fondateur';
     document.getElementById('tab-founder').style.display = 'flex';
     document.getElementById('admin-title-text').textContent = '👑 Panneau Fondateur';
@@ -1619,14 +1590,17 @@ function openAdminSidebar(isFounder) {
     document.getElementById('admin-footer-logout-btn').style.display = 'none';
   } else {
     btn.textContent = '🔓 Admin';
-    document.getElementById('tab-founder').style.display = 'none';
   }
   document.getElementById('real-viewers-admin-pill').classList.add('visible');
   renderFounderStaff();
+  renderBanList();
+  renderPlanning();
+  updateChatbotMonitor();
 }
 
 function logoutAdmin() {
-  removeStaff('Admin FZF');
+  removeStaff(sessionId);
+  clearAdminSession();
   adminLoggedIn = false;
   if (!founderLoggedIn) {
     adminSidebarOpen = false;
@@ -1644,14 +1618,12 @@ function logoutAdmin() {
 
 function logoutFounder() {
   if (!confirm('Se déconnecter du mode Fondateur ?')) return;
-  removeStaff('Fondateur FZF');
-  founderLoggedIn = false;
-  adminLoggedIn = false;
-  adminSidebarOpen = false;
-  document.getElementById('admin-sidebar').classList.remove('open', 'founder-mode');
+  removeStaff(sessionId);
+  clearAdminSession();
+  founderLoggedIn = false; adminLoggedIn = false; adminSidebarOpen = false;
+  document.getElementById('admin-sidebar').classList.remove('open','founder-mode');
   const btn = document.getElementById('admin-toggle-btn');
-  btn.classList.remove('active', 'founder-active');
-  btn.textContent = '🔒 Admin';
+  btn.classList.remove('active','founder-active'); btn.textContent = '🔒 Admin';
   document.getElementById('tab-founder').style.display = 'none';
   document.getElementById('admin-title-text').textContent = '⚙ Panneau Admin';
   document.getElementById('admin-title-text').classList.remove('founder-title');
@@ -1664,24 +1636,23 @@ function logoutFounder() {
 }
 
 /* ══════════════════════════════════════════
-   FONDATEUR — Gestion staff
+   FONDATEUR
 ══════════════════════════════════════════ */
-function forceDisconnectByName(name) {
+function forceDisconnectBySid(sid, name) {
   if (!founderLoggedIn) return;
-  removeStaff(name);
-  showBanToastMsg(`⚡ ${name} a été déconnecté`);
+  saveStaffList(getStaffList().filter(s => s.sessionId !== sid));
+  showBanToastMsg(`⚡ ${name} déconnecté`);
 }
 function forceLogoutStaff() {
   if (!founderLoggedIn) return;
   const name = document.getElementById('force-logout-name').value.trim();
   if (!name) { alert('Entre le nom du staff.'); return; }
-  forceDisconnectByName(name);
+  const list = getStaffList();
+  const found = list.find(s => s.name === name);
+  if (found) { forceDisconnectBySid(found.sessionId, name); }
+  else showBanToastMsg('❌ Staff introuvable');
   document.getElementById('force-logout-name').value = '';
 }
-
-/* ══════════════════════════════════════════
-   FONDATEUR — Révocation admin
-══════════════════════════════════════════ */
 function revokeAdmin() {
   if (!founderLoggedIn) return;
   const name = document.getElementById('revoke-admin-name').value.trim();
@@ -1689,19 +1660,19 @@ function revokeAdmin() {
   if (!name || !reason) { alert('Remplis le nom et la raison.'); return; }
   if (!confirm(`⚠️ Révoquer définitivement le rôle Admin de "${name}" ?\nRaison : ${reason}`)) return;
   revokedAdmins[name] = { reason, date: new Date().toLocaleDateString('fr-FR') };
-  lsSet(LS_KEYS.revokedAdmins, revokedAdmins);
+  lsSet(LS.revoked, revokedAdmins);
   document.getElementById('revoke-admin-name').value = '';
   document.getElementById('revoke-reason').value = '';
   renderRevokedAdmins();
-  removeStaff(name);
+  const found = getStaffList().find(s => s.name === name);
+  if (found) forceDisconnectBySid(found.sessionId, name);
   showBanToastMsg(`🚫 ${name} révoqué définitivement`);
 }
-
 function renderRevokedAdmins() {
-  const list = document.getElementById('revoked-admins-list');
+  const el = document.getElementById('revoked-admins-list');
   const keys = Object.keys(revokedAdmins);
-  if (!keys.length) { list.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucune révocation.</div>'; return; }
-  list.innerHTML = keys.map(k => `<div class="revoked-item">
+  if (!keys.length) { el.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucune révocation.</div>'; return; }
+  el.innerHTML = keys.map(k => `<div class="revoked-item">
     <div><div class="revoked-name">🚫 ${k}</div><div style="font-size:11px;color:var(--muted);">${revokedAdmins[k].reason} — ${revokedAdmins[k].date}</div></div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
       <span class="revoked-badge">RÉVOQUÉ</span>
@@ -1709,34 +1680,31 @@ function renderRevokedAdmins() {
     </div>
   </div>`).join('');
 }
-
 function restoreAdmin(name) {
   if (!founderLoggedIn) return;
   if (!confirm(`Restaurer les droits admin de "${name}" ?`)) return;
   delete revokedAdmins[name];
-  lsSet(LS_KEYS.revokedAdmins, revokedAdmins);
+  lsSet(LS.revoked, revokedAdmins);
   renderRevokedAdmins();
   showBanToastMsg(`✅ ${name} restauré`);
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
-});
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target===m) m.classList.remove('open'); }));
 
 /* ══════════════════════════════════════════
-   STREAM — avec sync
+   STREAM
 ══════════════════════════════════════════ */
 function setStream() {
   const url = document.getElementById('stream-url-input').value.trim();
   if (!url) { alert('Entre une URL de stream.'); return; }
   const label = document.getElementById('match-label-input').value.trim();
-  const state = { url, label, active: true };
-  lsSet(LS_KEYS.stream, state);
+  const startTime = Date.now();
+  const state = { url, label, active: true, startTime };
+  lsSet(LS.stream, state);
   broadcast('stream_update', state);
   applyStreamState(state);
-  streamStartTime = Date.now();
-  // Auto-notif
+  streamStartTime = startTime;
   if (document.getElementById('toggle-auto-notif').checked) {
     const notifTitle = label ? `🔴 ${label} — En direct !` : '🔴 Diffusion en cours !';
     sendNotification(notifTitle, 'Le match est en direct sur Football Zone France. Rejoins-nous !');
@@ -1744,50 +1712,46 @@ function setStream() {
 }
 
 function stopStream() {
-  lsSet(LS_KEYS.stream, { active: false });
+  lsSet(LS.stream, { active: false });
   broadcast('stream_stop');
   applyStreamStop();
-  streamStartTime = null;
 }
 
 function updateDuration() {
   if (!streamStartTime) return;
-  const e = Math.floor((Date.now() - streamStartTime) / 1000);
+  const e = Math.floor((Date.now()-streamStartTime)/1000);
   const el = document.getElementById('stat-duration');
-  if (el) el.textContent = Math.floor(e/60).toString().padStart(2,'0') + ':' + (e%60).toString().padStart(2,'0');
+  if (el) el.textContent = Math.floor(e/60).toString().padStart(2,'0')+':'+(e%60).toString().padStart(2,'0');
 }
-
 function resetStats() {
   streamStartTime = Date.now();
-  lsSet(LS_KEYS.peakViewers, getRealVisitorCount());
-  lsSet(LS_KEYS.totalJoins, getRealVisitorCount());
+  lsSet(LS.peak, getRealVisitorCount());
+  lsSet(LS.joins, getRealVisitorCount());
   updateRealViewerCount();
 }
 
 /* ══════════════════════════════════════════
-   COUNTDOWN — avec sync
+   COUNTDOWN
 ══════════════════════════════════════════ */
 function toggleCountdownAdmin(enabled) {
   document.getElementById('countdown-config').style.display = enabled ? 'block' : 'none';
   if (!enabled) {
     document.getElementById('countdown-banner').classList.remove('visible');
     if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
-    lsSet(LS_KEYS.countdown, { active: false });
+    lsSet(LS.countdown, { active: false });
     broadcast('countdown_update', { active: false });
   }
 }
-
 function setCountdownTime() {
   const dt = document.getElementById('countdown-datetime').value;
   const name = document.getElementById('countdown-match-name').value.trim();
   if (!dt) { alert('Sélectionne une date.'); return; }
   const target = new Date(dt).getTime();
   const state = { target, matchName: name, active: true };
-  lsSet(LS_KEYS.countdown, state);
+  lsSet(LS.countdown, state);
   broadcast('countdown_update', state);
   applyCountdownState(state);
 }
-
 function updateCountdown() {
   if (!countdownTarget) return;
   const diff = countdownTarget - Date.now();
@@ -1799,15 +1763,15 @@ function updateCountdown() {
   }
   document.getElementById('countdown-units').style.display = 'flex';
   document.getElementById('countdown-ended').style.display = 'none';
-  const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
-  document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
-  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
-  document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
-  document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+  const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+  document.getElementById('cd-days').textContent=String(d).padStart(2,'0');
+  document.getElementById('cd-hours').textContent=String(h).padStart(2,'0');
+  document.getElementById('cd-mins').textContent=String(m).padStart(2,'0');
+  document.getElementById('cd-secs').textContent=String(s).padStart(2,'0');
 }
 
 /* ══════════════════════════════════════════
-   PLANNING — avec sync
+   PLANNING
 ══════════════════════════════════════════ */
 function addPlanningMatch() {
   const match = document.getElementById('plan-match').value.trim();
@@ -1820,18 +1784,16 @@ function addPlanningMatch() {
   document.getElementById('plan-match').value = '';
   document.getElementById('plan-date').value = '';
   document.getElementById('plan-comp').value = '';
-  lsSet(LS_KEYS.planning, planningMatches);
+  lsSet(LS.planning, planningMatches);
   broadcast('planning_update', planningMatches);
   renderPlanning();
 }
-
 function removePlanningMatch(id) {
   planningMatches = planningMatches.filter(m => m.id !== id);
-  lsSet(LS_KEYS.planning, planningMatches);
+  lsSet(LS.planning, planningMatches);
   broadcast('planning_update', planningMatches);
   renderPlanning();
 }
-
 function renderPlanning() {
   const adminList = document.getElementById('admin-planning-list');
   const publicGrid = document.getElementById('planning-public-grid');
@@ -1842,31 +1804,22 @@ function renderPlanning() {
   }
   adminList.innerHTML = planningMatches.map(m => {
     const d = new Date(m.date);
-    const isLive = Math.abs(d - Date.now()) < 7200000 && d < Date.now() + 7200000;
-    const dateStr = d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'}) + ' ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    const isLive = Math.abs(d-Date.now()) < 7200000 && d < Date.now()+7200000;
+    const dateStr = d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
     return `<div class="plan-item">
       <div class="plan-item-dot${isLive?' live':''}"></div>
-      <div class="plan-item-info">
-        <div class="plan-item-match">${m.match}</div>
-        <div class="plan-item-date">${dateStr}${m.comp?' · '+m.comp:''}</div>
-      </div>
+      <div class="plan-item-info"><div class="plan-item-match">${m.match}</div><div class="plan-item-date">${dateStr}${m.comp?' · '+m.comp:''}</div></div>
       <button class="plan-item-delete" onclick="removePlanningMatch(${m.id})">✕</button>
     </div>`;
   }).join('');
   publicGrid.innerHTML = planningMatches.map(m => {
     const d = new Date(m.date);
     const isLive = Math.abs(d-Date.now()) < 7200000;
-    const dateStr = d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}) + ' à ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    const dateStr = d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})+' à '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
     return `<div class="planning-public-card${isLive?' is-live':''}">
-      <div class="planning-card-top">
-        <div class="planning-card-dot${isLive?' live':''}"></div>
-        <div class="planning-card-match">${m.match}</div>
-      </div>
+      <div class="planning-card-top"><div class="planning-card-dot${isLive?' live':''}"></div><div class="planning-card-match">${m.match}</div></div>
       <div class="planning-card-details">
-        <div>
-          <div class="planning-card-date">${dateStr}</div>
-          ${m.comp?`<div style="font-size:11px;color:var(--muted);margin-top:2px;">${m.comp}</div>`:''}
-        </div>
+        <div><div class="planning-card-date">${dateStr}</div>${m.comp?`<div style="font-size:11px;color:var(--muted);margin-top:2px;">${m.comp}</div>`:''}</div>
         ${m.discord?`<a href="https://discord.gg/ftzf" class="planning-card-discord" target="_blank">Discord</a>`:''}
       </div>
     </div>`;
@@ -1874,60 +1827,39 @@ function renderPlanning() {
 }
 
 /* ══════════════════════════════════════════
-   LIVE CHAT — avec sync
+   LIVE CHAT
 ══════════════════════════════════════════ */
 function toggleLiveChat(enabled) {
-  lsSet(LS_KEYS.chat, { enabled });
+  lsSet(LS.chat, { enabled });
   broadcast('chat_toggle', { enabled });
   applyChatToggle(enabled);
 }
 
-const chatColors = ['#60a5fa','#f87171','#4ade80','#fbbf24','#a78bfa','#fb923c','#34d399','#f472b6'];
+const CHAT_COLORS = ['#60a5fa','#f87171','#4ade80','#fbbf24','#a78bfa','#fb923c','#34d399','#f472b6'];
 
-// FIX: silent = true évite de ré-ajouter les msgs chargés depuis localStorage
 function appendLiveChatMsg(type, username, text, time, allowBan=false, silent=false) {
   if (type !== 'system' && type !== 'admin' && bannedUsers[username]) return;
   const area = document.getElementById('live-chat-msgs');
   const div = document.createElement('div');
-  div.className = 'chat-msg' + (type==='system'?' system':'') + (type==='admin'?' admin-reply':'');
+  div.className = 'chat-msg'+(type==='system'?' system':'')+(type==='admin'?' admin-reply':'');
   div.dataset.username = username;
-
   if (type === 'system') {
     div.innerHTML = `<div class="chat-msg-text">${text}</div>`;
   } else if (type === 'admin') {
-    div.innerHTML = `
-      <div class="chat-msg-header">
-        <div class="chat-msg-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">👑</div>
-        <span class="chat-msg-username" style="color:#fbbf24;">Admin FZF</span>
-        <span class="chat-msg-time">${time}</span>
-      </div>
-      <div class="chat-msg-text">${text}</div>`;
+    div.innerHTML = `<div class="chat-msg-header"><div class="chat-msg-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">👑</div><span class="chat-msg-username" style="color:#fbbf24;">Admin FZF</span><span class="chat-msg-time">${time}</span></div><div class="chat-msg-text">${text}</div>`;
   } else {
-    const color = chatColors[Math.abs(username.split('').reduce((a,c)=>a+c.charCodeAt(0),0)) % chatColors.length];
+    const color = CHAT_COLORS[Math.abs(username.split('').reduce((a,c)=>a+c.charCodeAt(0),0)) % CHAT_COLORS.length];
     const initial = username.charAt(0).toUpperCase() || '?';
-    const adminActions = adminLoggedIn && allowBan ? `
-      <div class="chat-msg-admin-actions">
-        <button class="btn-ban-msg" onclick="openBanModal('${username.replace(/'/g,"\\'")}',this.closest('.chat-msg'))">🚫 Bannir</button>
-        <button class="btn-del-msg" onclick="this.closest('.chat-msg').remove()">🗑</button>
-      </div>` : '';
-    div.innerHTML = `
-      <div class="chat-msg-header">
-        <div class="chat-msg-avatar" style="background:${color};">${initial}</div>
-        <span class="chat-msg-username" style="color:${color};">${username}</span>
-        <span class="chat-msg-time">${time}</span>
-      </div>
-      <div class="chat-msg-text">${text}</div>
-      ${adminActions}`;
+    const adminActions = adminLoggedIn && allowBan ? `<div class="chat-msg-admin-actions"><button class="btn-ban-msg" onclick="openBanModal('${username.replace(/'/g,"\\'")}',this.closest('.chat-msg'))">🚫 Bannir</button><button class="btn-del-msg" onclick="this.closest('.chat-msg').remove()">🗑</button></div>` : '';
+    div.innerHTML = `<div class="chat-msg-header"><div class="chat-msg-avatar" style="background:${color};">${initial}</div><span class="chat-msg-username" style="color:${color};">${username}</span><span class="chat-msg-time">${time}</span></div><div class="chat-msg-text">${text}</div>${adminActions}`;
   }
   area.appendChild(div);
   area.scrollTop = area.scrollHeight;
-
-  // Sauvegarder dans localStorage (sauf messages système générés automatiquement)
   if (!silent && type !== 'system') {
-    const msgs = lsGet(LS_KEYS.chatMsgs, []);
+    const msgs = lsGet(LS.chatMsgs, []);
     msgs.push({ type, username, text, time });
-    if (msgs.length > 200) msgs.splice(0, msgs.length - 200); // garder 200 max
-    lsSet(LS_KEYS.chatMsgs, msgs);
+    if (msgs.length > 200) msgs.splice(0, msgs.length-200);
+    lsSet(LS.chatMsgs, msgs);
   }
 }
 
@@ -1942,17 +1874,12 @@ function sendLiveMsg() {
     return;
   }
   if (!msg) return;
-  if (bannedUsers[nick]) {
-    document.getElementById('live-chat-input').value = '';
-    appendLiveChatMsg('system','','🚫 Tu as été banni du chat.','');
-    return;
-  }
+  if (bannedUsers[nick]) { document.getElementById('live-chat-input').value=''; appendLiveChatMsg('system','','🚫 Tu as été banni du chat.',''); return; }
   document.getElementById('live-chat-input').value = '';
   const now = new Date();
-  const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-  const msgData = { type:'user', username:nick, text:msg, time };
+  const time = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
   appendLiveChatMsg('user', nick, msg, time, true);
-  broadcast('chat_message', msgData);
+  broadcast('chat_message', { type:'user', username:nick, text:msg, time });
 }
 
 function sendAdminLiveReply() {
@@ -1961,10 +1888,9 @@ function sendAdminLiveReply() {
   if (!msg) return;
   document.getElementById('admin-live-reply-input').value = '';
   const now = new Date();
-  const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-  const msgData = { type:'admin', username:'Admin FZF', text:msg, time };
+  const time = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
   appendLiveChatMsg('admin','Admin FZF',msg,time,false);
-  broadcast('chat_message', msgData);
+  broadcast('chat_message', { type:'admin', username:'Admin FZF', text:msg, time });
 }
 
 function clearLiveChat() {
@@ -1974,14 +1900,14 @@ function clearLiveChat() {
 }
 
 /* ══════════════════════════════════════════
-   BAN SYSTEM — avec sync
+   BAN SYSTEM
 ══════════════════════════════════════════ */
 function openBanModal(username, msgEl) {
   if (!adminLoggedIn) return;
   pendingBanUsername = username;
   pendingBanMsgEl = msgEl;
   selectedBanReason = '';
-  document.getElementById('ban-target-display').textContent = '🚫 ' + username;
+  document.getElementById('ban-target-display').textContent = '🚫 '+username;
   document.querySelectorAll('.ban-reason-chip').forEach(c => c.classList.remove('selected'));
   document.getElementById('modal-ban').classList.add('open');
 }
@@ -1995,93 +1921,82 @@ function confirmBan() {
   bannedUsers[pendingBanUsername] = selectedBanReason;
   if (pendingBanMsgEl) pendingBanMsgEl.style.opacity = '0.3';
   closeModal('modal-ban');
-  lsSet(LS_KEYS.bans, bannedUsers);
+  lsSet(LS.bans, bannedUsers);
   broadcast('ban_update', bannedUsers);
   renderBanList();
   showBanToastMsg(`🚫 ${pendingBanUsername} banni`);
-  appendLiveChatMsg('system','',`🚫 ${pendingBanUsername} a été banni (${selectedBanReason}).`,'');
-  broadcast('announce', { text: `🚫 ${pendingBanUsername} a été banni (${selectedBanReason}).` });
+  const txt = `🚫 ${pendingBanUsername} a été banni (${selectedBanReason}).`;
+  appendLiveChatMsg('system','',txt,'');
+  broadcast('announce', { text: txt });
   pendingBanUsername = ''; pendingBanMsgEl = null;
 }
 function renderBanList() {
-  const list = document.getElementById('ban-list-admin');
+  const el = document.getElementById('ban-list-admin');
   const keys = Object.keys(bannedUsers);
-  if (!keys.length) { list.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun utilisateur banni.</div>'; return; }
-  list.innerHTML = keys.map(u => `<div class="ban-item">
-    <div><div class="ban-item-name">🚫 ${u}</div><div class="ban-item-reason">${bannedUsers[u]}</div></div>
-    <button class="btn-unban" onclick="unban('${u}')">Débannir</button>
-  </div>`).join('');
+  if (!keys.length) { el.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun utilisateur banni.</div>'; return; }
+  el.innerHTML = keys.map(u => `<div class="ban-item"><div><div class="ban-item-name">🚫 ${u}</div><div class="ban-item-reason">${bannedUsers[u]}</div></div><button class="btn-unban" onclick="unban('${u}')">Débannir</button></div>`).join('');
 }
 function unban(username) {
   delete bannedUsers[username];
-  lsSet(LS_KEYS.bans, bannedUsers);
+  lsSet(LS.bans, bannedUsers);
   broadcast('ban_update', bannedUsers);
   renderBanList();
 }
 function clearAllBans() {
   if (!confirm('Supprimer tous les bans ?')) return;
   bannedUsers = {};
-  lsSet(LS_KEYS.bans, {});
+  lsSet(LS.bans, {});
   broadcast('ban_update', {});
   renderBanList();
 }
-
 function showBanToastMsg(msg) {
   const t = document.getElementById('ban-toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 /* ══════════════════════════════════════════
-   PINNED + ANNOUNCE — avec sync
+   PINNED + ANNOUNCE
 ══════════════════════════════════════════ */
 function setPinnedMsg() {
   const msg = document.getElementById('pinned-msg-input').value.trim();
   if (!msg) return;
   pinnedMsg = msg;
-  lsSet(LS_KEYS.pinnedMsg, msg);
+  lsSet(LS.pinned, msg);
   broadcast('pinned_update', { msg });
   if (liveChatEnabled) appendLiveChatMsg('system','',`📌 Message épinglé : ${msg}`,'');
 }
 function clearPinnedMsg() {
   pinnedMsg = '';
-  lsSet(LS_KEYS.pinnedMsg, '');
+  lsSet(LS.pinned, '');
   document.getElementById('pinned-msg-input').value = '';
   broadcast('pinned_update', { msg: '' });
 }
 function sendAnnounce() {
   const msg = document.getElementById('announce-input').value.trim();
   if (!msg) return;
-  appendLiveChatMsg('system','',`📢 Admin : ${msg}`,'');
-  broadcast('announce', { text: `📢 Admin : ${msg}` });
+  const txt = `📢 Admin : ${msg}`;
+  appendLiveChatMsg('system','',txt,'');
+  broadcast('announce', { text: txt });
   document.getElementById('announce-input').value = '';
 }
 
 /* ══════════════════════════════════════════
-   FIX NOTIFICATIONS PUSH — toast qui se ferme
+   NOTIFICATIONS PUSH
 ══════════════════════════════════════════ */
 function requestNotifPermission() {
-  if (!('Notification' in window)) {
-    alert('Ton navigateur ne supporte pas les notifications push.');
-    return;
-  }
+  if (!('Notification' in window)) { alert('Ton navigateur ne supporte pas les notifications push.'); return; }
   Notification.requestPermission().then(perm => {
-    notifPermission = perm;
     if (perm === 'granted') {
       document.getElementById('notif-cta-bar').style.display = 'none';
       document.getElementById('notif-enabled-bar').style.display = 'block';
       document.getElementById('notif-sub-count').textContent = '1';
-      new Notification('🎉 Notifications FZF activées !', {
-        body: 'Tu recevras une alerte dès qu\'un match commence en direct.',
-        icon: 'logo.png', tag: 'fzf-welcome'
-      });
+      new Notification('🎉 Notifications FZF activées !', { body: 'Tu recevras une alerte dès qu\'un match commence.', icon:'logo.png', tag:'fzf-welcome' });
     } else if (perm === 'denied') {
-      alert('Tu as refusé les notifications. Tu peux les réactiver dans les paramètres de ton navigateur.');
+      alert('Notifications refusées. Réactive-les dans les paramètres de ton navigateur.');
     }
   });
 }
-
 function dismissNotifBar() {
   document.getElementById('notif-cta-bar').style.display = 'none';
   localStorage.setItem('fzf-notif-dismissed', '1');
@@ -2102,10 +2017,7 @@ window.addEventListener('load', () => {
 function sendNotification(title, body) {
   if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
     try {
-      const n = new Notification(title, {
-        body, icon: 'logo.png', badge: 'logo.png',
-        tag: 'fzf-live-' + Date.now(), requireInteraction: true
-      });
+      const n = new Notification(title, { body, icon:'logo.png', badge:'logo.png', tag:'fzf-live-'+Date.now(), requireInteraction:true });
       n.onclick = () => { window.focus(); n.close(); showPage('live'); };
       notifSentCount++;
       document.getElementById('notif-sent-count').textContent = notifSentCount;
@@ -2113,7 +2025,6 @@ function sendNotification(title, body) {
   }
   showPushToast(title, body);
 }
-
 function sendAdminNotif() {
   if (!adminLoggedIn) return;
   const title = document.getElementById('notif-title-input').value.trim() || '🔴 Diffusion FZF en cours !';
@@ -2123,37 +2034,24 @@ function sendAdminNotif() {
   document.getElementById('notif-body-input').value = '';
   showBanToastMsg('🔔 Notification envoyée !');
 }
-
 function previewNotif() {
   const title = document.getElementById('notif-title-input').value.trim() || '🔴 Aperçu notification';
   const body = document.getElementById('notif-body-input').value.trim() || 'Voici à quoi ressemblera ta notification.';
   showPushToast(title, body);
 }
-
-/* FIX PRINCIPAL: Toast notification qui se ferme correctement */
 function showPushToast(title, body) {
-  // Annuler tout timer précédent
-  if (pushToastTimer) {
-    clearTimeout(pushToastTimer);
-    pushToastTimer = null;
-  }
+  if (pushToastTimer) { clearTimeout(pushToastTimer); pushToastTimer = null; }
   document.getElementById('push-preview-title').textContent = title;
   document.getElementById('push-preview-body').textContent = body;
   const toast = document.getElementById('push-preview-toast');
-  // Forcer un reflow pour que la transition fonctionne même si déjà .show
   toast.classList.remove('show');
-  void toast.offsetWidth; // reflow
+  void toast.offsetWidth;
   toast.classList.add('show');
-  // Auto-dismiss après 6 secondes
-  pushToastTimer = setTimeout(() => {
-    dismissPushToast();
-  }, 6000);
+  pushToastTimer = setTimeout(dismissPushToast, 6000);
 }
-
 function dismissPushToast() {
   if (pushToastTimer) { clearTimeout(pushToastTimer); pushToastTimer = null; }
-  const toast = document.getElementById('push-preview-toast');
-  toast.classList.remove('show');
+  document.getElementById('push-preview-toast').classList.remove('show');
 }
 
 /* ══════════════════════════════════════════
@@ -2164,7 +2062,6 @@ function toggleChatbot(enabled) {
   document.getElementById('chat-btn').style.display = enabled ? 'flex' : 'none';
   if (!enabled && chatOpen) toggleChat();
 }
-
 function toggleAdminChatbotReply(enabled) {
   adminChatbotReplyEnabled = enabled;
   document.getElementById('admin-chatbot-reply').classList.toggle('visible', enabled);
@@ -2215,28 +2112,90 @@ function submitReview() {
   setTimeout(() => {
     document.getElementById('review-success').style.display = 'none';
     wrapper.querySelectorAll('h4,p,.star-rating-label,.star-input,.form-row,.form-group,.btn-submit-review').forEach(el => el.style.display='');
-    document.getElementById('review-name').value = ''; document.getElementById('review-text').value = '';
-    selectedRating = 0; for(let i=1;i<=5;i++) document.getElementById('star-'+i).classList.remove('active');
+    document.getElementById('review-name').value=''; document.getElementById('review-text').value='';
+    selectedRating=0; for(let i=1;i<=5;i++) document.getElementById('star-'+i).classList.remove('active');
   }, 3500);
 }
 
 /* ══════════════════════════════════════════
-   CHATBOT IA (Claude API)
+   CHATBOT IA — RÉPONSES PRÉ-ENREGISTRÉES + CLAUDE
+   Les réponses pré-enregistrées évitent l'API
+   pour les questions fréquentes → réponse
+   instantanée + info paiement PayPal correcte.
 ══════════════════════════════════════════ */
+
+// Réponses pré-enregistrées par mots-clés
+const PRESET_RESPONSES = [
+  {
+    keywords: ['paypal','paiement','payer','comment payer','virement','moyen de paiement','réglement'],
+    response: `💳 **Paiement**\n\nNous acceptons uniquement le **PayPal** comme moyen de paiement.\n\nUne fois ta commande passée sur notre Discord (discord.gg/ftzf), un admin te transmettra l'adresse PayPal en message privé.\n\n✅ Pas besoin de compte PayPal — tu peux payer en tant qu'invité avec ta carte bancaire via PayPal.\n\n→ Rejoins le Discord pour commander : discord.gg/ftzf`
+  },
+  {
+    keywords: ['prix','coût','combien','tarif','abonnement coûte','iptv prix'],
+    response: `💶 **Tarifs FZF IPTV**\n\n⚡ **Starter — 10€** (3 mois)\nLigue 1, C1, Premier League, Liga, Serie A, Bundesliga\n\n👑 **À Vie — 35€** (paiement unique)\nTout le catalogue + Coupe du Monde & Euros, à vie !\n\n📩 Pour commander → discord.gg/ftzf`
+  },
+  {
+    keywords: ['commander','commande','acheter','achat','souscrire','abonner'],
+    response: `🛒 **Comment commander ?**\n\n1. Rejoins notre Discord → discord.gg/ftzf\n2. Contacte un admin dans le serveur\n3. Choisis ton plan (Starter 10€ ou À Vie 35€)\n4. Effectue le paiement par **PayPal**\n5. Reçois tes accès sous **24h max** en MP ✅`
+  },
+  {
+    keywords: ['appareil','appareils','compatible','télé','tv','smartphone','pc','firestick','android'],
+    response: `📱 **Appareils compatibles**\n\n✅ Smart TV / Android TV\n✅ Amazon Firestick\n✅ Apple TV\n✅ iPhone / iPad\n✅ Smartphone Android\n✅ PC / Mac\n✅ Tablette\n\nApps recommandées : **Tivimate**, **IPTV Smarters Pro**, **GSE IPTV**`
+  },
+  {
+    keywords: ['starter','à vie','différence','comparer','quel plan','lequel choisir'],
+    response: `⚖️ **Starter vs À Vie**\n\n⚡ **Starter (10€ / 3 mois)**\nIdéal pour tester. Renouvelable ensuite.\n\n👑 **À Vie (35€ unique)**\n→ Accès permanent sans renouvellement\n→ Coupe du Monde & Euros inclus\n→ Priorité support\n→ Économie à partir de 4 mois !\n\nSi tu regardes du foot régulièrement → l'**À Vie** vaut clairement le coup 🔥`
+  },
+  {
+    keywords: ['essai','gratuit','test','free','demo'],
+    response: `🎁 **Essai gratuit**\n\nIl n'y a pas d'essai gratuit disponible pour l'instant.\n\nMais avec le **plan Starter à seulement 10€ pour 3 mois**, c'est le meilleur moyen de tester sans risque !\n\n→ Commande sur discord.gg/ftzf`
+  },
+  {
+    keywords: ['discord','rejoindre','serveur','communauté','lien discord'],
+    response: `💬 **Rejoindre le Discord FZF**\n\n→ discord.gg/ftzf\n\nSur le serveur tu trouveras :\n✅ Annonces des matchs en direct\n✅ Support et commandes IPTV\n✅ Communauté de passionnés de foot\n✅ Serveur de backup`
+  },
+  {
+    keywords: ['qualité','4k','hd','résolution','image','coupure','lag','buffer'],
+    response: `📺 **Qualité des streams**\n\nNos flux sont disponibles en **HD et Full HD** selon la chaîne diffusée.\n\n✅ Zéro coupure sur les grands matchs\n✅ Serveur de backup en cas de problème\n✅ Support Discord 7j/7 si souci\n\nLa qualité dépend aussi de ta connexion internet (recommandé : 10 Mbps+).`
+  },
+  {
+    keywords: ['activation','délai','quand','combien de temps','accès'],
+    response: `⏱️ **Délai d'activation**\n\nAprès ton paiement PayPal confirmé, tu reçois tes accès IPTV en **message privé Discord sous 24h maximum** (souvent bien plus rapide !).\n\n→ Commande sur discord.gg/ftzf`
+  },
+  {
+    keywords: ['bonjour','salut','hello','coucou','bonsoir'],
+    response: `👋 Salut ! Bienvenue sur **Football Zone France** !\n\nJe suis le bot officiel FZF. Je peux t'aider avec :\n💶 Les tarifs IPTV\n🛒 Comment commander\n💳 Les paiements (PayPal)\n📱 Les appareils compatibles\n\nQue puis-je faire pour toi ? ⚽`
+  },
+];
+
+function checkPresetResponse(message) {
+  const msg = message.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  for (const preset of PRESET_RESPONSES) {
+    if (preset.keywords.some(kw => msg.includes(kw.normalize('NFD').replace(/[\u0300-\u036f]/g,'')))) {
+      return preset.response;
+    }
+  }
+  return null;
+}
+
 const FZF_SYSTEM = `Tu es le bot officiel de Football Zone France (FZF), un service IPTV et streaming foot français.
 Réponds TOUJOURS en français. Sois sympathique, concis, enthousiaste et direct.
+
 INFORMATIONS CLÉS :
 - Plan Starter : 10€ pour 3 mois — Ligue 1, C1, Premier League, Liga, Serie A, Bundesliga
 - Plan À Vie : 35€ paiement unique, tout illimité à vie, Coupe du Monde & Euros inclus
 - Commande via Discord uniquement : discord.gg/ftzf
-- Paiement : PayPal ou virement bancaire
-- Activation sous 24h après paiement
-- Appareils compatibles : Smart TV, Android TV, Firestick, Apple TV, smartphone, tablette, PC
+- PAIEMENT : PayPal UNIQUEMENT. L'admin envoie l'adresse PayPal en MP Discord après commande.
+- Activation sous 24h après paiement PayPal confirmé
+- Appareils compatibles : Smart TV, Android TV, Firestick, Apple TV, iPhone, smartphone Android, tablette, PC/Mac
 - Apps recommandées : Tivimate, IPTV Smarters Pro, GSE IPTV
 - Support Discord 7j/7
 - Serveur backup inclus dans tous les plans
-- Pas d'essai gratuit disponible, mais plan Starter accessible à 10€
-RÈGLES : Sois bref (max 4 lignes). Utilise des emojis pertinents. Pour commander → discord.gg/ftzf.`;
+- Pas d'essai gratuit, mais Starter à 10€ pour tester
+- Qualité : HD et Full HD selon les chaînes
+
+RÈGLES : Sois bref (max 4 lignes). Utilise des emojis pertinents. Pour commander → discord.gg/ftzf.
+Pour toute question sur le paiement, précise TOUJOURS que c'est par PayPal uniquement.`;
 
 function toggleChat() {
   if (!chatbotEnabled) return;
@@ -2247,22 +2206,24 @@ function toggleChat() {
   document.getElementById('chat-notif').style.display = 'none';
   if (chatOpen) setTimeout(() => document.getElementById('chat-input').focus(), 300);
 }
+
 function appendBotMessage(text) {
   const msgs = document.getElementById('chat-messages');
   const div = document.createElement('div');
   div.className = 'msg-bot';
-  div.innerHTML = `<span class="msg-label bot-label">🤖 Bot IA</span>${text.replace(/\n/g,'<br>')}`;
+  div.innerHTML = `<span class="msg-label bot-label">🤖 Bot IA</span>${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}`;
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
 }
+
 function appendUserMessage(text) {
   const msgs = document.getElementById('chat-messages');
   const div = document.createElement('div');
-  div.className = 'msg-user';
-  div.textContent = text;
+  div.className = 'msg-user'; div.textContent = text;
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
 }
+
 function showLoadingMsg() {
   const msgs = document.getElementById('chat-messages');
   const div = document.createElement('div');
@@ -2273,7 +2234,7 @@ function showLoadingMsg() {
 function removeLoadingMsg() { const el = document.getElementById('loading-msg'); if(el) el.remove(); }
 
 async function sendToClaudeAPI(userMessage) {
-  chatHistory.push({ role: 'user', content: userMessage });
+  chatHistory.push({ role:'user', content:userMessage });
   showLoadingMsg();
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -2290,34 +2251,60 @@ async function sendToClaudeAPI(userMessage) {
     removeLoadingMsg();
     if (data.content && data.content[0] && data.content[0].text) {
       const reply = data.content[0].text;
-      chatHistory.push({ role: 'assistant', content: reply });
+      chatHistory.push({ role:'assistant', content:reply });
       appendBotMessage(reply);
+      addBotConversationEntry(userMessage, reply);
     } else {
       appendBotMessage('Désolé, une erreur est survenue. Reformule ta question ! 😅');
     }
   } catch(err) {
     removeLoadingMsg();
-    appendBotMessage('Connexion IA impossible. Contacte-nous sur <strong>discord.gg/ftzf</strong> 💬');
+    appendBotMessage('Connexion IA impossible. Contacte-nous sur **discord.gg/ftzf** 💬');
   }
 }
+
+async function processUserMessage(message) {
+  appendUserMessage(message);
+  document.getElementById('quick-section').style.display = 'none';
+
+  // Vérifier d'abord les réponses pré-enregistrées
+  const preset = checkPresetResponse(message);
+  if (preset) {
+    showLoadingMsg();
+    await new Promise(r => setTimeout(r, 600)); // délai naturel
+    removeLoadingMsg();
+    appendBotMessage(preset);
+    chatHistory.push({ role:'user', content:message });
+    chatHistory.push({ role:'assistant', content:preset });
+    addBotConversationEntry(message, preset);
+    return;
+  }
+
+  // Sinon appel Claude
+  await sendToClaudeAPI(message);
+}
+
 function sendChat() {
   const input = document.getElementById('chat-input');
   const msg = input.value.trim();
   if (!msg) return;
   input.value = '';
-  appendUserMessage(msg);
-  document.getElementById('quick-section').style.display = 'none';
-  sendToClaudeAPI(msg);
+  processUserMessage(msg);
 }
 function quickAsk(question) {
-  appendUserMessage(question);
-  document.getElementById('quick-section').style.display = 'none';
-  sendToClaudeAPI(question);
+  processUserMessage(question);
 }
 
 /* ══════════════════════════════════════════
-   INIT — Charger l'état partagé au démarrage
+   INIT
 ══════════════════════════════════════════ */
+// Nettoyer le staff au chargement (supprimer les entrées obsolètes de la session courante)
+// puis re-enregistrer si admin
+window.addEventListener('beforeunload', () => {
+  // On ne supprime PAS le staff à la fermeture pour maintenir la persistance
+  // La session expire naturellement après 8h
+});
+
 loadSharedState();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
