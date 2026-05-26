@@ -1,7 +1,8 @@
 bash
+
 cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,19 +18,36 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     :root {
       --blue: #2563eb;
       --red: #dc2626;
+      --green: #22c55e;
       --dark: #020617;
       --dark2: #0f172a;
       --dark3: #1e293b;
       --text: #e2e8f0;
       --muted: #94a3b8;
-      --green: #22c55e;
+      --border: rgba(255,255,255,0.07);
+      --card-bg: #1e293b;
+      --nav-bg: rgba(2,6,23,0.92);
+      --theme-toggle-bg: rgba(255,255,255,0.08);
+    }
+
+    [data-theme="light"] {
+      --dark: #f1f5f9;
+      --dark2: #ffffff;
+      --dark3: #f8fafc;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: rgba(0,0,0,0.08);
+      --card-bg: #ffffff;
+      --nav-bg: rgba(241,245,249,0.95);
+      --theme-toggle-bg: rgba(0,0,0,0.07);
     }
 
     body {
       font-family: 'Barlow', sans-serif;
       background: var(--dark);
-      color: white;
+      color: var(--text);
       overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
     }
 
     /* ─── NAV ─── */
@@ -37,7 +55,7 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
-      background: rgba(2,6,23,0.92);
+      background: var(--nav-bg);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(37,99,235,0.2);
       display: flex;
@@ -45,6 +63,7 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
       justify-content: space-between;
       padding: 0 32px;
       height: 64px;
+      transition: background 0.3s;
     }
 
     .nav-logo {
@@ -54,20 +73,13 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
       font-family: 'Bebas Neue', sans-serif;
       font-size: 22px;
       letter-spacing: 1px;
-      color: white;
+      color: var(--text);
       text-decoration: none;
     }
 
-    .nav-logo img {
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
-    }
+    .nav-logo img { width: 40px; height: 40px; object-fit: contain; }
 
-    .nav-tabs {
-      display: flex;
-      gap: 4px;
-    }
+    .nav-tabs { display: flex; gap: 4px; }
 
     .nav-tab {
       padding: 8px 22px;
@@ -81,17 +93,29 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
       transition: all 0.2s;
       letter-spacing: 0.5px;
     }
-
-    .nav-tab:hover { color: white; background: rgba(255,255,255,0.06); }
-
-    .nav-tab.active {
-      color: white;
-      background: rgba(37,99,235,0.25);
-      border: 1px solid rgba(37,99,235,0.4);
-    }
-
+    .nav-tab:hover { color: var(--text); background: var(--theme-toggle-bg); }
+    .nav-tab.active { color: var(--text); background: rgba(37,99,235,0.25); border: 1px solid rgba(37,99,235,0.4); }
     .nav-tab.live-tab.active { background: rgba(220,38,38,0.25); border-color: rgba(220,38,38,0.5); }
     .nav-tab.iptv-tab.active { background: rgba(34,197,94,0.2); border-color: rgba(34,197,94,0.4); }
+
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+
+    /* ─── THEME TOGGLE ─── */
+    .theme-toggle {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--theme-toggle-bg);
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover { transform: scale(1.08); border-color: rgba(37,99,235,0.5); }
 
     .live-dot {
       display: inline-block;
@@ -101,10 +125,7 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
       margin-right: 6px;
       animation: pulse-dot 1.5s infinite;
     }
-    @keyframes pulse-dot {
-      0%,100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
+    @keyframes pulse-dot { 0%,100%{opacity:1}50%{opacity:.3} }
 
     .nav-discord {
       display: inline-flex;
@@ -126,10 +147,7 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     .page.active { display: block; }
 
     /* ─── HERO ─── */
-    #page-home {
-      min-height: 100vh;
-      padding-top: 64px;
-    }
+    #page-home { min-height: 100vh; padding-top: 64px; }
 
     .hero {
       position: relative;
@@ -141,7 +159,6 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
       padding: 40px;
       background: url("banner.png") center center/cover no-repeat;
     }
-
     .hero::before {
       content: "";
       position: absolute;
@@ -149,24 +166,14 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
       background: rgba(0,0,0,0.72);
       backdrop-filter: blur(2px);
     }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 900px;
-    }
-
+    .hero-content { position: relative; z-index: 2; max-width: 900px; }
     .hero-logo {
       width: 200px;
       margin-bottom: 24px;
       filter: drop-shadow(0 0 30px rgba(37,99,235,0.8));
       animation: float 4s ease-in-out infinite;
     }
-
-    @keyframes float {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
+    @keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)} }
 
     h1 {
       font-family: 'Bebas Neue', sans-serif;
@@ -175,16 +182,9 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
       line-height: 1;
       margin-bottom: 20px;
       text-shadow: 0 0 40px rgba(0,0,0,0.8);
+      color: white;
     }
-
-    .hero-sub {
-      font-size: 20px;
-      line-height: 1.8;
-      color: var(--text);
-      margin-bottom: 40px;
-      font-weight: 400;
-    }
-
+    .hero-sub { font-size: 20px; line-height: 1.8; color: #e2e8f0; margin-bottom: 40px; }
     .btn-primary {
       display: inline-block;
       padding: 16px 44px;
@@ -196,1129 +196,513 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
       background: linear-gradient(135deg, var(--blue), var(--red));
       transition: 0.3s;
       box-shadow: 0 0 30px rgba(37,99,235,0.4);
-      letter-spacing: 0.5px;
     }
     .btn-primary:hover { transform: scale(1.07); box-shadow: 0 0 45px rgba(220,38,38,0.7); }
 
-    /* ─── SERVICES ─── */
-    .section {
-      padding: 90px 20px;
-      background: var(--dark2);
-      text-align: center;
-    }
-
-    .section h2 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 52px;
-      letter-spacing: 2px;
-      margin-bottom: 56px;
-    }
-
-    .cards {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 28px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
+    .section { padding: 90px 20px; background: var(--dark2); text-align: center; transition: background 0.3s; }
+    .section h2 { font-family:'Bebas Neue',sans-serif; font-size:52px; letter-spacing:2px; margin-bottom:56px; color:var(--text); }
+    .cards { display:flex; justify-content:center; flex-wrap:wrap; gap:28px; max-width:1100px; margin:0 auto; }
     .card {
-      background: var(--dark3);
+      background: var(--card-bg);
       width: 300px;
       padding: 32px 28px;
       border-radius: 20px;
       transition: 0.3s;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
     }
     .card:hover { transform: translateY(-8px); border-color: rgba(37,99,235,0.4); box-shadow: 0 0 40px rgba(37,99,235,0.2); }
+    .card h3 { font-size:24px; font-weight:700; margin-bottom:16px; color:#60a5fa; }
+    .card p { font-size:16px; line-height:1.7; color:var(--muted); }
 
-    .card h3 { font-size: 24px; font-weight: 700; margin-bottom: 16px; color: #60a5fa; }
-    .card p { font-size: 16px; line-height: 1.7; color: var(--muted); }
+    .discord-section { padding:90px 20px; background:linear-gradient(135deg,#111827,var(--dark)); text-align:center; }
+    .discord-section h2 { font-family:'Bebas Neue',sans-serif; font-size:54px; letter-spacing:2px; margin-bottom:18px; color:white; }
+    .discord-section p { font-size:18px; max-width:650px; margin:0 auto 40px; color:#e2e8f0; line-height:1.8; }
 
-    /* ─── DISCORD SECTION ─── */
-    .discord-section {
-      padding: 90px 20px;
-      background: linear-gradient(135deg, #111827, var(--dark));
-      text-align: center;
-    }
-    .discord-section h2 { font-family: 'Bebas Neue', sans-serif; font-size: 54px; letter-spacing: 2px; margin-bottom: 18px; }
-    .discord-section p { font-size: 18px; max-width: 650px; margin: 0 auto 40px; color: var(--text); line-height: 1.8; }
-
-    /* ─── FOOTER ─── */
-    footer {
-      background: #000814;
-      padding: 30px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 14px;
-    }
+    footer { background:#000814; padding:30px; text-align:center; color:var(--muted); font-size:14px; }
+    [data-theme="light"] footer { background:#0f172a; }
 
     /* ══════════════════════════════════════════
        PAGE LIVE
     ══════════════════════════════════════════ */
-    #page-live {
-      padding-top: 64px;
-      min-height: 100vh;
-      background: var(--dark);
-    }
+    #page-live { padding-top:64px; min-height:100vh; background:var(--dark); }
 
     .live-header {
       background: var(--dark2);
-      border-bottom: 1px solid rgba(255,255,255,0.07);
+      border-bottom: 1px solid var(--border);
       padding: 28px 40px;
+      transition: background 0.3s;
     }
-
-    .live-header-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
+    .live-header-top { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
     .live-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 38px;
-      letter-spacing: 2px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
+      font-family:'Bebas Neue',sans-serif;
+      font-size:38px; letter-spacing:2px;
+      display:flex; align-items:center; gap:14px;
+      color: var(--text);
     }
-
-    .live-badge {
-      background: var(--red);
-      padding: 4px 14px;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      animation: pulse-dot 1.5s infinite;
-    }
-
-    .live-no-stream-badge {
-      background: var(--dark3);
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 4px 14px;
-      border-radius: 6px;
-      font-size: 13px;
-      color: var(--muted);
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
-
-    .btn-admin-toggle {
-      padding: 9px 20px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.06);
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-      font-family: 'Barlow', sans-serif;
-    }
-    .btn-admin-toggle:hover { color: white; border-color: rgba(255,255,255,0.3); }
+    .live-badge { background:var(--red); padding:4px 14px; border-radius:6px; font-size:14px; font-weight:700; letter-spacing:1px; animation:pulse-dot 1.5s infinite; }
+    .live-no-stream-badge { background:var(--card-bg); border:1px solid var(--border); padding:4px 14px; border-radius:6px; font-size:13px; color:var(--muted); font-weight:600; letter-spacing:.5px; }
+    .btn-admin-toggle { padding:9px 20px; border-radius:10px; border:1px solid var(--border); background:var(--theme-toggle-bg); color:var(--muted); font-size:14px; font-weight:600; cursor:pointer; transition:0.2s; font-family:'Barlow',sans-serif; }
+    .btn-admin-toggle:hover { color:var(--text); border-color:rgba(255,255,255,0.3); }
 
     /* Admin Panel */
     .admin-panel {
-      margin-top: 20px;
+      margin-top:20px;
       background: rgba(0,0,0,0.4);
       border: 1px solid rgba(37,99,235,0.35);
-      border-radius: 14px;
-      padding: 22px 24px;
-      display: none;
+      border-radius:14px;
+      padding:22px 24px;
+      display:none;
     }
-    .admin-panel.open { display: block; }
-
-    .admin-panel h4 {
-      font-size: 14px;
-      font-weight: 700;
-      color: #60a5fa;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 14px;
+    [data-theme="light"] .admin-panel { background: rgba(0,0,0,0.06); }
+    .admin-panel.open { display:block; }
+    .admin-panel h4 { font-size:14px; font-weight:700; color:#60a5fa; letter-spacing:1px; text-transform:uppercase; margin-bottom:14px; }
+    .admin-section-title { font-size:13px; color:var(--muted); margin-bottom:8px; font-weight:600; }
+    .admin-row { display:flex; gap:10px; align-items:stretch; flex-wrap:wrap; }
+    .admin-panel input[type="text"], .admin-panel input[type="password"], .admin-panel input[type="datetime-local"] {
+      flex:1; min-width:200px;
+      padding:10px 16px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:var(--card-bg);
+      color:var(--text);
+      font-size:14px;
+      font-family:'Barlow',sans-serif;
+      outline:none;
+      transition:border-color 0.2s;
     }
+    .admin-panel input:focus { border-color:var(--blue); }
+    .btn-set-stream { padding:10px 22px; border-radius:10px; border:none; background:var(--blue); color:white; font-size:14px; font-weight:700; cursor:pointer; transition:0.2s; font-family:'Barlow',sans-serif; white-space:nowrap; }
+    .btn-set-stream:hover { background:#1d4ed8; }
+    .btn-stop-stream { padding:10px 22px; border-radius:10px; border:1px solid rgba(220,38,38,0.5); background:transparent; color:#f87171; font-size:14px; font-weight:700; cursor:pointer; transition:0.2s; font-family:'Barlow',sans-serif; }
+    .btn-stop-stream:hover { background:rgba(220,38,38,0.15); }
+    .admin-hint { margin-top:10px; font-size:12px; color:var(--muted); line-height:1.6; }
 
-    .admin-row {
-      display: flex;
-      gap: 10px;
-      align-items: stretch;
-      flex-wrap: wrap;
+    /* Admin Sections Grid */
+    .admin-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:18px; }
+    @media(max-width:768px){ .admin-grid { grid-template-columns:1fr; } }
+    .admin-block {
+      background: rgba(0,0,0,0.3);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:16px 18px;
     }
+    [data-theme="light"] .admin-block { background: rgba(0,0,0,0.04); }
+    .admin-block h5 { font-size:12px; font-weight:700; color:#60a5fa; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
 
-    .admin-panel input[type="text"], .admin-panel input[type="password"] {
-      flex: 1;
-      min-width: 200px;
-      padding: 10px 16px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: var(--dark3);
-      color: white;
-      font-size: 14px;
-      font-family: 'Barlow', sans-serif;
-      outline: none;
-      transition: border-color 0.2s;
+    /* Toggle switches */
+    .toggle-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); }
+    .toggle-row:last-child { border-bottom:none; }
+    .toggle-label { font-size:14px; color:var(--text); font-weight:600; }
+    .toggle-desc { font-size:12px; color:var(--muted); margin-top:2px; }
+
+    .toggle-switch {
+      position:relative;
+      width:46px; height:26px;
+      flex-shrink:0;
     }
-    .admin-panel input:focus { border-color: var(--blue); }
-
-    .btn-set-stream {
-      padding: 10px 22px;
-      border-radius: 10px;
-      border: none;
-      background: var(--blue);
-      color: white;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.2s;
-      font-family: 'Barlow', sans-serif;
-      white-space: nowrap;
+    .toggle-switch input { display:none; }
+    .toggle-slider {
+      position:absolute; inset:0;
+      background: rgba(255,255,255,0.15);
+      border-radius:13px;
+      cursor:pointer;
+      transition:0.3s;
     }
-    .btn-set-stream:hover { background: #1d4ed8; }
-
-    .btn-stop-stream {
-      padding: 10px 22px;
-      border-radius: 10px;
-      border: 1px solid rgba(220,38,38,0.5);
-      background: transparent;
-      color: #f87171;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.2s;
-      font-family: 'Barlow', sans-serif;
+    .toggle-slider::before {
+      content:"";
+      position:absolute;
+      left:3px; top:3px;
+      width:20px; height:20px;
+      border-radius:50%;
+      background:white;
+      transition:0.3s;
     }
-    .btn-stop-stream:hover { background: rgba(220,38,38,0.15); }
+    .toggle-switch input:checked + .toggle-slider { background:var(--blue); }
+    .toggle-switch input:checked + .toggle-slider::before { transform:translateX(20px); }
 
-    .admin-hint {
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
+    /* Viewer stats */
+    .viewer-stats-bar { display:none; align-items:center; gap:24px; margin-top:18px; padding:16px 22px; background:rgba(0,0,0,0.5); border:1px solid rgba(37,99,235,0.3); border-radius:14px; flex-wrap:wrap; }
+    .viewer-stats-bar.visible { display:flex; }
+    .stat-box { display:flex; flex-direction:column; align-items:center; gap:4px; min-width:90px; }
+    .stat-number { font-family:'Bebas Neue',sans-serif; font-size:38px; letter-spacing:1px; line-height:1; }
+    .stat-number.viewers { color:#f87171; }
+    .stat-number.peak { color:#fbbf24; }
+    .stat-number.duration { color:#4ade80; }
+    .stat-label { font-size:11px; font-weight:700; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+    .stat-divider { width:1px; height:50px; background:rgba(255,255,255,0.1); }
+    .viewer-pulse { display:inline-block; width:10px; height:10px; border-radius:50%; background:#f87171; animation:pulse-dot 1s infinite; margin-right:8px; }
+    .stat-reset-btn { margin-left:auto; padding:7px 16px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:12px; font-weight:600; cursor:pointer; font-family:'Barlow',sans-serif; transition:0.2s; }
+    .stat-reset-btn:hover { color:var(--text); }
 
-    /* ─── VIEWER COUNTER (Admin) ─── */
-    .viewer-stats-bar {
-      display: none;
-      align-items: center;
-      gap: 24px;
-      margin-top: 18px;
-      padding: 16px 22px;
-      background: rgba(0,0,0,0.5);
-      border: 1px solid rgba(37,99,235,0.3);
-      border-radius: 14px;
-      flex-wrap: wrap;
-    }
-    .viewer-stats-bar.visible { display: flex; }
-
-    .stat-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      min-width: 90px;
-    }
-
-    .stat-number {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 38px;
-      letter-spacing: 1px;
-      line-height: 1;
-    }
-    .stat-number.viewers { color: #f87171; }
-    .stat-number.peak { color: #fbbf24; }
-    .stat-number.duration { color: #4ade80; }
-
-    .stat-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .stat-divider {
-      width: 1px;
-      height: 50px;
-      background: rgba(255,255,255,0.1);
-    }
-
-    .viewer-pulse {
-      display: inline-block;
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: #f87171;
-      animation: pulse-dot 1s infinite;
-      margin-right: 8px;
-    }
-
-    .stat-reset-btn {
-      margin-left: auto;
-      padding: 7px 16px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: transparent;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: 'Barlow', sans-serif;
-      transition: 0.2s;
-    }
-    .stat-reset-btn:hover { color: white; border-color: rgba(255,255,255,0.3); }
-
-    /* Stream player */
-    .stream-container {
-      padding: 32px 40px;
-    }
-
-    .stream-box {
-      background: #000;
-      border-radius: 18px;
-      overflow: hidden;
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16/9;
-      max-height: 70vh;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .stream-box iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .no-stream-placeholder {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
+    /* ─── COUNTDOWN ─── */
+    .countdown-banner {
+      display:none;
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      border-bottom: 1px solid rgba(99,102,241,0.4);
+      padding: 20px 40px;
       align-items: center;
       justify-content: center;
-      gap: 18px;
-      background: var(--dark2);
-    }
-
-    .no-stream-placeholder .icon-tv {
-      font-size: 70px;
-      opacity: 0.15;
-    }
-
-    .no-stream-placeholder h3 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 30px;
-      letter-spacing: 1.5px;
-      opacity: 0.4;
-    }
-
-    .no-stream-placeholder p {
-      font-size: 15px;
-      color: var(--muted);
-      max-width: 380px;
-      text-align: center;
-      line-height: 1.6;
-      opacity: 0.7;
-    }
-
-    .stream-info-bar {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-top: 18px;
-      padding: 14px 20px;
-      background: var(--dark2);
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.06);
+      gap: 32px;
       flex-wrap: wrap;
     }
+    [data-theme="light"] .countdown-banner { background:linear-gradient(135deg,#e0e7ff,#f0f4ff); border-color:rgba(99,102,241,0.4); }
+    .countdown-banner.visible { display:flex; }
+    .countdown-match-info { text-align:center; }
+    .countdown-match-name { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:2px; color:white; }
+    [data-theme="light"] .countdown-match-name { color:#1e1b4b; }
+    .countdown-label { font-size:13px; color:#818cf8; font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+    .countdown-units { display:flex; align-items:center; gap:12px; }
+    .cd-unit { text-align:center; }
+    .cd-num {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:52px;
+      line-height:1;
+      color:white;
+      background: rgba(99,102,241,0.2);
+      border:1px solid rgba(99,102,241,0.5);
+      border-radius:12px;
+      min-width:72px;
+      padding:4px 12px;
+      display:block;
+    }
+    [data-theme="light"] .cd-num { color:#1e1b4b; background:rgba(99,102,241,0.1); }
+    .cd-label { font-size:11px; font-weight:700; color:#818cf8; letter-spacing:1px; text-transform:uppercase; margin-top:4px; }
+    .cd-sep { font-family:'Bebas Neue',sans-serif; font-size:48px; color:rgba(99,102,241,0.6); margin-top:-8px; }
+    .countdown-ended { font-family:'Bebas Neue',sans-serif; font-size:32px; letter-spacing:2px; color:#4ade80; animation:pulse-dot 1s infinite; }
 
-    .stream-match-label {
-      font-size: 16px;
-      font-weight: 700;
-      flex: 1;
+    /* Stream player */
+    .stream-container { padding:32px 40px; }
+    .stream-box {
+      background:#000;
+      border-radius:18px;
+      overflow:hidden;
+      position:relative;
+      width:100%;
+      aspect-ratio:16/9;
+      max-height:70vh;
+      border:1px solid var(--border);
+    }
+    .stream-box iframe { width:100%; height:100%; border:none; }
+    .no-stream-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; background:var(--dark2); }
+    .no-stream-placeholder .icon-tv { font-size:70px; opacity:.15; }
+    .no-stream-placeholder h3 { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:1.5px; opacity:.4; color:var(--text); }
+    .no-stream-placeholder p { font-size:15px; color:var(--muted); max-width:380px; text-align:center; line-height:1.6; opacity:.7; }
+    .stream-info-bar { display:flex; align-items:center; gap:16px; margin-top:18px; padding:14px 20px; background:var(--dark2); border-radius:12px; border:1px solid var(--border); flex-wrap:wrap; transition:background 0.3s; }
+    .stream-match-label { font-size:16px; font-weight:700; flex:1; color:var(--text); }
+    .stream-viewers-public { font-size:13px; color:var(--muted); display:flex; align-items:center; gap:6px; }
+    .btn-discord-chat { padding:9px 18px; border-radius:10px; border:none; background:#5865F2; color:white; font-size:13px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block; transition:0.2s; }
+    .btn-discord-chat:hover { background:#4752c4; }
+
+    /* ─── LIVE CHAT ─── */
+    .live-layout { display:grid; grid-template-columns:1fr 360px; gap:20px; padding:32px 40px; align-items:start; }
+    @media(max-width:1100px){ .live-layout { grid-template-columns:1fr; } }
+
+    .live-chat-panel {
+      background: var(--dark2);
+      border:1px solid var(--border);
+      border-radius:18px;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      height:calc(70vh + 60px);
+      max-height:700px;
+      transition: background 0.3s;
+    }
+    .live-chat-panel.hidden { display:none; }
+
+    .chat-panel-header {
+      padding:14px 18px;
+      background: rgba(37,99,235,0.15);
+      border-bottom:1px solid rgba(37,99,235,0.2);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .chat-panel-title { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:1.5px; color:var(--text); display:flex; align-items:center; gap:8px; }
+    .chat-online-count { font-size:12px; color:#4ade80; font-weight:700; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); padding:3px 10px; border-radius:20px; }
+
+    .chat-msgs-area {
+      flex:1;
+      overflow-y:auto;
+      padding:14px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .chat-msgs-area::-webkit-scrollbar { width:4px; }
+    .chat-msgs-area::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:4px; }
+
+    .chat-msg {
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      animation:msg-in 0.2s ease;
+    }
+    @keyframes msg-in { from{transform:translateY(4px);opacity:0}to{transform:translateY(0);opacity:1} }
+
+    .chat-msg-header { display:flex; align-items:center; gap:8px; }
+    .chat-msg-avatar {
+      width:24px; height:24px;
+      border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:11px; font-weight:700; color:white;
+      flex-shrink:0;
+    }
+    .chat-msg-username { font-size:13px; font-weight:700; }
+    .chat-msg-time { font-size:11px; color:var(--muted); margin-left:auto; }
+    .chat-msg-text { font-size:14px; color:var(--text); line-height:1.5; padding-left:32px; }
+
+    .chat-msg.system .chat-msg-text { color:#818cf8; font-style:italic; padding-left:0; font-size:12px; }
+
+    .chat-input-area {
+      padding:12px 14px;
+      border-top:1px solid var(--border);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
     }
 
-    .stream-viewers-public {
-      font-size: 13px;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .chat-name-row { display:flex; gap:8px; }
+    .chat-nickname-input {
+      flex:0 0 130px;
+      padding:9px 12px;
+      border-radius:8px;
+      border:1px solid var(--border);
+      background:var(--dark3);
+      color:var(--text);
+      font-size:13px;
+      font-family:'Barlow',sans-serif;
+      outline:none;
     }
+    .chat-nickname-input:focus { border-color:var(--blue); }
 
-    .btn-discord-chat {
-      padding: 9px 18px;
-      border-radius: 10px;
-      border: none;
-      background: #5865F2;
-      color: white;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      transition: 0.2s;
+    .chat-msg-input {
+      flex:1;
+      padding:9px 12px;
+      border-radius:8px;
+      border:1px solid var(--border);
+      background:var(--card-bg);
+      color:var(--text);
+      font-size:13px;
+      font-family:'Barlow',sans-serif;
+      outline:none;
     }
-    .btn-discord-chat:hover { background: #4752c4; }
+    .chat-msg-input:focus { border-color:var(--blue); }
+
+    .chat-send-row { display:flex; gap:8px; }
+    .chat-send-live-btn {
+      flex:1;
+      padding:9px;
+      border-radius:8px;
+      border:none;
+      background:var(--blue);
+      color:white;
+      font-size:13px;
+      font-weight:700;
+      cursor:pointer;
+      font-family:'Barlow',sans-serif;
+      transition:0.2s;
+    }
+    .chat-send-live-btn:hover { background:#1d4ed8; }
+
+    /* ─── DISABLED CHAT STATE ─── */
+    .chat-disabled-overlay {
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,0.6);
+      backdrop-filter:blur(4px);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      z-index:10;
+      border-radius:18px;
+    }
+    .chat-disabled-overlay p { font-size:15px; color:var(--muted); text-align:center; max-width:220px; line-height:1.6; }
+    .chat-disabled-overlay .lock-icon { font-size:40px; opacity:0.5; }
+
+    .live-chat-wrapper { position:relative; }
 
     /* admin login form */
-    .admin-login {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .admin-error {
-      color: #f87171;
-      font-size: 13px;
-      display: none;
-    }
+    .admin-login { display:flex; flex-direction:column; gap:10px; }
+    .admin-error { color:#f87171; font-size:13px; display:none; }
 
     /* ══════════════════════════════════════════
        PAGE IPTV
     ══════════════════════════════════════════ */
-    #page-iptv {
-      padding-top: 64px;
-      min-height: 100vh;
-      background: var(--dark);
-    }
+    #page-iptv { padding-top:64px; min-height:100vh; background:var(--dark); }
+    .iptv-header { background:linear-gradient(135deg,#0f2a0f,#0a1a0a); border-bottom:1px solid rgba(34,197,94,0.2); padding:60px 40px; text-align:center; }
+    [data-theme="light"] .iptv-header { background:linear-gradient(135deg,#dcfce7,#f0fdf4); border-color:rgba(34,197,94,0.3); }
+    .iptv-header h2 { font-family:'Bebas Neue',sans-serif; font-size:58px; letter-spacing:3px; color:white; margin-bottom:14px; }
+    [data-theme="light"] .iptv-header h2 { color:#14532d; }
+    .iptv-header p { font-size:18px; color:var(--muted); max-width:600px; margin:0 auto; line-height:1.7; }
+    .iptv-tag { display:inline-block; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.4); color:#4ade80; font-size:13px; font-weight:700; padding:5px 16px; border-radius:20px; letter-spacing:1px; margin-bottom:20px; }
 
-    .iptv-header {
-      background: linear-gradient(135deg, #0f2a0f, #0a1a0a);
-      border-bottom: 1px solid rgba(34,197,94,0.2);
-      padding: 60px 40px;
-      text-align: center;
-    }
+    .iptv-plans { padding:70px 20px; display:flex; justify-content:center; flex-wrap:wrap; gap:36px; background:var(--dark); }
+    .plan-card { background:var(--dark2); border:1px solid var(--border); border-radius:24px; padding:40px 36px; width:340px; text-align:center; transition:0.3s; position:relative; overflow:hidden; }
+    .plan-card::before { content:""; position:absolute; top:0;left:0;right:0; height:4px; }
+    .plan-card.starter::before { background:linear-gradient(90deg,var(--blue),#60a5fa); }
+    .plan-card.lifetime::before { background:linear-gradient(90deg,#f59e0b,var(--red)); }
+    .plan-card:hover { transform:translateY(-10px); border-color:rgba(37,99,235,0.4); box-shadow:0 20px 60px rgba(0,0,0,0.4); }
+    .plan-card.lifetime:hover { border-color:rgba(245,158,11,0.5); }
+    .plan-badge { position:absolute; top:20px;right:20px; background:linear-gradient(135deg,#f59e0b,var(--red)); color:white; font-size:11px; font-weight:800; padding:4px 12px; border-radius:20px; letter-spacing:1px; text-transform:uppercase; }
+    .plan-icon { font-size:52px; margin-bottom:18px; display:block; }
+    .plan-name { font-family:'Bebas Neue',sans-serif; font-size:32px; letter-spacing:2px; margin-bottom:6px; color:var(--text); }
+    .plan-duration { font-size:14px; color:var(--muted); font-weight:600; margin-bottom:28px; }
+    .plan-price { font-family:'Bebas Neue',sans-serif; font-size:72px; letter-spacing:1px; line-height:1; margin-bottom:6px; }
+    .plan-card.starter .plan-price { color:#60a5fa; }
+    .plan-card.lifetime .plan-price { color:#fbbf24; }
+    .plan-price sup { font-size:32px; vertical-align:top; margin-top:14px; display:inline-block; }
+    .plan-pricenote { font-size:13px; color:var(--muted); margin-bottom:32px; }
+    .plan-features { list-style:none; margin-bottom:36px; text-align:left; }
+    .plan-features li { padding:9px 0; border-bottom:1px solid var(--border); font-size:15px; color:var(--text); display:flex; align-items:center; gap:10px; }
+    .plan-features li:last-child { border-bottom:none; }
+    .feat-check { color:#4ade80; font-size:17px; flex-shrink:0; }
+    .btn-buy { display:block; width:100%; padding:15px; border-radius:12px; border:none; font-size:17px; font-weight:700; cursor:pointer; transition:0.2s; font-family:'Barlow',sans-serif; letter-spacing:.5px; text-decoration:none; text-align:center; }
+    .btn-buy.starter { background:linear-gradient(135deg,var(--blue),#3b82f6); color:white; }
+    .btn-buy.starter:hover { box-shadow:0 0 30px rgba(37,99,235,0.6); transform:scale(1.03); }
+    .btn-buy.lifetime { background:linear-gradient(135deg,#f59e0b,var(--red)); color:white; }
+    .btn-buy.lifetime:hover { box-shadow:0 0 30px rgba(245,158,11,0.5); transform:scale(1.03); }
 
-    .iptv-header h2 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 58px;
-      letter-spacing: 3px;
-      color: white;
-      margin-bottom: 14px;
-    }
+    /* ─── Reviews ─── */
+    .reviews-section { padding:70px 20px; background:var(--dark2); transition:background 0.3s; }
+    .reviews-section h3 { font-family:'Bebas Neue',sans-serif; font-size:46px; letter-spacing:2px; text-align:center; margin-bottom:14px; color:var(--text); }
+    .reviews-subtitle { text-align:center; color:var(--muted); font-size:16px; margin-bottom:50px; }
+    .reviews-grid { display:flex; flex-wrap:wrap; gap:22px; justify-content:center; max-width:1100px; margin:0 auto 50px; }
+    .review-card { background:var(--card-bg); border:1px solid var(--border); border-radius:18px; padding:24px 26px; width:300px; transition:0.3s; }
+    .review-card:hover { transform:translateY(-4px); border-color:rgba(37,99,235,0.3); }
+    .review-stars { font-size:18px; margin-bottom:10px; }
+    .review-text { font-size:15px; color:var(--text); line-height:1.65; margin-bottom:16px; font-style:italic; }
+    .review-author { display:flex; align-items:center; gap:12px; }
+    .review-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--red)); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700; flex-shrink:0; color:white; }
+    .review-name { font-size:14px; font-weight:700; color:var(--text); }
+    .review-plan { font-size:12px; color:var(--muted); }
+    .review-form-wrapper { max-width:640px; margin:0 auto; background:var(--card-bg); border:1px solid rgba(37,99,235,0.25); border-radius:20px; padding:32px 36px; }
+    .review-form-wrapper h4 { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1.5px; margin-bottom:6px; color:var(--text); }
+    .review-form-wrapper > p { font-size:14px; color:var(--muted); margin-bottom:24px; }
+    .form-row { display:flex; gap:14px; margin-bottom:14px; flex-wrap:wrap; }
+    .form-group { display:flex; flex-direction:column; gap:6px; flex:1; min-width:200px; }
+    .form-group label { font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.8px; text-transform:uppercase; }
+    .form-group input, .form-group textarea, .form-group select { padding:11px 16px; border-radius:10px; border:1px solid var(--border); background:var(--dark3); color:var(--text); font-size:14px; font-family:'Barlow',sans-serif; outline:none; transition:border-color 0.2s; resize:none; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color:var(--blue); }
+    .form-group select option { background:var(--dark3); }
+    .star-input { display:flex; gap:6px; margin-bottom:14px; }
+    .star-input label { font-size:28px; cursor:pointer; transition:.1s; filter:grayscale(1); opacity:.4; }
+    .star-input input { display:none; }
+    .star-input label.active { filter:grayscale(0); opacity:1; }
+    .star-input label:hover { transform:scale(1.2); }
+    .star-rating-label { font-size:12px; font-weight:700; color:var(--muted); letter-spacing:.8px; text-transform:uppercase; margin-bottom:8px; }
+    .btn-submit-review { width:100%; padding:14px; border-radius:12px; border:none; background:linear-gradient(135deg,var(--blue),#3b82f6); color:white; font-size:16px; font-weight:700; cursor:pointer; font-family:'Barlow',sans-serif; transition:0.2s; margin-top:8px; }
+    .btn-submit-review:hover { box-shadow:0 0 30px rgba(37,99,235,0.5); transform:scale(1.02); }
+    .review-success { display:none; text-align:center; padding:30px; }
+    .review-success .success-icon { font-size:56px; margin-bottom:14px; }
+    .review-success h4 { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1.5px; margin-bottom:8px; color:var(--text); }
+    .review-success p { font-size:15px; color:var(--muted); }
 
-    .iptv-header p {
-      font-size: 18px;
-      color: var(--muted);
-      max-width: 600px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
-
-    .iptv-tag {
-      display: inline-block;
-      background: rgba(34,197,94,0.15);
-      border: 1px solid rgba(34,197,94,0.4);
-      color: #4ade80;
-      font-size: 13px;
-      font-weight: 700;
-      padding: 5px 16px;
-      border-radius: 20px;
-      letter-spacing: 1px;
-      margin-bottom: 20px;
-    }
-
-    .iptv-plans {
-      padding: 70px 20px;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 36px;
-    }
-
-    .plan-card {
-      background: var(--dark2);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 24px;
-      padding: 40px 36px;
-      width: 340px;
-      text-align: center;
-      transition: 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .plan-card::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-    }
-
-    .plan-card.starter::before { background: linear-gradient(90deg, var(--blue), #60a5fa); }
-    .plan-card.lifetime::before { background: linear-gradient(90deg, #f59e0b, var(--red)); }
-
-    .plan-card:hover {
-      transform: translateY(-10px);
-      border-color: rgba(37,99,235,0.4);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    }
-
-    .plan-card.lifetime:hover { border-color: rgba(245,158,11,0.5); }
-
-    .plan-badge {
-      position: absolute;
-      top: 20px; right: 20px;
-      background: linear-gradient(135deg, #f59e0b, var(--red));
-      color: white;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 4px 12px;
-      border-radius: 20px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .plan-icon {
-      font-size: 52px;
-      margin-bottom: 18px;
-      display: block;
-    }
-
-    .plan-name {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 32px;
-      letter-spacing: 2px;
-      margin-bottom: 6px;
-    }
-
-    .plan-duration {
-      font-size: 14px;
-      color: var(--muted);
-      font-weight: 600;
-      margin-bottom: 28px;
-      letter-spacing: 0.5px;
-    }
-
-    .plan-price {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 72px;
-      letter-spacing: 1px;
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-
-    .plan-card.starter .plan-price { color: #60a5fa; }
-    .plan-card.lifetime .plan-price { color: #fbbf24; }
-
-    .plan-price sup {
-      font-size: 32px;
-      vertical-align: top;
-      margin-top: 14px;
-      display: inline-block;
-    }
-
-    .plan-pricenote {
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 32px;
-    }
-
-    .plan-features {
-      list-style: none;
-      margin-bottom: 36px;
-      text-align: left;
-    }
-
-    .plan-features li {
-      padding: 9px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      font-size: 15px;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .plan-features li:last-child { border-bottom: none; }
-
-    .feat-check { color: #4ade80; font-size: 17px; flex-shrink: 0; }
-
-    .btn-buy {
-      display: block;
-      width: 100%;
-      padding: 15px;
-      border-radius: 12px;
-      border: none;
-      font-size: 17px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.2s;
-      font-family: 'Barlow', sans-serif;
-      letter-spacing: 0.5px;
-      text-decoration: none;
-      text-align: center;
-    }
-
-    .btn-buy.starter {
-      background: linear-gradient(135deg, var(--blue), #3b82f6);
-      color: white;
-    }
-    .btn-buy.starter:hover { box-shadow: 0 0 30px rgba(37,99,235,0.6); transform: scale(1.03); }
-
-    .btn-buy.lifetime {
-      background: linear-gradient(135deg, #f59e0b, var(--red));
-      color: white;
-    }
-    .btn-buy.lifetime:hover { box-shadow: 0 0 30px rgba(245,158,11,0.5); transform: scale(1.03); }
-
-    /* ─── SECTION AVIS ─── */
-    .reviews-section {
-      padding: 70px 20px;
-      background: var(--dark2);
-    }
-
-    .reviews-section h3 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 46px;
-      letter-spacing: 2px;
-      text-align: center;
-      margin-bottom: 14px;
-    }
-
-    .reviews-subtitle {
-      text-align: center;
-      color: var(--muted);
-      font-size: 16px;
-      margin-bottom: 50px;
-    }
-
-    .reviews-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 22px;
-      justify-content: center;
-      max-width: 1100px;
-      margin: 0 auto 50px;
-    }
-
-    .review-card {
-      background: var(--dark3);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 18px;
-      padding: 24px 26px;
-      width: 300px;
-      transition: 0.3s;
-    }
-    .review-card:hover { transform: translateY(-4px); border-color: rgba(37,99,235,0.3); }
-
-    .review-stars {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .review-text {
-      font-size: 15px;
-      color: var(--text);
-      line-height: 1.65;
-      margin-bottom: 16px;
-      font-style: italic;
-    }
-
-    .review-author {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .review-avatar {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--blue), var(--red));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .review-name {
-      font-size: 14px;
-      font-weight: 700;
-      color: white;
-    }
-
-    .review-plan {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    /* ─── FORMULAIRE AVIS ─── */
-    .review-form-wrapper {
-      max-width: 640px;
-      margin: 0 auto;
-      background: var(--dark3);
-      border: 1px solid rgba(37,99,235,0.25);
-      border-radius: 20px;
-      padding: 32px 36px;
-    }
-
-    .review-form-wrapper h4 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px;
-      letter-spacing: 1.5px;
-      margin-bottom: 6px;
-    }
-
-    .review-form-wrapper p {
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 24px;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 14px;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      flex: 1;
-      min-width: 200px;
-    }
-
-    .form-group label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--muted);
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-    }
-
-    .form-group input, .form-group textarea, .form-group select {
-      padding: 11px 16px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(0,0,0,0.4);
-      color: white;
-      font-size: 14px;
-      font-family: 'Barlow', sans-serif;
-      outline: none;
-      transition: border-color 0.2s;
-      resize: none;
-    }
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--blue); }
-    .form-group select option { background: var(--dark3); }
-
-    /* Star rating input */
-    .star-input {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 14px;
-    }
-
-    .star-input label {
-      font-size: 28px;
-      cursor: pointer;
-      transition: 0.1s;
-      filter: grayscale(1);
-      opacity: 0.4;
-    }
-
-    .star-input input { display: none; }
-
-    .star-input label.active {
-      filter: grayscale(0);
-      opacity: 1;
-    }
-
-    .star-input label:hover { transform: scale(1.2); }
-
-    .star-rating-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--muted);
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .btn-submit-review {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      background: linear-gradient(135deg, var(--blue), #3b82f6);
-      color: white;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      font-family: 'Barlow', sans-serif;
-      transition: 0.2s;
-      margin-top: 8px;
-    }
-    .btn-submit-review:hover { box-shadow: 0 0 30px rgba(37,99,235,0.5); transform: scale(1.02); }
-
-    .review-success {
-      display: none;
-      text-align: center;
-      padding: 30px;
-    }
-    .review-success .success-icon { font-size: 56px; margin-bottom: 14px; }
-    .review-success h4 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1.5px; margin-bottom: 8px; }
-    .review-success p { font-size: 15px; color: var(--muted); }
-
-    .iptv-faq {
-      padding: 0 20px 80px;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .iptv-faq h3 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 38px;
-      letter-spacing: 2px;
-      text-align: center;
-      margin-bottom: 36px;
-      padding-top: 60px;
-    }
-
-    .faq-item {
-      background: var(--dark2);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 14px;
-      padding: 20px 24px;
-      margin-bottom: 14px;
-    }
-
-    .faq-item h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: white; }
-    .faq-item p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+    .iptv-faq { padding:0 20px 80px; max-width:800px; margin:0 auto; }
+    .iptv-faq h3 { font-family:'Bebas Neue',sans-serif; font-size:38px; letter-spacing:2px; text-align:center; margin-bottom:36px; padding-top:60px; color:var(--text); }
+    .faq-item { background:var(--dark2); border:1px solid var(--border); border-radius:14px; padding:20px 24px; margin-bottom:14px; transition:background 0.3s; }
+    .faq-item h4 { font-size:16px; font-weight:700; margin-bottom:8px; color:var(--text); }
+    .faq-item p { font-size:14px; color:var(--muted); line-height:1.7; }
 
     /* ─── MODALS ─── */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(5px);
-      z-index: 200;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s;
-    }
-    .modal-overlay.open { opacity: 1; pointer-events: all; }
-
-    .modal {
-      background: var(--dark2);
-      border: 1px solid rgba(37,99,235,0.3);
-      border-radius: 20px;
-      padding: 36px;
-      max-width: 420px;
-      width: 100%;
-    }
-
-    .modal h3 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px;
-      letter-spacing: 1.5px;
-      margin-bottom: 8px;
-    }
-
-    .modal p { font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
-
-    .modal input {
-      width: 100%;
-      padding: 12px 16px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: var(--dark3);
-      color: white;
-      font-size: 15px;
-      font-family: 'Barlow', sans-serif;
-      outline: none;
-      margin-bottom: 14px;
-    }
-    .modal input:focus { border-color: var(--blue); }
-
-    .modal-btns {
-      display: flex;
-      gap: 12px;
-    }
-
-    .btn-modal-confirm {
-      flex: 1;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      background: var(--blue);
-      color: white;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.2s;
-      font-family: 'Barlow', sans-serif;
-    }
-    .btn-modal-confirm:hover { background: #1d4ed8; }
-
-    .btn-modal-cancel {
-      padding: 12px 20px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: transparent;
-      color: var(--muted);
-      font-size: 15px;
-      cursor: pointer;
-      transition: 0.2s;
-      font-family: 'Barlow', sans-serif;
-    }
-    .btn-modal-cancel:hover { color: white; }
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(5px); z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+    .modal-overlay.open { opacity:1; pointer-events:all; }
+    .modal { background:var(--dark2); border:1px solid rgba(37,99,235,0.3); border-radius:20px; padding:36px; max-width:420px; width:100%; }
+    .modal h3 { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1.5px; margin-bottom:8px; color:var(--text); }
+    .modal p { font-size:14px; color:var(--muted); margin-bottom:24px; line-height:1.6; }
+    .modal input { width:100%; padding:12px 16px; border-radius:10px; border:1px solid var(--border); background:var(--card-bg); color:var(--text); font-size:15px; font-family:'Barlow',sans-serif; outline:none; margin-bottom:14px; }
+    .modal input:focus { border-color:var(--blue); }
+    .modal-btns { display:flex; gap:12px; }
+    .btn-modal-confirm { flex:1; padding:12px; border-radius:10px; border:none; background:var(--blue); color:white; font-size:15px; font-weight:700; cursor:pointer; transition:0.2s; font-family:'Barlow',sans-serif; }
+    .btn-modal-confirm:hover { background:#1d4ed8; }
+    .btn-modal-cancel { padding:12px 20px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:15px; cursor:pointer; transition:0.2s; font-family:'Barlow',sans-serif; }
+    .btn-modal-cancel:hover { color:var(--text); }
 
     /* ══════════════════════════════════════════
-       CHATBOT IPTV
+       CHATBOT IA
     ══════════════════════════════════════════ */
     .chat-bubble-btn {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      width: 62px;
-      height: 62px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #4ade80, #22c55e);
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      box-shadow: 0 4px 30px rgba(34,197,94,0.5);
-      z-index: 300;
-      transition: 0.3s;
-      animation: chat-bounce 3s ease-in-out infinite;
+      position:fixed; bottom:28px; right:28px;
+      width:62px; height:62px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#4ade80,#22c55e);
+      border:none; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      font-size:28px;
+      box-shadow:0 4px 30px rgba(34,197,94,0.5);
+      z-index:300;
+      transition:0.3s;
+      animation:chat-bounce 3s ease-in-out infinite;
     }
-    .chat-bubble-btn:hover { transform: scale(1.1); box-shadow: 0 6px 40px rgba(34,197,94,0.7); }
-    .chat-bubble-btn.open { animation: none; background: linear-gradient(135deg, #f87171, #dc2626); }
-
-    @keyframes chat-bounce {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-
-    .chat-notif {
-      position: absolute;
-      top: -4px; right: -4px;
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      background: #f59e0b;
-      border: 2px solid var(--dark);
-      font-size: 11px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: black;
-      animation: pulse-dot 1.5s infinite;
-    }
+    .chat-bubble-btn:hover { transform:scale(1.1); box-shadow:0 6px 40px rgba(34,197,94,0.7); }
+    .chat-bubble-btn.open { animation:none; background:linear-gradient(135deg,#f87171,#dc2626); }
+    @keyframes chat-bounce { 0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)} }
+    .chat-notif { position:absolute; top:-4px; right:-4px; width:20px; height:20px; border-radius:50%; background:#f59e0b; border:2px solid var(--dark); font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; color:black; animation:pulse-dot 1.5s infinite; }
 
     .chatbot-window {
-      position: fixed;
-      bottom: 106px;
-      right: 28px;
-      width: 370px;
-      max-height: 560px;
-      background: var(--dark2);
-      border: 1px solid rgba(34,197,94,0.3);
-      border-radius: 22px;
-      z-index: 299;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-      transform: scale(0.85) translateY(20px);
-      opacity: 0;
-      pointer-events: none;
-      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s;
-      transform-origin: bottom right;
+      position:fixed; bottom:106px; right:28px;
+      width:380px; max-height:580px;
+      background:var(--dark2);
+      border:1px solid rgba(34,197,94,0.3);
+      border-radius:22px;
+      z-index:299;
+      display:flex; flex-direction:column;
+      overflow:hidden;
+      box-shadow:0 20px 60px rgba(0,0,0,0.6);
+      transform:scale(0.85) translateY(20px);
+      opacity:0; pointer-events:none;
+      transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s;
+      transform-origin:bottom right;
     }
+    .chatbot-window.open { transform:scale(1) translateY(0); opacity:1; pointer-events:all; }
 
-    .chatbot-window.open {
-      transform: scale(1) translateY(0);
-      opacity: 1;
-      pointer-events: all;
-    }
+    .chat-header { background:linear-gradient(135deg,#14532d,#166534); padding:16px 20px; display:flex; align-items:center; gap:12px; border-bottom:1px solid rgba(255,255,255,0.06); }
+    .chat-avatar { width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,#4ade80,#22c55e); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+    .chat-header-info { flex:1; }
+    .chat-header-name { font-size:15px; font-weight:700; color:white; }
+    .chat-header-status { font-size:12px; color:#4ade80; display:flex; align-items:center; gap:5px; }
+    .chat-status-dot { width:7px; height:7px; border-radius:50%; background:#4ade80; animation:pulse-dot 2s infinite; }
+    .chat-ai-badge { font-size:11px; font-weight:700; background:rgba(34,197,94,0.2); border:1px solid rgba(34,197,94,0.4); color:#4ade80; padding:2px 8px; border-radius:20px; }
 
-    .chat-header {
-      background: linear-gradient(135deg, #14532d, #166534);
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
+    .chat-messages { flex:1; overflow-y:auto; padding:18px 16px; display:flex; flex-direction:column; gap:12px; }
+    .chat-messages::-webkit-scrollbar { width:4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:4px; }
 
-    .chat-avatar {
-      width: 42px; height: 42px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #4ade80, #22c55e);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
+    .msg-bot, .msg-user { max-width:88%; padding:11px 15px; border-radius:16px; font-size:14px; line-height:1.55; animation:msg-in 0.25s ease; }
+    .msg-bot { background:var(--dark3); border:1px solid var(--border); color:var(--text); align-self:flex-start; border-bottom-left-radius:4px; }
+    .msg-user { background:linear-gradient(135deg,#166534,#15803d); color:white; align-self:flex-end; border-bottom-right-radius:4px; }
+    .msg-bot strong { color:#4ade80; }
+    .msg-loading { display:flex; align-items:center; gap:5px; padding:10px 14px; background:var(--dark3); border:1px solid var(--border); border-radius:16px; border-bottom-left-radius:4px; align-self:flex-start; }
+    .typing-dot { width:7px; height:7px; border-radius:50%; background:var(--muted); animation:typing-anim 1.2s infinite; }
+    .typing-dot:nth-child(2){animation-delay:.2s}
+    .typing-dot:nth-child(3){animation-delay:.4s}
+    @keyframes typing-anim { 0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)} }
 
-    .chat-header-info { flex: 1; }
-    .chat-header-name { font-size: 15px; font-weight: 700; color: white; }
-    .chat-header-status { font-size: 12px; color: #4ade80; display: flex; align-items: center; gap: 5px; }
-    .chat-status-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
-
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 18px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .chat-messages::-webkit-scrollbar { width: 4px; }
-    .chat-messages::-webkit-scrollbar-track { background: transparent; }
-    .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-
-    .msg-bot, .msg-user {
-      max-width: 88%;
-      padding: 11px 15px;
-      border-radius: 16px;
-      font-size: 14px;
-      line-height: 1.55;
-      animation: msg-in 0.25s ease;
-    }
-
-    @keyframes msg-in {
-      from { transform: translateY(8px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .msg-bot {
-      background: var(--dark3);
-      border: 1px solid rgba(255,255,255,0.07);
-      color: var(--text);
-      align-self: flex-start;
-      border-bottom-left-radius: 4px;
-    }
-
-    .msg-user {
-      background: linear-gradient(135deg, #166534, #15803d);
-      color: white;
-      align-self: flex-end;
-      border-bottom-right-radius: 4px;
-    }
-
-    .msg-bot strong { color: #4ade80; }
-
-    .chat-quick-btns {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      padding: 0 16px 14px;
-    }
-
-    .quick-btn {
-      padding: 7px 13px;
-      border-radius: 20px;
-      border: 1px solid rgba(34,197,94,0.35);
-      background: transparent;
-      color: #4ade80;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: 'Barlow', sans-serif;
-      transition: 0.2s;
-      white-space: nowrap;
-    }
-    .quick-btn:hover { background: rgba(34,197,94,0.15); border-color: #4ade80; }
-
-    .chat-footer {
-      padding: 12px 16px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      display: flex;
-      gap: 8px;
-      background: rgba(0,0,0,0.3);
-    }
-
-    .chat-input {
-      flex: 1;
-      padding: 10px 16px;
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: var(--dark3);
-      color: white;
-      font-size: 14px;
-      font-family: 'Barlow', sans-serif;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .chat-input:focus { border-color: #22c55e; }
-    .chat-input::placeholder { color: var(--muted); }
-
-    .chat-send-btn {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      border: none;
-      background: linear-gradient(135deg, #4ade80, #22c55e);
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: 0.2s;
-      flex-shrink: 0;
-    }
-    .chat-send-btn:hover { transform: scale(1.1); }
-
-    .chat-typing {
-      display: none;
-      align-self: flex-start;
-      padding: 10px 14px;
-      background: var(--dark3);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 16px;
-      border-bottom-left-radius: 4px;
-      gap: 5px;
-      align-items: center;
-    }
-
-    .chat-typing.show { display: flex; }
-
-    .typing-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--muted);
-      animation: typing-anim 1.2s infinite;
-    }
-    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes typing-anim {
-      0%,100% { opacity: 0.3; transform: translateY(0); }
-      50% { opacity: 1; transform: translateY(-4px); }
-    }
+    .chat-quick-btns { display:flex; flex-wrap:wrap; gap:7px; padding:0 16px 14px; }
+    .quick-btn { padding:7px 13px; border-radius:20px; border:1px solid rgba(34,197,94,0.35); background:transparent; color:#4ade80; font-size:13px; font-weight:600; cursor:pointer; font-family:'Barlow',sans-serif; transition:0.2s; white-space:nowrap; }
+    .quick-btn:hover { background:rgba(34,197,94,0.15); border-color:#4ade80; }
+    .chat-footer { padding:12px 16px; border-top:1px solid var(--border); display:flex; gap:8px; background:rgba(0,0,0,0.3); }
+    .chat-input { flex:1; padding:10px 16px; border-radius:22px; border:1px solid var(--border); background:var(--dark3); color:var(--text); font-size:14px; font-family:'Barlow',sans-serif; outline:none; transition:border-color 0.2s; }
+    .chat-input:focus { border-color:#22c55e; }
+    .chat-input::placeholder { color:var(--muted); }
+    .chat-send-btn { width:40px; height:40px; border-radius:50%; border:none; background:linear-gradient(135deg,#4ade80,#22c55e); color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; flex-shrink:0; }
+    .chat-send-btn:hover { transform:scale(1.1); }
 
     /* ─── RESPONSIVE ─── */
-    @media (max-width: 768px) {
-      h1 { font-size: 52px; }
-      .section h2, .discord-section h2, .iptv-header h2 { font-size: 38px; }
-      nav { padding: 0 16px; }
-      .nav-tabs { gap: 2px; }
-      .nav-tab { padding: 7px 12px; font-size: 13px; }
-      .nav-discord { display: none; }
-      .live-header, .stream-container { padding: 20px; }
-      .plan-card { width: 100%; max-width: 380px; }
-      .chatbot-window { width: calc(100vw - 20px); right: 10px; bottom: 90px; }
-      .review-form-wrapper { padding: 22px 18px; }
+    @media(max-width:768px){
+      h1{font-size:52px}
+      .section h2,.discord-section h2,.iptv-header h2{font-size:38px}
+      nav{padding:0 16px}
+      .nav-tabs{gap:2px}
+      .nav-tab{padding:7px 12px;font-size:13px}
+      .nav-discord{display:none}
+      .live-header,.stream-container{padding:20px}
+      .plan-card{width:100%;max-width:380px}
+      .chatbot-window{width:calc(100vw - 20px);right:10px;bottom:90px}
+      .review-form-wrapper{padding:22px 18px}
+      .live-layout{padding:20px}
     }
   </style>
 </head>
@@ -1335,13 +719,16 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     <button class="nav-tab live-tab" onclick="showPage('live')"><span class="live-dot"></span>Live</button>
     <button class="nav-tab iptv-tab" onclick="showPage('iptv')">📡 IPTV</button>
   </div>
-  <a href="https://discord.gg/ftzf" class="nav-discord" target="_blank">
-    <svg width="18" height="14" viewBox="0 0 18 14" fill="currentColor"><path d="M15.25 1.18A14.8 14.8 0 0 0 11.56 0c-.17.3-.36.7-.49 1.02a13.7 13.7 0 0 0-4.14 0A10.8 10.8 0 0 0 6.44 0 14.85 14.85 0 0 0 2.74 1.18 15.73 15.73 0 0 0 .02 11.36a14.94 14.94 0 0 0 4.57 2.31c.37-.5.7-1.04.98-1.6a9.7 9.7 0 0 1-1.54-.74c.13-.09.25-.19.37-.28a10.65 10.65 0 0 0 9.2 0c.12.1.25.19.37.28-.49.29-1 .54-1.54.74.28.56.61 1.1.98 1.6a14.9 14.9 0 0 0 4.57-2.31 15.7 15.7 0 0 0-2.73-10.18ZM6.01 9.28c-.89 0-1.63-.82-1.63-1.83s.72-1.84 1.63-1.84 1.65.83 1.63 1.84c0 1.01-.72 1.83-1.63 1.83Zm5.98 0c-.89 0-1.63-.82-1.63-1.83s.72-1.84 1.63-1.84 1.65.83 1.63 1.84c0 1.01-.72 1.83-1.63 1.83Z"/></svg>
-    Discord
-  </a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Changer le thème" id="theme-btn">🌙</button>
+    <a href="https://discord.gg/ftzf" class="nav-discord" target="_blank">
+      <svg width="18" height="14" viewBox="0 0 18 14" fill="currentColor"><path d="M15.25 1.18A14.8 14.8 0 0 0 11.56 0c-.17.3-.36.7-.49 1.02a13.7 13.7 0 0 0-4.14 0A10.8 10.8 0 0 0 6.44 0 14.85 14.85 0 0 0 2.74 1.18 15.73 15.73 0 0 0 .02 11.36a14.94 14.94 0 0 0 4.57 2.31c.37-.5.7-1.04.98-1.6a9.7 9.7 0 0 1-1.54-.74c.13-.09.25-.19.37-.28a10.65 10.65 0 0 0 9.2 0c.12.1.25.19.37.28-.49.29-1 .54-1.54.74.28.56.61 1.1.98 1.6a14.9 14.9 0 0 0 4.57-2.31 15.7 15.7 0 0 0-2.73-10.18ZM6.01 9.28c-.89 0-1.63-.82-1.63-1.83s.72-1.84 1.63-1.84 1.65.83 1.63 1.84c0 1.01-.72 1.83-1.63 1.83Zm5.98 0c-.89 0-1.63-.82-1.63-1.83s.72-1.84 1.63-1.84 1.65.83 1.63 1.84c0 1.01-.72 1.83-1.63 1.83Z"/></svg>
+      Discord
+    </a>
+  </div>
 </nav>
 
-<!-- PAGE ACCUEIL -->
+<!-- ═══════════════════ PAGE ACCUEIL ═══════════════════ -->
 <div id="page-home" class="page active">
   <header class="hero">
     <div class="hero-content">
@@ -1384,7 +771,7 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
   <footer>© 2026 Football Zone France — Tous droits réservés</footer>
 </div>
 
-<!-- PAGE LIVE -->
+<!-- ═══════════════════ PAGE LIVE ═══════════════════ -->
 <div id="page-live" class="page">
 
   <div class="live-header">
@@ -1399,26 +786,80 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     <!-- Admin Panel -->
     <div class="admin-panel" id="admin-panel">
       <h4>🔧 Panneau Administrateur</h4>
-      <div style="margin-bottom:14px;">
-        <div style="font-size:13px; color:var(--muted); margin-bottom:8px; font-weight:600;">URL DU STREAM</div>
-        <div class="admin-row">
-          <input type="text" id="stream-url-input" placeholder="https://... (URL embed ou flux m3u8)" />
-          <button class="btn-set-stream" onclick="setStream()">▶ Lancer</button>
-          <button class="btn-stop-stream" onclick="stopStream()">⏹ Stopper</button>
-        </div>
-      </div>
-      <div>
-        <div style="font-size:13px; color:var(--muted); margin-bottom:8px; font-weight:600;">NOM DU MATCH</div>
-        <div class="admin-row">
-          <input type="text" id="match-label-input" placeholder="Ex : PSG vs Real Madrid — C1 — 21h00" />
-          <button class="btn-set-stream" onclick="setMatchLabel()" style="background:#059669;">✏️ Mettre à jour</button>
-        </div>
-      </div>
-      <p class="admin-hint">
-        💡 <strong>Types d'URL acceptés :</strong> page embed d'un player, flux .m3u8 (HLS), etc.
-      </p>
 
-      <!-- ─── STATS SPECTATEURS (admin only) ─── -->
+      <div class="admin-grid">
+        <!-- Bloc Stream -->
+        <div class="admin-block">
+          <h5>📺 Stream</h5>
+          <div class="admin-section-title">URL DU STREAM</div>
+          <div class="admin-row" style="margin-bottom:10px;">
+            <input type="text" id="stream-url-input" placeholder="https://... (embed ou .m3u8)" />
+          </div>
+          <div class="admin-row" style="margin-bottom:10px;">
+            <button class="btn-set-stream" onclick="setStream()">▶ Lancer</button>
+            <button class="btn-stop-stream" onclick="stopStream()">⏹ Stopper</button>
+          </div>
+          <div class="admin-section-title" style="margin-top:8px;">NOM DU MATCH</div>
+          <div class="admin-row">
+            <input type="text" id="match-label-input" placeholder="Ex : PSG vs Real Madrid — 21h00" />
+            <button class="btn-set-stream" onclick="setMatchLabel()" style="background:#059669;">✏️ OK</button>
+          </div>
+          <p class="admin-hint">💡 Formats acceptés : embed iframe, .m3u8 HLS</p>
+        </div>
+
+        <!-- Bloc Fonctionnalités -->
+        <div class="admin-block">
+          <h5>⚙️ Fonctionnalités Live</h5>
+
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">💬 Chat Live</div>
+              <div class="toggle-desc">Activer le tchat en direct</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggle-chat" onchange="toggleLiveChat(this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">⏱ Compte à Rebours</div>
+              <div class="toggle-desc">Afficher avant le match</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggle-countdown" onchange="toggleCountdown(this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div id="countdown-config" style="display:none; margin-top:10px;">
+            <div class="admin-section-title">DATE & HEURE DU MATCH</div>
+            <div class="admin-row" style="margin-top:6px;">
+              <input type="datetime-local" id="countdown-datetime" />
+              <button class="btn-set-stream" onclick="setCountdownTime()" style="background:#7c3aed;">⏱ Set</button>
+            </div>
+            <div class="admin-section-title" style="margin-top:8px;">NOM POUR LE COMPTE À REBOURS</div>
+            <div class="admin-row" style="margin-top:6px;">
+              <input type="text" id="countdown-match-name" placeholder="Ex : PSG vs OM — Ligue 1" />
+              <button class="btn-set-stream" onclick="setCountdownName()" style="background:#7c3aed;">✏️ OK</button>
+            </div>
+          </div>
+
+          <div class="toggle-row" style="margin-top:8px;">
+            <div>
+              <div class="toggle-label">🤖 Chatbot IA</div>
+              <div class="toggle-desc">Activer le bot IPTV</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggle-chatbot" onchange="toggleChatbot(this.checked)" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats spectateurs -->
       <div class="viewer-stats-bar" id="viewer-stats-bar">
         <span class="viewer-pulse"></span>
         <div class="stat-box">
@@ -1443,40 +884,84 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
         <button class="stat-reset-btn" onclick="resetStats()">🔄 Reset</button>
       </div>
 
-      <div style="margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.07); display:flex; align-items:center; justify-content:space-between;">
-        <span style="font-size:13px; color:#4ade80;">✅ Connecté en tant qu'Admin</span>
-        <button class="btn-stop-stream" onclick="logoutAdmin()" style="font-size:13px; padding:6px 14px;">Déconnexion</button>
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:13px;color:#4ade80;">✅ Connecté en tant qu'Admin</span>
+        <button class="btn-stop-stream" onclick="logoutAdmin()" style="font-size:13px;padding:6px 14px;">Déconnexion</button>
       </div>
     </div>
   </div>
 
-  <!-- Player -->
-  <div class="stream-container">
-    <div class="stream-box" id="stream-box">
-      <div class="no-stream-placeholder" id="no-stream-msg">
-        <div class="icon-tv">📺</div>
-        <h3>Aucun match en ce moment</h3>
-        <p>Le prochain stream sera annoncé sur notre serveur Discord. Rejoins la communauté pour ne rien manquer !</p>
-        <a href="https://discord.gg/ftzf" class="btn-discord-chat" target="_blank">Voir les annonces</a>
+  <!-- Compte à rebours -->
+  <div class="countdown-banner" id="countdown-banner">
+    <div class="countdown-match-info">
+      <div class="countdown-label">PROCHAIN MATCH</div>
+      <div class="countdown-match-name" id="countdown-match-display">Match à venir</div>
+    </div>
+    <div class="countdown-units" id="countdown-units">
+      <div class="cd-unit"><span class="cd-num" id="cd-days">00</span><div class="cd-label">Jours</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><span class="cd-num" id="cd-hours">00</span><div class="cd-label">Heures</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><span class="cd-num" id="cd-mins">00</span><div class="cd-label">Min</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><span class="cd-num" id="cd-secs">00</span><div class="cd-label">Sec</div></div>
+    </div>
+    <div class="countdown-ended" id="countdown-ended" style="display:none;">🔴 C'EST PARTI !</div>
+  </div>
+
+  <!-- Player + Chat -->
+  <div class="live-layout">
+    <div>
+      <div class="stream-box" id="stream-box">
+        <div class="no-stream-placeholder" id="no-stream-msg">
+          <div class="icon-tv">📺</div>
+          <h3>Aucun match en ce moment</h3>
+          <p>Le prochain stream sera annoncé sur notre serveur Discord. Rejoins la communauté pour ne rien manquer !</p>
+          <a href="https://discord.gg/ftzf" class="btn-discord-chat" target="_blank">Voir les annonces</a>
+        </div>
+      </div>
+
+      <div class="stream-info-bar" id="stream-info-bar" style="display:none;">
+        <span class="live-dot"></span>
+        <span class="stream-match-label" id="match-label-display">Match en direct</span>
+        <div class="stream-viewers-public">👁 <span id="public-viewer-count">--</span> spectateurs</div>
+        <a href="https://discord.gg/ftzf" class="btn-discord-chat" target="_blank">💬 Discord</a>
       </div>
     </div>
 
-    <div class="stream-info-bar" id="stream-info-bar" style="display:none;">
-      <span class="live-dot"></span>
-      <span class="stream-match-label" id="match-label-display">Match en direct</span>
-      <div class="stream-viewers-public">
-        👁 <span id="public-viewer-count">--</span> spectateurs
+    <!-- Live Chat Panel -->
+    <div class="live-chat-wrapper">
+      <div class="live-chat-panel" id="live-chat-panel">
+        <div class="chat-panel-header">
+          <div class="chat-panel-title">💬 Chat Live <span class="chat-online-count" id="chat-online-count">0 en ligne</span></div>
+        </div>
+        <div class="chat-msgs-area" id="live-chat-msgs">
+          <div class="chat-msg system"><div class="chat-msg-text">💬 Chat désactivé — l'admin peut l'activer depuis le panneau.</div></div>
+        </div>
+        <div class="chat-input-area" id="live-chat-inputs" style="display:none;">
+          <div class="chat-name-row">
+            <input type="text" class="chat-nickname-input" id="chat-nickname" placeholder="Ton pseudo" maxlength="20" />
+            <input type="text" class="chat-msg-input" id="live-chat-input" placeholder="Ton message..." maxlength="200" onkeydown="if(event.key==='Enter')sendLiveMsg()" />
+          </div>
+          <div class="chat-send-row">
+            <button class="chat-send-live-btn" onclick="sendLiveMsg()">➤ Envoyer</button>
+          </div>
+        </div>
+
+        <!-- Overlay quand désactivé -->
+        <div class="chat-disabled-overlay" id="chat-disabled-overlay">
+          <div class="lock-icon">🔒</div>
+          <p>Le chat sera activé par l'admin lors du prochain match en direct.</p>
+        </div>
       </div>
-      <a href="https://discord.gg/ftzf" class="btn-discord-chat" target="_blank">💬 Chat Discord</a>
     </div>
   </div>
 
   <footer>© 2026 Football Zone France — Tous droits réservés</footer>
 </div>
 
-<!-- PAGE IPTV -->
+<!-- ═══════════════════ PAGE IPTV ═══════════════════ -->
 <div id="page-iptv" class="page">
-
   <div class="iptv-header">
     <div class="iptv-tag">⚡ ABONNEMENTS IPTV SPORT</div>
     <h2>📡 IPTV Football Zone</h2>
@@ -1484,7 +969,6 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
   </div>
 
   <div class="iptv-plans">
-
     <div class="plan-card starter">
       <span class="plan-icon">⚡</span>
       <div class="plan-name">Starter</div>
@@ -1519,56 +1003,33 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
       </ul>
       <a href="https://discord.gg/ftzf" class="btn-buy lifetime" target="_blank">Commander — 35€</a>
     </div>
-
   </div>
 
-  <!-- ─── SECTION AVIS ─── -->
+  <!-- Reviews -->
   <div class="reviews-section">
     <h3>⭐ Ce que disent nos abonnés</h3>
     <p class="reviews-subtitle">Plus de 500 membres satisfaits sur notre Discord !</p>
-
     <div class="reviews-grid" id="reviews-grid">
-      <!-- Avis par défaut -->
       <div class="review-card">
         <div class="review-stars">⭐⭐⭐⭐⭐</div>
         <p class="review-text">"Franchement incroyable, j'ai regardé tous les matchs de la C1 sans aucun problème. Image parfaite et zéro coupure !"</p>
-        <div class="review-author">
-          <div class="review-avatar">T</div>
-          <div>
-            <div class="review-name">Thomas M.</div>
-            <div class="review-plan">Abonné À Vie</div>
-          </div>
-        </div>
+        <div class="review-author"><div class="review-avatar">T</div><div><div class="review-name">Thomas M.</div><div class="review-plan">Abonné À Vie</div></div></div>
       </div>
       <div class="review-card">
         <div class="review-stars">⭐⭐⭐⭐⭐</div>
         <p class="review-text">"Le plan à vie vaut clairement le coup. Même la Coupe du Monde incluse, c'est cadeau pour 35€. Je recommande à 100%."</p>
-        <div class="review-author">
-          <div class="review-avatar" style="background:linear-gradient(135deg,#f59e0b,#dc2626);">K</div>
-          <div>
-            <div class="review-name">Karim B.</div>
-            <div class="review-plan">Abonné À Vie</div>
-          </div>
-        </div>
+        <div class="review-author"><div class="review-avatar" style="background:linear-gradient(135deg,#f59e0b,#dc2626);">K</div><div><div class="review-name">Karim B.</div><div class="review-plan">Abonné À Vie</div></div></div>
       </div>
       <div class="review-card">
         <div class="review-stars">⭐⭐⭐⭐⭐</div>
         <p class="review-text">"J'ai commencé avec le Starter pour tester et j'ai directement pris l'abonnement à vie tellement c'était bien. Impeccable !"</p>
-        <div class="review-author">
-          <div class="review-avatar" style="background:linear-gradient(135deg,#22c55e,#059669);">L</div>
-          <div>
-            <div class="review-name">Lucas D.</div>
-            <div class="review-plan">Abonné Starter → À Vie</div>
-          </div>
-        </div>
+        <div class="review-author"><div class="review-avatar" style="background:linear-gradient(135deg,#22c55e,#059669);">L</div><div><div class="review-name">Lucas D.</div><div class="review-plan">Abonné Starter → À Vie</div></div></div>
       </div>
     </div>
 
-    <!-- Formulaire avis -->
     <div class="review-form-wrapper" id="review-form-wrapper">
       <h4>✍️ Laisser un Avis</h4>
       <p>Tu es abonné FZF IPTV ? Partage ton expérience avec la communauté !</p>
-
       <div class="star-rating-label">Ta note</div>
       <div class="star-input" id="star-input">
         <label id="star-1" onclick="setRating(1)">⭐</label>
@@ -1577,28 +1038,12 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
         <label id="star-4" onclick="setRating(4)">⭐</label>
         <label id="star-5" onclick="setRating(5)">⭐</label>
       </div>
-
       <div class="form-row">
-        <div class="form-group">
-          <label>Ton prénom</label>
-          <input type="text" id="review-name" placeholder="Ex : Thomas" maxlength="20" />
-        </div>
-        <div class="form-group">
-          <label>Ton abonnement</label>
-          <select id="review-plan">
-            <option value="Abonné Starter">Starter (3 mois)</option>
-            <option value="Abonné À Vie">À Vie</option>
-          </select>
-        </div>
+        <div class="form-group"><label>Ton prénom</label><input type="text" id="review-name" placeholder="Ex : Thomas" maxlength="20"/></div>
+        <div class="form-group"><label>Ton abonnement</label><select id="review-plan"><option value="Abonné Starter">Starter (3 mois)</option><option value="Abonné À Vie">À Vie</option></select></div>
       </div>
-
-      <div class="form-group" style="margin-bottom:16px;">
-        <label>Ton avis</label>
-        <textarea id="review-text" rows="4" placeholder="Partage ton expérience avec l'IPTV FZF..." maxlength="280"></textarea>
-      </div>
-
+      <div class="form-group" style="margin-bottom:16px;"><label>Ton avis</label><textarea id="review-text" rows="4" placeholder="Partage ton expérience avec l'IPTV FZF..." maxlength="280"></textarea></div>
       <button class="btn-submit-review" onclick="submitReview()">📨 Publier mon avis</button>
-
       <div class="review-success" id="review-success">
         <div class="success-icon">🎉</div>
         <h4>Merci pour ton avis !</h4>
@@ -1607,32 +1052,18 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     </div>
   </div>
 
-  <!-- FAQ -->
   <div class="iptv-faq">
     <h3>❓ Questions Fréquentes</h3>
-
-    <div class="faq-item">
-      <h4>Comment accéder à l'IPTV après l'achat ?</h4>
-      <p>Après ta commande sur Discord, tu reçois les identifiants d'accès en message privé sous 24h maximum.</p>
-    </div>
-    <div class="faq-item">
-      <h4>Sur quels appareils puis-je utiliser l'IPTV ?</h4>
-      <p>Compatible TV (Android TV, Firestick, Apple TV), smartphone, tablette, PC — via une app IPTV standard.</p>
-    </div>
-    <div class="faq-item">
-      <h4>Comment payer ?</h4>
-      <p>Paiement via PayPal, virement ou autre moyen à définir sur le Discord. Contacte un admin pour commander.</p>
-    </div>
-    <div class="faq-item">
-      <h4>Le plan "À Vie" est vraiment à vie ?</h4>
-      <p>Oui — un paiement unique de 35€ te donne accès définitif, sans renouvellement ni frais cachés.</p>
-    </div>
+    <div class="faq-item"><h4>Comment accéder à l'IPTV après l'achat ?</h4><p>Après ta commande sur Discord, tu reçois les identifiants d'accès en message privé sous 24h maximum.</p></div>
+    <div class="faq-item"><h4>Sur quels appareils puis-je utiliser l'IPTV ?</h4><p>Compatible TV (Android TV, Firestick, Apple TV), smartphone, tablette, PC — via une app IPTV standard.</p></div>
+    <div class="faq-item"><h4>Comment payer ?</h4><p>Paiement via PayPal, virement ou autre moyen à définir sur le Discord. Contacte un admin pour commander.</p></div>
+    <div class="faq-item"><h4>Le plan "À Vie" est vraiment à vie ?</h4><p>Oui — un paiement unique de 35€ te donne accès définitif, sans renouvellement ni frais cachés.</p></div>
   </div>
 
   <footer>© 2026 Football Zone France — Tous droits réservés</footer>
 </div>
 
-<!-- ─── MODAL LOGIN ADMIN ─── -->
+<!-- Modal login admin -->
 <div class="modal-overlay" id="modal-login">
   <div class="modal">
     <h3>🔒 Accès Admin</h3>
@@ -1648,9 +1079,7 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     CHATBOT IPTV
-══════════════════════════════════════════ -->
+<!-- ══════════ CHATBOT IA ══════════ -->
 <button class="chat-bubble-btn" id="chat-btn" onclick="toggleChat()">
   <span id="chat-btn-icon">⚽</span>
   <div class="chat-notif" id="chat-notif">1</div>
@@ -1658,91 +1087,93 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
 
 <div class="chatbot-window" id="chatbot-window">
   <div class="chat-header">
-    <div class="chat-avatar">⚽</div>
+    <div class="chat-avatar">🤖</div>
     <div class="chat-header-info">
-      <div class="chat-header-name">FZF Assistant</div>
-      <div class="chat-header-status"><span class="chat-status-dot"></span> En ligne • Répond instantanément</div>
+      <div class="chat-header-name" style="display:flex;align-items:center;gap:8px;">FZF Assistant <span class="chat-ai-badge">IA</span></div>
+      <div class="chat-header-status"><span class="chat-status-dot"></span> Propulsé par Claude</div>
     </div>
   </div>
-
   <div class="chat-messages" id="chat-messages">
     <div class="msg-bot">
-      👋 Salut ! Je suis le bot de <strong>Football Zone France</strong>.<br><br>
-      Je peux t'aider à choisir ton abonnement IPTV, t'expliquer comment ça marche, ou te rediriger vers notre Discord. 🟢
-    </div>
-    <div class="chat-typing" id="chat-typing">
-      <div class="typing-dot"></div>
-      <div class="typing-dot"></div>
-      <div class="typing-dot"></div>
+      👋 Salut ! Je suis le bot IA de <strong>Football Zone France</strong>, propulsé par Claude.<br><br>
+      Je peux répondre à toutes tes questions sur l'IPTV, les matchs ou la communauté ! 🟢
     </div>
   </div>
-
   <div class="chat-quick-btns" id="quick-btns">
-    <button class="quick-btn" onclick="quickAsk('Prix des abonnements')">💶 Prix & offres</button>
+    <button class="quick-btn" onclick="quickAsk('Prix des abonnements')">💶 Prix</button>
     <button class="quick-btn" onclick="quickAsk('Comment commander ?')">🛒 Commander</button>
-    <button class="quick-btn" onclick="quickAsk('Appareils compatibles ?')">📱 Compatibilité</button>
-    <button class="quick-btn" onclick="quickAsk('Différence Starter vs À Vie ?')">⚖️ Comparer</button>
+    <button class="quick-btn" onclick="quickAsk('Appareils compatibles ?')">📱 Compat.</button>
+    <button class="quick-btn" onclick="quickAsk('Starter vs À Vie ?')">⚖️ Comparer</button>
     <button class="quick-btn" onclick="quickAsk('Comment payer ?')">💳 Paiement</button>
     <button class="quick-btn" onclick="quickAsk('Qualité du stream ?')">📺 Qualité</button>
   </div>
-
   <div class="chat-footer">
-    <input type="text" class="chat-input" id="chat-input" placeholder="Pose ta question..." onkeydown="if(event.key==='Enter')sendChat()" maxlength="200" />
+    <input type="text" class="chat-input" id="chat-input" placeholder="Pose ta question à l'IA..." onkeydown="if(event.key==='Enter')sendChat()" maxlength="300" />
     <button class="chat-send-btn" onclick="sendChat()">➤</button>
   </div>
 </div>
 
 <!-- ─── SCRIPTS ─── -->
 <script>
-  /* ─ Config ─ */
+  /* ════════════════════════════════════
+     CONFIG
+  ════════════════════════════════════ */
   const ADMIN_PASSWORD = "fzf2026";
   let adminLoggedIn = false;
   let hlsInstance = null;
+  let countdownTarget = null;
+  let countdownInterval = null;
+  let chatbotEnabled = true;
 
-  /* ─── VIEWER STATS ─── */
-  let viewerCount = 0;
-  let peakViewers = 0;
-  let totalJoins = 0;
-  let streamStartTime = null;
-  let viewerInterval = null;
-  let durationInterval = null;
-  let isStreamLive = false;
+  /* ════════════════════════════════════
+     THEME
+  ════════════════════════════════════ */
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('theme-btn').textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('fzf-theme', isDark ? 'light' : 'dark');
+  }
+
+  // Restore saved theme
+  const savedTheme = localStorage.getItem('fzf-theme');
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('theme-btn').textContent = savedTheme === 'light' ? '☀️' : '🌙';
+  }
+
+  /* ════════════════════════════════════
+     VIEWER STATS
+  ════════════════════════════════════ */
+  let viewerCount = 0, peakViewers = 0, totalJoins = 0, streamStartTime = null;
+  let viewerInterval = null, durationInterval = null;
 
   function startViewerSimulation() {
-    isStreamLive = true;
     streamStartTime = Date.now();
     viewerCount = Math.floor(Math.random() * 40) + 15;
-    peakViewers = viewerCount;
-    totalJoins = viewerCount;
+    peakViewers = viewerCount; totalJoins = viewerCount;
     updateViewerDisplay();
-
     viewerInterval = setInterval(() => {
-      // Variation réaliste : ±5 spectateurs chaque 4s
       const delta = Math.floor(Math.random() * 11) - 5;
       viewerCount = Math.max(1, viewerCount + delta);
-      if (Math.random() > 0.85) {
-        const newJoins = Math.floor(Math.random() * 3) + 1;
-        totalJoins += newJoins;
-        viewerCount += newJoins;
-      }
+      if (Math.random() > 0.85) { const n = Math.floor(Math.random()*3)+1; totalJoins+=n; viewerCount+=n; }
       if (viewerCount > peakViewers) peakViewers = viewerCount;
       updateViewerDisplay();
+      // Update chat online count
+      document.getElementById('chat-online-count').textContent = viewerCount + ' en ligne';
     }, 4000);
-
     durationInterval = setInterval(updateDuration, 1000);
-
     document.getElementById('viewer-stats-bar').classList.add('visible');
   }
 
   function stopViewerSimulation() {
-    isStreamLive = false;
-    clearInterval(viewerInterval);
-    clearInterval(durationInterval);
-    viewerInterval = null;
-    durationInterval = null;
+    clearInterval(viewerInterval); clearInterval(durationInterval);
+    viewerInterval = null; durationInterval = null;
     viewerCount = 0;
     document.getElementById('viewer-stats-bar').classList.remove('visible');
     document.getElementById('public-viewer-count').textContent = '--';
+    document.getElementById('chat-online-count').textContent = '0 en ligne';
   }
 
   function updateViewerDisplay() {
@@ -1754,33 +1185,33 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
 
   function updateDuration() {
     if (!streamStartTime) return;
-    const elapsed = Math.floor((Date.now() - streamStartTime) / 1000);
-    const m = Math.floor(elapsed / 60).toString().padStart(2, '0');
-    const s = (elapsed % 60).toString().padStart(2, '0');
-    document.getElementById('stat-duration').textContent = m + ':' + s;
+    const e = Math.floor((Date.now()-streamStartTime)/1000);
+    const m = Math.floor(e/60).toString().padStart(2,'0');
+    const s = (e%60).toString().padStart(2,'0');
+    document.getElementById('stat-duration').textContent = m+':'+s;
   }
 
   function resetStats() {
-    viewerCount = 0; peakViewers = 0; totalJoins = 0; streamStartTime = Date.now();
+    viewerCount=0; peakViewers=0; totalJoins=0; streamStartTime=Date.now();
     updateViewerDisplay();
   }
 
-  /* ─ Navigation ─ */
+  /* ════════════════════════════════════
+     NAVIGATION
+  ════════════════════════════════════ */
   function showPage(name) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('page-' + name).classList.add('active');
-    const tabs = document.querySelectorAll('.nav-tab');
-    const idx = name === 'home' ? 0 : name === 'live' ? 1 : 2;
-    tabs[idx].classList.add('active');
+    document.getElementById('page-'+name).classList.add('active');
+    const idx = name==='home'?0:name==='live'?1:2;
+    document.querySelectorAll('.nav-tab')[idx].classList.add('active');
   }
 
-  /* ─ Admin ─ */
+  /* ════════════════════════════════════
+     ADMIN
+  ════════════════════════════════════ */
   function openAdminLogin() {
-    if (adminLoggedIn) {
-      document.getElementById('admin-panel').classList.toggle('open');
-      return;
-    }
+    if (adminLoggedIn) { document.getElementById('admin-panel').classList.toggle('open'); return; }
     document.getElementById('admin-password-input').value = '';
     document.getElementById('admin-error').style.display = 'none';
     document.getElementById('modal-login').classList.add('open');
@@ -1805,66 +1236,46 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     document.getElementById('admin-panel').classList.remove('open');
   }
 
-  /* ─ Stream ─ */
+  /* ════════════════════════════════════
+     STREAM
+  ════════════════════════════════════ */
   function setStream() {
     const url = document.getElementById('stream-url-input').value.trim();
     if (!url) return alert('Entre une URL de stream.');
-
     const box = document.getElementById('stream-box');
-    const noMsg = document.getElementById('no-stream-msg');
-    const infoBar = document.getElementById('stream-info-bar');
+    document.getElementById('no-stream-msg').style.display = 'none';
+    document.getElementById('stream-info-bar').style.display = 'flex';
     const badge = document.getElementById('live-status-badge');
-
-    noMsg.style.display = 'none';
-    infoBar.style.display = 'flex';
-    badge.className = 'live-badge';
-    badge.textContent = '🔴 EN DIRECT';
-
+    badge.className = 'live-badge'; badge.textContent = '🔴 EN DIRECT';
     const old = document.getElementById('active-player');
     if (old) old.remove();
     if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-
-    if (url.endsWith('.m3u8') || url.includes('.m3u8')) {
+    if (url.includes('.m3u8')) {
       const video = document.createElement('video');
-      video.id = 'active-player';
-      video.controls = true;
-      video.autoplay = true;
-      video.style.cssText = 'width:100%;height:100%;background:#000;';
+      video.id='active-player'; video.controls=true; video.autoplay=true;
+      video.style.cssText='width:100%;height:100%;background:#000;';
       box.appendChild(video);
-      if (window.Hls && Hls.isSupported()) {
-        hlsInstance = new Hls();
-        hlsInstance.loadSource(url);
-        hlsInstance.attachMedia(video);
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = url;
-      }
+      if (window.Hls && Hls.isSupported()) { hlsInstance=new Hls(); hlsInstance.loadSource(url); hlsInstance.attachMedia(video); }
+      else if (video.canPlayType('application/vnd.apple.mpegurl')) video.src=url;
     } else {
       const iframe = document.createElement('iframe');
-      iframe.id = 'active-player';
-      iframe.src = url;
-      iframe.allowFullscreen = true;
-      iframe.allow = 'autoplay; fullscreen';
-      iframe.style.cssText = 'width:100%;height:100%;border:none;';
+      iframe.id='active-player'; iframe.src=url; iframe.allowFullscreen=true;
+      iframe.allow='autoplay; fullscreen';
+      iframe.style.cssText='width:100%;height:100%;border:none;';
       box.appendChild(iframe);
     }
-
     startViewerSimulation();
   }
 
   function stopStream() {
-    const noMsg = document.getElementById('no-stream-msg');
-    const infoBar = document.getElementById('stream-info-bar');
-    const badge = document.getElementById('live-status-badge');
-
     const old = document.getElementById('active-player');
     if (old) old.remove();
-    if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-
-    noMsg.style.display = 'flex';
-    infoBar.style.display = 'none';
-    badge.className = 'live-no-stream-badge';
-    badge.textContent = 'HORS LIGNE';
-    document.getElementById('stream-url-input').value = '';
+    if (hlsInstance) { hlsInstance.destroy(); hlsInstance=null; }
+    document.getElementById('no-stream-msg').style.display='flex';
+    document.getElementById('stream-info-bar').style.display='none';
+    const badge = document.getElementById('live-status-badge');
+    badge.className='live-no-stream-badge'; badge.textContent='HORS LIGNE';
+    document.getElementById('stream-url-input').value='';
     stopViewerSimulation();
   }
 
@@ -1874,91 +1285,197 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     document.getElementById('match-label-display').textContent = label;
   }
 
-  /* ─ Modals ─ */
-  function closeModal(id) {
-    document.getElementById(id).classList.remove('open');
-  }
-
-  document.querySelectorAll('.modal-overlay').forEach(m => {
-    m.addEventListener('click', e => {
-      if (e.target === m) m.classList.remove('open');
-    });
-  });
-
-  /* ══════════════════════════════════════════
-     SECTION AVIS
-  ══════════════════════════════════════════ */
-  let selectedRating = 0;
-
-  function setRating(n) {
-    selectedRating = n;
-    for (let i = 1; i <= 5; i++) {
-      const el = document.getElementById('star-' + i);
-      el.classList.toggle('active', i <= n);
+  /* ════════════════════════════════════
+     COUNTDOWN
+  ════════════════════════════════════ */
+  function toggleCountdown(enabled) {
+    document.getElementById('countdown-config').style.display = enabled ? 'block' : 'none';
+    if (!enabled) {
+      document.getElementById('countdown-banner').classList.remove('visible');
+      if (countdownInterval) { clearInterval(countdownInterval); countdownInterval=null; }
     }
   }
 
+  function setCountdownTime() {
+    const dt = document.getElementById('countdown-datetime').value;
+    if (!dt) return alert('Sélectionne une date et heure.');
+    countdownTarget = new Date(dt).getTime();
+    document.getElementById('countdown-banner').classList.add('visible');
+    if (countdownInterval) clearInterval(countdownInterval);
+    countdownInterval = setInterval(updateCountdown, 1000);
+    updateCountdown();
+  }
+
+  function setCountdownName() {
+    const name = document.getElementById('countdown-match-name').value.trim();
+    if (!name) return;
+    document.getElementById('countdown-match-display').textContent = name;
+  }
+
+  function updateCountdown() {
+    if (!countdownTarget) return;
+    const now = Date.now();
+    const diff = countdownTarget - now;
+    if (diff <= 0) {
+      document.getElementById('countdown-units').style.display = 'none';
+      document.getElementById('countdown-ended').style.display = 'block';
+      clearInterval(countdownInterval);
+      return;
+    }
+    document.getElementById('countdown-units').style.display = 'flex';
+    document.getElementById('countdown-ended').style.display = 'none';
+    const d = Math.floor(diff/86400000);
+    const h = Math.floor((diff%86400000)/3600000);
+    const m = Math.floor((diff%3600000)/60000);
+    const s = Math.floor((diff%60000)/1000);
+    document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+  }
+
+  /* ════════════════════════════════════
+     LIVE CHAT
+  ════════════════════════════════════ */
+  let liveChatEnabled = false;
+  const chatColors = ['#60a5fa','#f87171','#4ade80','#fbbf24','#a78bfa','#fb923c','#34d399','#f472b6'];
+
+  function toggleLiveChat(enabled) {
+    liveChatEnabled = enabled;
+    const overlay = document.getElementById('chat-disabled-overlay');
+    const inputs = document.getElementById('live-chat-inputs');
+    const msgs = document.getElementById('live-chat-msgs');
+    if (enabled) {
+      overlay.style.display = 'none';
+      inputs.style.display = 'flex';
+      appendLiveChatMsg('system', '', '🟢 Chat activé par l\'admin. Bienvenue !', '');
+    } else {
+      overlay.style.display = 'flex';
+      inputs.style.display = 'none';
+    }
+  }
+
+  function appendLiveChatMsg(type, username, text, time) {
+    const area = document.getElementById('live-chat-msgs');
+    const div = document.createElement('div');
+    div.className = 'chat-msg' + (type==='system' ? ' system' : '');
+    if (type === 'system') {
+      div.innerHTML = `<div class="chat-msg-text">${text}</div>`;
+    } else {
+      const color = chatColors[Math.floor(Math.random()*chatColors.length)];
+      const initial = username.charAt(0).toUpperCase() || '?';
+      div.innerHTML = `
+        <div class="chat-msg-header">
+          <div class="chat-msg-avatar" style="background:${color};">${initial}</div>
+          <span class="chat-msg-username" style="color:${color};">${username}</span>
+          <span class="chat-msg-time">${time}</span>
+        </div>
+        <div class="chat-msg-text">${text}</div>`;
+    }
+    area.appendChild(div);
+    area.scrollTop = area.scrollHeight;
+  }
+
+  function sendLiveMsg() {
+    if (!liveChatEnabled) return;
+    const nick = document.getElementById('chat-nickname').value.trim() || 'Anonyme';
+    const msg = document.getElementById('live-chat-input').value.trim();
+    if (!msg) return;
+    document.getElementById('live-chat-input').value = '';
+    const now = new Date();
+    const time = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+    appendLiveChatMsg('user', nick, msg, time);
+
+    // Simulate other users responding occasionally
+    if (Math.random() > 0.65) {
+      const fakeUsers = ['Mehdi_93','ThomasB','KarimFoot','LucasDiaz','FabioFR','Alexis17','GwenFZF','Sami_Lyon'];
+      const fakeMessages = ['🔥🔥🔥','Allez !!!','Ouais le goallll !!!','Trop bien ce stream !','Merci FZF 🙏','Y a qui ce soir ?','La qualité est top !','On tient le résultat !','VAMOS !','Incroyable ce match !'];
+      setTimeout(() => {
+        const u = fakeUsers[Math.floor(Math.random()*fakeUsers.length)];
+        const m = fakeMessages[Math.floor(Math.random()*fakeMessages.length)];
+        const t2 = new Date();
+        const t2s = t2.getHours().toString().padStart(2,'0')+':'+t2.getMinutes().toString().padStart(2,'0');
+        appendLiveChatMsg('user', u, m, t2s);
+      }, 1200 + Math.random()*2000);
+    }
+  }
+
+  /* ════════════════════════════════════
+     CHATBOT TOGGLE (admin)
+  ════════════════════════════════════ */
+  function toggleChatbot(enabled) {
+    chatbotEnabled = enabled;
+    document.getElementById('chat-btn').style.display = enabled ? 'flex' : 'none';
+    if (!enabled && chatOpen) toggleChat();
+  }
+
+  /* ════════════════════════════════════
+     MODALS
+  ════════════════════════════════════ */
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => { if (e.target===m) m.classList.remove('open'); });
+  });
+
+  /* ════════════════════════════════════
+     REVIEWS
+  ════════════════════════════════════ */
+  let selectedRating = 0;
+  function setRating(n) {
+    selectedRating = n;
+    for(let i=1;i<=5;i++) document.getElementById('star-'+i).classList.toggle('active', i<=n);
+  }
   function submitReview() {
     const name = document.getElementById('review-name').value.trim();
     const text = document.getElementById('review-text').value.trim();
     const plan = document.getElementById('review-plan').value;
-
     if (!name) return alert('Entre ton prénom.');
     if (!text) return alert('Écris ton avis.');
     if (!selectedRating) return alert('Donne une note en étoiles.');
-
     const stars = '⭐'.repeat(selectedRating);
     const initial = name.charAt(0).toUpperCase();
-    const colors = [
-      'linear-gradient(135deg,#2563eb,#60a5fa)',
-      'linear-gradient(135deg,#dc2626,#f87171)',
-      'linear-gradient(135deg,#22c55e,#4ade80)',
-      'linear-gradient(135deg,#f59e0b,#fbbf24)',
-      'linear-gradient(135deg,#8b5cf6,#a78bfa)'
-    ];
-    const color = colors[Math.floor(Math.random() * colors.length)];
-
+    const colors = ['linear-gradient(135deg,#2563eb,#60a5fa)','linear-gradient(135deg,#dc2626,#f87171)','linear-gradient(135deg,#22c55e,#4ade80)','linear-gradient(135deg,#f59e0b,#fbbf24)','linear-gradient(135deg,#8b5cf6,#a78bfa)'];
+    const color = colors[Math.floor(Math.random()*colors.length)];
     const card = document.createElement('div');
-    card.className = 'review-card';
-    card.style.animation = 'msg-in 0.4s ease';
-    card.innerHTML = `
-      <div class="review-stars">${stars}</div>
-      <p class="review-text">"${text}"</p>
-      <div class="review-author">
-        <div class="review-avatar" style="background:${color};">${initial}</div>
-        <div>
-          <div class="review-name">${name}</div>
-          <div class="review-plan">${plan}</div>
-        </div>
-      </div>`;
-
+    card.className='review-card';
+    card.style.animation='msg-in 0.4s ease';
+    card.innerHTML=`<div class="review-stars">${stars}</div><p class="review-text">"${text}"</p><div class="review-author"><div class="review-avatar" style="background:${color};">${initial}</div><div><div class="review-name">${name}</div><div class="review-plan">${plan}</div></div></div>`;
     const grid = document.getElementById('reviews-grid');
     grid.insertBefore(card, grid.firstChild);
-
-    // Afficher succès
-    document.getElementById('review-form-wrapper').querySelector('form, .form-row, .star-rating-label, .star-input, .form-group, .btn-submit-review')
     const wrapper = document.getElementById('review-form-wrapper');
-    wrapper.querySelectorAll('.star-rating-label, .star-input, .form-row, .form-group, .btn-submit-review').forEach(el => el.style.display = 'none');
-    const intro = wrapper.querySelector('h4, p');
-    wrapper.querySelectorAll('h4, p').forEach(el => el.style.display = 'none');
-    document.getElementById('review-success').style.display = 'block';
-
+    wrapper.querySelectorAll('h4,p,.star-rating-label,.star-input,.form-row,.form-group,.btn-submit-review').forEach(el=>el.style.display='none');
+    document.getElementById('review-success').style.display='block';
     setTimeout(() => {
-      document.getElementById('review-success').style.display = 'none';
-      wrapper.querySelectorAll('h4, p, .star-rating-label, .star-input, .form-row, .form-group, .btn-submit-review').forEach(el => el.style.display = '');
-      document.getElementById('review-name').value = '';
-      document.getElementById('review-text').value = '';
-      selectedRating = 0;
-      for (let i = 1; i <= 5; i++) document.getElementById('star-' + i).classList.remove('active');
+      document.getElementById('review-success').style.display='none';
+      wrapper.querySelectorAll('h4,p,.star-rating-label,.star-input,.form-row,.form-group,.btn-submit-review').forEach(el=>el.style.display='');
+      document.getElementById('review-name').value='';
+      document.getElementById('review-text').value='';
+      selectedRating=0;
+      for(let i=1;i<=5;i++) document.getElementById('star-'+i).classList.remove('active');
     }, 3500);
   }
 
-  /* ══════════════════════════════════════════
-     CHATBOT
-  ══════════════════════════════════════════ */
+  /* ════════════════════════════════════
+     CHATBOT IA — CLAUDE API
+  ════════════════════════════════════ */
   let chatOpen = false;
+  let chatHistory = [];
+
+  const FZF_SYSTEM = `Tu es le bot officiel de Football Zone France (FZF), un service IPTV et streaming foot français.
+Réponds toujours en français, de façon sympathique, concise et enthousiaste.
+Contexte de la boutique :
+- Plan Starter : 10€ pour 3 mois (Ligue 1, C1, PL, Liga, Serie A, Bundesliga)
+- Plan À Vie : 35€ paiement unique, tout illimité à vie, Coupe du Monde & Euros inclus
+- Commande via Discord : discord.gg/ftzf
+- Paiement : PayPal ou virement
+- Activation sous 24h après paiement, souvent bien plus rapide
+- Compatible : Smart TV, Android TV, Firestick, Apple TV, smartphone, tablette, PC (via app IPTV : Tivimate, IPTV Smarters, GSE IPTV)
+- Support Discord 7j/7
+- Serveur de backup inclus pour zéro coupure
+Sois bref (max 4-5 lignes). Utilise des emojis pertinents. Pour toute commande, dirige vers discord.gg/ftzf.`;
 
   function toggleChat() {
+    if (!chatbotEnabled) return;
     chatOpen = !chatOpen;
     document.getElementById('chatbot-window').classList.toggle('open', chatOpen);
     document.getElementById('chat-btn').classList.toggle('open', chatOpen);
@@ -1967,88 +1484,62 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     if (chatOpen) setTimeout(() => document.getElementById('chat-input').focus(), 300);
   }
 
-  const CHAT_KB = {
-    prix: {
-      k: ['prix', 'tarif', 'coûte', 'coute', 'combien', 'offre', 'abonnement', 'euro'],
-      r: `Voici nos offres IPTV :\n\n⚡ <strong>Starter</strong> — <strong>10€</strong> pour 3 mois (3,33€/mois)\n👑 <strong>À Vie</strong> — <strong>35€</strong> paiement unique, accès illimité à vie !\n\nLe plan À Vie est clairement la meilleure affaire sur le long terme. Tu ne paies qu'une fois et c'est terminé 🔥`
-    },
-    commander: {
-      k: ['commander', 'acheter', 'achat', 'commande', 'acquérir', 'souscrire'],
-      r: `C'est super simple pour commander :\n\n1️⃣ Rejoins notre Discord → <strong>discord.gg/ftzf</strong>\n2️⃣ Contacte un admin ou poste dans le canal commande\n3️⃣ Indique le plan choisi (Starter ou À Vie)\n4️⃣ Règle le paiement\n5️⃣ Reçois tes accès en MP sous <strong>24h max</strong> ✅`
-    },
-    compatibilite: {
-      k: ['appareil', 'compatible', 'télé', 'tele', 'tv', 'firestick', 'smartphone', 'tablette', 'pc', 'android', 'apple', 'iphone', 'samsung'],
-      r: `Notre IPTV est compatible avec pratiquement tout :\n\n📺 Smart TV, Android TV, Fire TV Stick\n🍎 Apple TV\n📱 Smartphone & tablette (iOS/Android)\n💻 PC & Mac (via VLC ou une app IPTV)\n\nIl suffit d'installer une application IPTV standard (ex: Tivimate, IPTV Smarters, GSE IPTV) et d'entrer tes identifiants.`
-    },
-    comparer: {
-      k: ['différence', 'comparer', 'starter vs', 'vs', 'mieux', 'choisir', 'lequel'],
-      r: `Voici la comparaison rapide :\n\n⚡ <strong>Starter (10€)</strong>\n→ Accès 3 mois, idéal pour tester\n→ Toutes les compétitions sport\n\n👑 <strong>À Vie (35€)</strong>\n→ Accès permanent, jamais de renouvellement\n→ Coupe du Monde & Euros inclus\n→ Priorité support & nouveaux serveurs\n\n💡 Si tu regardes souvent le foot, <strong>le plan À Vie te fait économiser dès le 2ème trimestre</strong> !`
-    },
-    paiement: {
-      k: ['payer', 'paiement', 'paypal', 'virement', 'cb', 'carte', 'crypto'],
-      r: `Pour le paiement, plusieurs options sont disponibles :\n\n💳 <strong>PayPal</strong> (recommandé)\n🏦 Virement bancaire\n💬 D'autres moyens possibles selon arrangement\n\nTout se passe via notre Discord. Contacte un admin et il t'indiquera ses coordonnées de paiement. 🔒 100% sécurisé.`
-    },
-    qualite: {
-      k: ['qualité', 'qualite', 'hd', '4k', 'buffering', 'coupure', 'lag', 'freeze', 'stream'],
-      r: `Notre IPTV offre :\n\n📡 Qualité <strong>HD & Full HD</strong> sur la plupart des chaînes\n⚡ Serveurs optimisés pour le sport en direct\n🔄 Serveur de backup inclus (zéro coupure)\n🌐 Fonctionne avec toute connexion internet ≥ 10 Mbps\n\nDes milliers de membres regardent chaque match sans problème. Qualité garantie ou on te rembourse ! 💪`
-    },
-    activation: {
-      k: ['activation', 'accès', 'acces', 'quand', 'délai', 'delai', 'identifiant', 'credentials'],
-      r: `Après ta commande :\n\n⏱ <strong>Activation en moins de 24h</strong> (souvent bien plus rapide !)\n📩 Tes identifiants arrivent en message privé Discord\n📲 Configuration guidée fournie pour tous les appareils\n\nEn cas de problème, notre support Discord répond rapidement 7j/7. 🟢`
-    },
-    discord: {
-      k: ['discord', 'serveur', 'communauté', 'rejoindre', 'contact', 'admin'],
-      r: `Notre serveur Discord c'est le QG de FZF ! 🎮\n\nTu y trouveras :\n💬 La communauté foot francophone\n📺 Les annonces de stream live\n🛒 Le canal pour commander l'IPTV\n🛠 Le support technique\n\n👉 Rejoins-nous : <strong>discord.gg/ftzf</strong>`
-    },
-    vie: {
-      k: ['vie', 'lifetime', 'permanent', 'definitif', 'définitif', 'toujours'],
-      r: `Oui, le plan À Vie c'est vraiment à vie ! 👑\n\n<strong>35€ une seule fois</strong>, et tu gardes l'accès :\n✅ Sans abonnement mensuel\n✅ Sans frais cachés\n✅ Avec toutes les mises à jour futures\n✅ Y compris les nouvelles compétitions\n\nC'est notre offre la plus populaire et la plus recommandée par la communauté. 🏆`
-    },
-  };
-
-  function getBotResponse(msg) {
-    const m = msg.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    for (const [key, val] of Object.entries(CHAT_KB)) {
-      if (val.k.some(k => m.includes(k))) return val.r;
-    }
-    // Réponse générique
-    if (m.includes('bonjour') || m.includes('salut') || m.includes('hello') || m.includes('coucou')) {
-      return "Salut ! 👋 Comment puis-je t'aider aujourd'hui ?\n\nUtilise les boutons rapides ci-dessous ou pose ta question directement !";
-    }
-    if (m.includes('merci') || m.includes('super') || m.includes('nickel') || m.includes('parfait')) {
-      return "Avec plaisir ! 😊 Si tu as d'autres questions, n'hésite pas. Et si tu veux passer à l'action, rejoins le Discord → <strong>discord.gg/ftzf</strong> 🚀";
-    }
-    return "Je ne suis pas sûr de comprendre ta question 🤔\n\nUtilise les boutons rapides ou reformule, et je ferai de mon mieux ! Pour toute question complexe, les admins sur <strong>discord.gg/ftzf</strong> sont là pour toi. 💬";
-  }
-
   function appendMessage(text, isUser) {
     const msgs = document.getElementById('chat-messages');
-    const typing = document.getElementById('chat-typing');
-
     const div = document.createElement('div');
     div.className = isUser ? 'msg-user' : 'msg-bot';
-    div.innerHTML = text.replace(/\n/g, '<br>');
-    msgs.insertBefore(div, typing);
+    div.innerHTML = text.replace(/\n/g,'<br>');
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return div;
+  }
+
+  function showLoadingMsg() {
+    const msgs = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = 'msg-loading';
+    div.id = 'loading-msg';
+    div.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+    msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
   }
 
-  function showTyping() {
-    document.getElementById('chat-typing').classList.add('show');
-    document.getElementById('chat-messages').scrollTop = 9999;
+  function removeLoadingMsg() {
+    const el = document.getElementById('loading-msg');
+    if (el) el.remove();
   }
 
-  function hideTyping() {
-    document.getElementById('chat-typing').classList.remove('show');
-  }
+  async function sendToClaudeAPI(userMessage) {
+    chatHistory.push({ role: 'user', content: userMessage });
 
-  function sendBotReply(userMsg) {
-    showTyping();
-    const delay = 700 + Math.random() * 600;
-    setTimeout(() => {
-      hideTyping();
-      const reply = getBotResponse(userMsg);
-      appendMessage(reply, false);
-    }, delay);
+    showLoadingMsg();
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: FZF_SYSTEM,
+          messages: chatHistory
+        })
+      });
+
+      const data = await response.json();
+      removeLoadingMsg();
+
+      if (data.content && data.content[0] && data.content[0].text) {
+        const reply = data.content[0].text;
+        chatHistory.push({ role: 'assistant', content: reply });
+        appendMessage(reply, false);
+      } else {
+        appendMessage('Désolé, une erreur est survenue. Essaie de reformuler ta question ! 😅', false);
+      }
+    } catch (err) {
+      removeLoadingMsg();
+      appendMessage('Connexion impossible à l\'IA pour le moment. Pour toute question, rejoins notre Discord → <strong>discord.gg/ftzf</strong> 💬', false);
+    }
   }
 
   function sendChat() {
@@ -2056,23 +1547,19 @@ cat > /mnt/user-data/outputs/football-zone-france.html << 'HTMLEOF'
     const msg = input.value.trim();
     if (!msg) return;
     input.value = '';
-
     appendMessage(msg, true);
-
-    // Cacher les boutons rapides après la 1ère question perso
     document.getElementById('quick-btns').style.display = 'none';
-
-    sendBotReply(msg);
+    sendToClaudeAPI(msg);
   }
 
   function quickAsk(question) {
     appendMessage(question, true);
     document.getElementById('quick-btns').style.display = 'none';
-    sendBotReply(question);
+    sendToClaudeAPI(question);
   }
 </script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
 </body>
 </html>
-
+HTMLEOF
+echo "Done"
