@@ -1,3 +1,6 @@
+bash
+
+cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="fr" data-theme="dark">
 <head>
@@ -8,6 +11,9 @@
   <link rel="icon" href="logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <!-- Firebase SDK pour stream public -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   <style>
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     :root {
@@ -27,8 +33,6 @@
       --admin-input-bg:#1a2d44;
     }
     body { font-family:'Barlow',sans-serif; background:var(--dark); color:var(--text); overflow-x:hidden; transition:background 0.3s,color 0.3s; }
-
-    /* NAV */
     nav { position:fixed; top:0; left:0; right:0; z-index:100; background:var(--nav-bg); backdrop-filter:blur(12px); border-bottom:1px solid rgba(37,99,235,0.2); display:flex; align-items:center; justify-content:space-between; padding:0 32px; height:64px; }
     .nav-logo { display:flex; align-items:center; gap:12px; font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:1px; color:var(--text); text-decoration:none; cursor:pointer; }
     .nav-logo img { width:40px; height:40px; object-fit:contain; }
@@ -44,12 +48,8 @@
     .nav-discord:hover { background:#4752c4; }
     .live-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--red); margin-right:6px; animation:pulse-dot 1.5s infinite; }
     @keyframes pulse-dot { 0%,100%{opacity:1}50%{opacity:.3} }
-
-    /* PAGES */
     .page { display:none; }
     .page.active { display:block; }
-
-    /* HOME */
     #page-home { min-height:100vh; padding-top:64px; }
     .hero { position:relative; min-height:calc(100vh - 64px); display:flex; justify-content:center; align-items:center; text-align:center; padding:40px; background:url("banner.png") center center/cover no-repeat; }
     .hero::before { content:""; position:absolute; inset:0; background:rgba(0,0,0,0.72); backdrop-filter:blur(2px); }
@@ -72,12 +72,8 @@
     .discord-section p { font-size:18px; max-width:650px; margin:0 auto 40px; color:#e2e8f0; line-height:1.8; }
     footer { background:#000814; padding:30px; text-align:center; color:var(--muted); font-size:14px; }
     [data-theme="light"] footer { background:#0f172a; }
-
-    /* LIVE PAGE */
     #page-live { padding-top:64px; min-height:100vh; background:var(--dark); }
     .live-main-layout { display:flex; min-height:calc(100vh - 64px); }
-
-    /* ADMIN SIDEBAR */
     .admin-sidebar { width:0; overflow:hidden; background:var(--admin-bg); border-right:1px solid var(--admin-border); transition:width 0.35s cubic-bezier(0.4,0,0.2,1); flex-shrink:0; display:flex; flex-direction:column; }
     .admin-sidebar.open { width:410px; overflow-y:auto; overflow-x:hidden; }
     .admin-sidebar::-webkit-scrollbar { width:3px; }
@@ -91,14 +87,12 @@
     .admin-status-pill::before { content:""; width:6px; height:6px; border-radius:50%; background:#4ade80; animation:pulse-dot 2s infinite; }
     .founder-status-pill { display:flex; align-items:center; gap:6px; background:rgba(168,85,247,0.15); border:1px solid rgba(168,85,247,0.4); border-radius:20px; padding:4px 10px; font-size:11px; font-weight:700; color:#c084fc; }
     .founder-status-pill::before { content:""; width:6px; height:6px; border-radius:50%; background:#c084fc; animation:pulse-dot 2s infinite; }
-
     .admin-tabs { display:flex; border-bottom:1px solid var(--admin-border); background:var(--admin-bg); position:sticky; top:0; z-index:5; flex-wrap:wrap; }
     .admin-tab { flex:1; padding:11px 4px; font-size:9.5px; font-weight:800; letter-spacing:0.5px; text-transform:uppercase; cursor:pointer; border:none; background:transparent; color:var(--muted); font-family:'Barlow',sans-serif; transition:0.2s; border-bottom:2px solid transparent; display:flex; flex-direction:column; align-items:center; gap:3px; min-width:45px; }
     .admin-tab .tab-icon { font-size:14px; }
     .admin-tab:hover { color:var(--text); background:var(--admin-hover); }
     .admin-tab.active { color:#60a5fa; border-bottom-color:#2563eb; background:rgba(37,99,235,0.08); }
     .admin-tab.founder-tab.active { color:#c084fc; border-bottom-color:#a855f7; background:rgba(168,85,247,0.1); }
-
     .admin-panel { display:none; flex-direction:column; gap:0; }
     .admin-panel.active { display:flex; }
     .a-section { padding:16px 18px; border-bottom:1px solid var(--admin-border); }
@@ -133,12 +127,10 @@
     .toggle-slider::before { content:""; position:absolute; left:3px; top:2px; width:16px; height:16px; border-radius:50%; background:white; transition:0.3s; }
     .toggle-switch input:checked + .toggle-slider { background:#2563eb; border-color:#3b82f6; }
     .toggle-switch input:checked + .toggle-slider::before { transform:translateX(18px); }
-
     .stats-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
     .stat-card { background:var(--admin-input-bg); border:1px solid var(--admin-border); border-radius:10px; padding:12px; text-align:center; }
     .stat-card-num { font-family:'Bebas Neue',sans-serif; font-size:30px; line-height:1; margin-bottom:2px; }
     .stat-card-label { font-size:9px; font-weight:800; color:var(--muted); letter-spacing:1.2px; text-transform:uppercase; }
-
     .plan-item { background:var(--admin-input-bg); border:1px solid var(--admin-border); border-radius:9px; padding:10px 12px; margin-bottom:6px; display:flex; align-items:center; gap:10px; }
     .plan-item-dot { width:8px; height:8px; border-radius:50%; background:#5865F2; flex-shrink:0; }
     .plan-item-dot.live { background:var(--red); animation:pulse-dot 1.5s infinite; }
@@ -147,11 +139,8 @@
     .plan-item-date { font-size:11px; color:var(--muted); margin-top:1px; }
     .plan-item-delete { background:none; border:none; color:rgba(148,163,184,0.4); cursor:pointer; font-size:14px; padding:3px 7px; border-radius:5px; }
     .plan-item-delete:hover { color:#f87171; background:rgba(220,38,38,0.1); }
-
-    /* Qui a créé le match (badge fondateur/admin) */
     .plan-item-author { font-size:10px; color:var(--muted); display:flex; align-items:center; gap:4px; }
     .plan-item-author.founder { color:#c084fc; }
-
     .ban-item { background:rgba(220,38,38,0.06); border:1px solid rgba(220,38,38,0.15); border-radius:8px; padding:9px 12px; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; }
     .ban-item-name { font-size:13px; font-weight:700; color:#f87171; }
     .ban-item-reason { font-size:11px; color:var(--muted); margin-top:1px; }
@@ -161,7 +150,6 @@
     .admin-logged-as::before { content:""; width:6px; height:6px; border-radius:50%; background:#4ade80; animation:pulse-dot 2s infinite; }
     .founder-logged-as { font-size:12px; color:#c084fc; display:flex; align-items:center; gap:6px; }
     .founder-logged-as::before { content:""; width:6px; height:6px; border-radius:50%; background:#c084fc; animation:pulse-dot 2s infinite; }
-
     .staff-item { background:rgba(37,99,235,0.07); border:1px solid rgba(37,99,235,0.15); border-radius:9px; padding:10px 12px; margin-bottom:6px; display:flex; align-items:center; gap:10px; }
     .staff-item-avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#2563eb,#60a5fa); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:white; flex-shrink:0; }
     .staff-item-info { flex:1; min-width:0; }
@@ -173,7 +161,6 @@
     .revoked-name { font-size:13px; font-weight:700; color:#f87171; }
     .revoked-badge { font-size:10px; font-weight:800; background:rgba(220,38,38,0.15); border:1px solid rgba(220,38,38,0.3); color:#f87171; padding:2px 8px; border-radius:20px; white-space:nowrap; }
     .btn-restore { background:none; border:1px solid rgba(34,197,94,0.3); color:#4ade80; font-size:10px; font-weight:700; padding:3px 8px; border-radius:5px; cursor:pointer; font-family:'Barlow',sans-serif; }
-
     .real-visitors-panel { background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.2); border-radius:10px; overflow:hidden; }
     .real-visitors-header { background:rgba(16,185,129,0.1); padding:10px 14px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(16,185,129,0.15); }
     .real-visitors-title { font-size:11px; font-weight:800; color:#34d399; letter-spacing:1px; text-transform:uppercase; display:flex; align-items:center; gap:6px; }
@@ -183,16 +170,12 @@
     .real-visitor-dot { width:7px; height:7px; border-radius:50%; background:#4ade80; animation:pulse-dot 2s infinite; flex-shrink:0; }
     .real-visitor-page { flex:1; color:var(--text); font-weight:600; }
     .real-visitor-time { color:var(--muted); font-size:11px; }
-
-    /* NOTIFICATION BAR */
     .notif-cta-bar { background:linear-gradient(135deg,rgba(37,99,235,0.12),rgba(168,85,247,0.08)); border-bottom:1px solid rgba(37,99,235,0.2); padding:10px 28px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
     .notif-cta-text { font-size:14px; font-weight:600; color:var(--text); flex:1; display:flex; align-items:center; gap:8px; }
     .btn-notif-enable { padding:8px 20px; border-radius:9px; border:none; background:linear-gradient(135deg,#2563eb,#3b82f6); color:white; font-size:13px; font-weight:700; cursor:pointer; font-family:'Barlow',sans-serif; }
     .btn-notif-dismiss { padding:8px 14px; border-radius:9px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:13px; cursor:pointer; font-family:'Barlow',sans-serif; }
     .notif-enabled-pill { display:flex; align-items:center; gap:7px; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); border-radius:20px; padding:7px 16px; font-size:13px; font-weight:700; color:#4ade80; }
     .notif-enabled-pill::before { content:""; width:7px; height:7px; border-radius:50%; background:#4ade80; animation:pulse-dot 2s infinite; }
-
-    /* PUSH TOAST */
     .push-preview-toast { position:fixed; top:80px; left:50%; transform:translateX(-50%) translateY(-200px); background:var(--dark2); border:1px solid rgba(37,99,235,0.4); border-radius:14px; padding:14px 20px; z-index:9999; transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s; width:340px; max-width:calc(100vw - 40px); box-shadow:0 20px 60px rgba(0,0,0,0.5); display:flex; align-items:flex-start; gap:12px; opacity:0; pointer-events:none; }
     .push-preview-toast.show { transform:translateX(-50%) translateY(0); opacity:1; pointer-events:all; }
     .push-preview-icon { font-size:28px; flex-shrink:0; }
@@ -201,8 +184,6 @@
     .push-preview-body { font-size:12px; color:var(--muted); line-height:1.5; }
     .push-preview-source { font-size:10px; color:rgba(37,99,235,0.8); font-weight:700; margin-top:4px; letter-spacing:0.5px; text-transform:uppercase; }
     .push-preview-close { background:none; border:none; color:var(--muted); cursor:pointer; font-size:16px; flex-shrink:0; }
-
-    /* LIVE TOPBAR */
     .live-topbar { background:var(--dark2); border-bottom:1px solid var(--border); padding:14px 28px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
     .live-topbar-title { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:2px; color:var(--text); display:flex; align-items:center; gap:12px; flex:1; }
     .live-badge { background:var(--red); padding:3px 12px; border-radius:6px; font-size:12px; font-weight:700; letter-spacing:1px; animation:pulse-dot 1.5s infinite; }
@@ -213,8 +194,6 @@
     .btn-admin-toggle { padding:9px 18px; border-radius:9px; border:1px solid rgba(37,99,235,0.35); background:rgba(37,99,235,0.1); color:#60a5fa; font-size:13px; font-weight:700; cursor:pointer; font-family:'Barlow',sans-serif; display:flex; align-items:center; gap:6px; }
     .btn-admin-toggle.active { background:rgba(37,99,235,0.25); border-color:rgba(37,99,235,0.55); }
     .btn-admin-toggle.founder-active { background:rgba(168,85,247,0.2); border-color:rgba(168,85,247,0.5); color:#c084fc; }
-
-    /* COUNTDOWN */
     .countdown-banner { display:none; background:linear-gradient(135deg,#0f172a,#1e1b4b); border-bottom:1px solid rgba(99,102,241,0.35); padding:18px 28px; align-items:center; justify-content:center; gap:32px; flex-wrap:wrap; }
     .countdown-banner.visible { display:flex; }
     .countdown-match-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:2px; color:white; }
@@ -225,11 +204,7 @@
     .cd-label { font-size:10px; font-weight:700; color:#818cf8; letter-spacing:1px; text-transform:uppercase; margin-top:4px; }
     .cd-sep { font-family:'Bebas Neue',sans-serif; font-size:40px; color:rgba(99,102,241,0.5); margin-top:-6px; }
     .countdown-ended { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:2px; color:#4ade80; animation:pulse-dot 1s infinite; }
-
-    /* STREAM */
     .stream-container { padding:22px 28px; }
-
-    /* ═══ MULTI-STREAM ═══ */
     .stream-mode-bar { display:flex; align-items:center; gap:10px; padding:0 0 14px 0; flex-wrap:wrap; }
     .stream-mode-btn { padding:7px 16px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:12px; font-weight:700; cursor:pointer; font-family:'Barlow',sans-serif; transition:0.2s; }
     .stream-mode-btn.active { background:rgba(37,99,235,0.2); border-color:rgba(37,99,235,0.5); color:#60a5fa; }
@@ -249,11 +224,8 @@
     .stream-info-bar { display:flex; align-items:center; gap:14px; margin-top:14px; padding:12px 18px; background:var(--dark2); border-radius:12px; border:1px solid var(--border); flex-wrap:wrap; }
     .stream-match-label { font-size:15px; font-weight:700; flex:1; color:var(--text); }
     .btn-discord-chat { padding:8px 16px; border-radius:10px; border:none; background:#5865F2; color:white; font-size:13px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
-
     .live-layout { display:grid; grid-template-columns:1fr 340px; gap:18px; padding:0 28px 28px; align-items:start; }
     @media(max-width:1100px){ .live-layout { grid-template-columns:1fr; } .stream-grid.dual,.stream-grid.quad { grid-template-columns:1fr; } }
-
-    /* LIVE CHAT */
     .live-chat-panel { background:var(--dark2); border:1px solid var(--border); border-radius:16px; overflow:hidden; display:flex; flex-direction:column; height:520px; max-height:620px; position:relative; }
     .chat-panel-header { padding:12px 16px; background:rgba(37,99,235,0.1); border-bottom:1px solid rgba(37,99,235,0.18); display:flex; align-items:center; justify-content:space-between; }
     .chat-panel-title { font-family:'Bebas Neue',sans-serif; font-size:17px; letter-spacing:1.5px; color:var(--text); display:flex; align-items:center; gap:8px; }
@@ -287,12 +259,8 @@
     .chat-disabled-overlay .lock-icon { font-size:36px; opacity:0.5; }
     .pseudo-warning { font-size:11px; color:#fbbf24; display:none; margin-top:2px; }
     .pseudo-warning.show { display:block; }
-
-    /* BAN TOAST */
     .ban-toast { position:fixed; top:80px; right:24px; background:rgba(220,38,38,0.9); backdrop-filter:blur(10px); color:white; padding:12px 20px; border-radius:12px; font-size:14px; font-weight:700; z-index:999; transform:translateX(150%); transition:transform 0.3s; border:1px solid rgba(255,255,255,0.1); }
     .ban-toast.show { transform:translateX(0); }
-
-    /* ═══ SONDAGES LIVE ═══ */
     .poll-panel { background:var(--dark2); border:1px solid rgba(99,102,241,0.3); border-radius:16px; overflow:hidden; margin-top:16px; }
     .poll-panel-header { padding:12px 16px; background:rgba(99,102,241,0.12); border-bottom:1px solid rgba(99,102,241,0.2); display:flex; align-items:center; justify-content:space-between; }
     .poll-panel-title { font-family:'Bebas Neue',sans-serif; font-size:17px; letter-spacing:1.5px; color:#818cf8; }
@@ -313,8 +281,6 @@
     .poll-timer { font-size:12px; color:#818cf8; font-weight:700; }
     .poll-closed-badge { background:rgba(148,163,184,0.15); border:1px solid rgba(148,163,184,0.3); color:var(--muted); font-size:11px; font-weight:700; padding:2px 10px; border-radius:20px; }
     .poll-no-poll { padding:20px 16px; text-align:center; color:var(--muted); font-size:13px; }
-
-    /* ═══ PRONOSTICS ═══ */
     .pronostic-panel { background:var(--dark2); border:1px solid rgba(245,158,11,0.3); border-radius:16px; overflow:hidden; margin-top:16px; }
     .pronostic-header { padding:12px 16px; background:rgba(245,158,11,0.1); border-bottom:1px solid rgba(245,158,11,0.2); display:flex; align-items:center; justify-content:space-between; }
     .pronostic-title { font-family:'Bebas Neue',sans-serif; font-size:17px; letter-spacing:1.5px; color:#fbbf24; }
@@ -333,8 +299,6 @@
     .pronostic-result-item.exact { border-color:rgba(74,222,128,0.4); background:rgba(74,222,128,0.07); }
     .pronostic-result-item.exact .pronostic-result-score { color:#4ade80; }
     .pronostic-no-match { padding:16px; text-align:center; color:var(--muted); font-size:13px; }
-
-    /* PLANNING PUBLIC */
     .planning-public { background:var(--dark2); border-top:1px solid var(--border); padding:28px; }
     .planning-public h3 { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:2px; color:var(--text); margin-bottom:18px; display:flex; align-items:center; gap:10px; }
     .planning-public-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
@@ -351,8 +315,6 @@
     .planning-card-author { font-size:10px; color:var(--muted); margin-top:6px; }
     .planning-card-author.founder { color:#c084fc; }
     .planning-empty { color:var(--muted); font-size:14px; text-align:center; padding:24px; }
-
-    /* MODAL */
     .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(5px); z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
     .modal-overlay.open { opacity:1; pointer-events:all; }
     .modal { background:var(--dark2); border:1px solid rgba(37,99,235,0.3); border-radius:20px; padding:36px; max-width:420px; width:100%; }
@@ -378,8 +340,6 @@
     .founder-modal p { font-size:14px; color:var(--muted); margin-bottom:24px; line-height:1.6; }
     .founder-modal input { width:100%; padding:12px 16px; border-radius:10px; border:1px solid rgba(168,85,247,0.3); background:rgba(168,85,247,0.06); color:var(--text); font-size:15px; font-family:'Barlow',sans-serif; outline:none; margin-bottom:14px; }
     .btn-founder-login { flex:1; padding:12px; border-radius:10px; border:none; background:linear-gradient(135deg,#7c3aed,#a855f7); color:white; font-size:15px; font-weight:700; cursor:pointer; font-family:'Barlow',sans-serif; }
-
-    /* IPTV */
     #page-iptv { padding-top:64px; min-height:100vh; background:var(--dark); }
     .iptv-header { background:linear-gradient(135deg,#0f2a0f,#0a1a0a); border-bottom:1px solid rgba(34,197,94,0.2); padding:60px 40px; text-align:center; }
     .iptv-header h2 { font-family:'Bebas Neue',sans-serif; font-size:58px; letter-spacing:3px; color:white; margin-bottom:14px; }
@@ -436,8 +396,6 @@
     .faq-item { background:var(--dark2); border:1px solid var(--border); border-radius:14px; padding:20px 24px; margin-bottom:14px; }
     .faq-item h4 { font-size:16px; font-weight:700; margin-bottom:8px; color:var(--text); }
     .faq-item p { font-size:14px; color:var(--muted); line-height:1.7; }
-
-    /* CHATBOT */
     .chat-bubble-btn { position:fixed; bottom:28px; right:28px; width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,#4ade80,#22c55e); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:26px; box-shadow:0 4px 30px rgba(34,197,94,0.5); z-index:300; transition:0.3s; animation:chat-bounce 3s ease-in-out infinite; }
     .chat-bubble-btn.open { animation:none; background:linear-gradient(135deg,#f87171,#dc2626); }
     @keyframes chat-bounce { 0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)} }
@@ -471,12 +429,12 @@
     .chat-input { flex:1; padding:9px 14px; border-radius:22px; border:1px solid var(--border); background:var(--dark3); color:var(--text); font-size:13px; font-family:'Barlow',sans-serif; outline:none; }
     .chat-input:focus { border-color:#22c55e; }
     .chat-send-btn { width:38px; height:38px; border-radius:50%; border:none; background:linear-gradient(135deg,#4ade80,#22c55e); color:white; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-
-    /* SYNC INDICATOR */
     .sync-indicator { position:fixed; bottom:100px; left:20px; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); border-radius:20px; padding:6px 12px; font-size:11px; color:#4ade80; font-weight:700; display:flex; align-items:center; gap:6px; z-index:50; opacity:0; transition:opacity 0.5s; pointer-events:none; }
     .sync-indicator.show { opacity:1; }
     .sync-dot { width:6px; height:6px; border-radius:50%; background:#4ade80; animation:pulse-dot 1s infinite; }
-
+    /* Badge Firebase connecté */
+    .firebase-badge { position:fixed; bottom:28px; left:28px; background:rgba(255,160,0,0.12); border:1px solid rgba(255,160,0,0.35); border-radius:20px; padding:6px 14px; font-size:11px; color:#fbbf24; font-weight:700; display:flex; align-items:center; gap:6px; z-index:50; }
+    .firebase-badge::before { content:""; width:6px; height:6px; border-radius:50%; background:#fbbf24; animation:pulse-dot 2s infinite; }
     @media(max-width:768px){
       h1{font-size:52px} nav{padding:0 12px} .nav-tabs{gap:2px} .nav-tab{padding:6px 10px;font-size:12px}
       .nav-discord{display:none} .live-topbar,.stream-container{padding:14px 16px}
@@ -498,6 +456,7 @@
   <button class="push-preview-close" onclick="dismissPushToast()">✕</button>
 </div>
 <div class="sync-indicator" id="sync-indicator"><span class="sync-dot"></span> Synchronisé</div>
+<div class="firebase-badge" id="firebase-badge">🔥 Firebase connecté</div>
 
 <nav>
   <a class="nav-logo" onclick="showPage('home')">
@@ -517,7 +476,7 @@
   </div>
 </nav>
 
-<!-- ══════════════ PAGE ACCUEIL ══════════════ -->
+<!-- PAGE ACCUEIL -->
 <div id="page-home" class="page active">
   <header class="hero">
     <div class="hero-content">
@@ -543,11 +502,9 @@
   <footer>© 2026 Football Zone France — Tous droits réservés</footer>
 </div>
 
-<!-- ══════════════ PAGE LIVE ══════════════ -->
+<!-- PAGE LIVE -->
 <div id="page-live" class="page">
   <div class="live-main-layout">
-
-    <!-- ═══ SIDEBAR ADMIN ═══ -->
     <div class="admin-sidebar" id="admin-sidebar">
       <div class="admin-header">
         <div>
@@ -556,7 +513,6 @@
         </div>
         <div class="admin-status-pill" id="admin-status-pill">Connecté</div>
       </div>
-
       <div class="admin-tabs" id="admin-tabs">
         <button class="admin-tab active" onclick="switchAdminTab('stream')" id="tab-stream"><span class="tab-icon">📺</span>Stream</button>
         <button class="admin-tab" onclick="switchAdminTab('planning')" id="tab-planning"><span class="tab-icon">📅</span>Planning</button>
@@ -578,11 +534,7 @@
             <button class="a-btn a-btn-ghost" style="font-size:11px;flex:1;" onclick="setStreamMode('quad')" id="mode-btn-quad">4️⃣ Quad</button>
           </div>
         </div>
-
-        <div class="a-section" id="stream-slots-admin">
-          <!-- Générés dynamiquement -->
-        </div>
-
+        <div class="a-section" id="stream-slots-admin"></div>
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Compte à rebours</div>
           <div class="a-toggle-row">
@@ -597,7 +549,6 @@
             <button class="a-btn-full a-btn-purple" onclick="setCountdownTime()">⏱ Activer le compte à rebours</button>
           </div>
         </div>
-
         <div class="a-section" id="stats-section" style="display:none;">
           <div class="a-section-title"><span class="dot"></span>Statistiques en direct</div>
           <div class="stats-grid-2">
@@ -811,10 +762,8 @@
       </div>
     </div>
 
-    <!-- ═══ CONTENU LIVE ═══ -->
+    <!-- CONTENU LIVE -->
     <div class="live-content-area">
-
-      <!-- Barre notification -->
       <div class="notif-cta-bar" id="notif-cta-bar">
         <div class="notif-cta-text"><span>🔔</span><span>Reçois une alerte dès qu'une diffusion commence !</span></div>
         <button class="btn-notif-enable" onclick="requestNotifPermission()">🔔 Activer</button>
@@ -823,7 +772,6 @@
       <div style="display:none;padding:8px 28px;background:rgba(34,197,94,0.05);border-bottom:1px solid rgba(34,197,94,0.12);" id="notif-enabled-bar">
         <span class="notif-enabled-pill">Notifications activées ✓</span>
       </div>
-
       <div class="live-topbar">
         <div class="live-topbar-title">
           📺 Match en Direct
@@ -835,8 +783,6 @@
         </div>
         <button class="btn-admin-toggle" id="admin-toggle-btn" onclick="toggleAdminSidebar()">🔒 Admin</button>
       </div>
-
-      <!-- Countdown -->
       <div class="countdown-banner" id="countdown-banner">
         <div>
           <div class="countdown-label-top">PROCHAIN MATCH</div>
@@ -856,8 +802,6 @@
           <div class="countdown-ended" id="countdown-ended" style="display:none;">🔴 C'EST PARTI !</div>
         </div>
       </div>
-
-      <!-- Player multi-stream -->
       <div class="stream-container">
         <div class="stream-mode-bar" id="stream-mode-bar" style="display:none;">
           <span style="font-size:12px;font-weight:700;color:var(--muted);">MODE :</span>
@@ -877,22 +821,15 @@
           <a href="https://discord.gg/ftzf" class="btn-discord-chat" target="_blank">Discord</a>
         </div>
       </div>
-
       <div class="live-layout">
-        <!-- Gauche : sondage + pronostic -->
         <div>
-          <!-- Sondage -->
           <div class="poll-panel" id="poll-panel">
             <div class="poll-panel-header">
               <div class="poll-panel-title">📊 Sondage Live</div>
               <span class="poll-closed-badge" id="poll-status-badge">Aucun sondage</span>
             </div>
-            <div id="poll-content">
-              <div class="poll-no-poll">Aucun sondage actif pour le moment.</div>
-            </div>
+            <div id="poll-content"><div class="poll-no-poll">Aucun sondage actif pour le moment.</div></div>
           </div>
-
-          <!-- Pronostics -->
           <div class="pronostic-panel" id="pronostic-panel" style="display:none;">
             <div class="pronostic-header">
               <div class="pronostic-title">🎯 Pronostics</div>
@@ -914,13 +851,9 @@
               <button class="btn-pronostic-submit" onclick="submitPronostic()">🎯 Valider mon pronostic</button>
             </div>
             <div style="padding:0 16px 6px;font-size:11px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:10px;">Pronostics de la communauté</div>
-            <div class="pronostic-result-list" id="prono-results-list">
-              <div class="pronostic-no-match">Sois le premier à pronostiquer !</div>
-            </div>
+            <div class="pronostic-result-list" id="prono-results-list"><div class="pronostic-no-match">Sois le premier à pronostiquer !</div></div>
           </div>
         </div>
-
-        <!-- Droite : chat -->
         <div class="live-chat-panel" id="live-chat-panel">
           <div class="chat-panel-header">
             <div class="chat-panel-title">💬 Chat Live <span class="chat-online-count" id="chat-online-count">0 en ligne</span></div>
@@ -942,21 +875,16 @@
           </div>
         </div>
       </div>
-
-      <!-- Planning public -->
       <div class="planning-public" id="planning-public">
         <h3>📅 Prochains Matchs</h3>
-        <div class="planning-public-grid" id="planning-public-grid">
-          <div class="planning-empty">Aucun match planifié. Restez connectés !</div>
-        </div>
+        <div class="planning-public-grid" id="planning-public-grid"><div class="planning-empty">Aucun match planifié. Restez connectés !</div></div>
       </div>
-
       <footer>© 2026 Football Zone France — Tous droits réservés</footer>
     </div>
   </div>
 </div>
 
-<!-- ══════════════ PAGE IPTV ══════════════ -->
+<!-- PAGE IPTV -->
 <div id="page-iptv" class="page">
   <div class="iptv-header">
     <div class="iptv-tag">⚡ ABONNEMENTS IPTV SPORT</div>
@@ -1036,8 +964,7 @@
   <footer>© 2026 Football Zone France — Tous droits réservés</footer>
 </div>
 
-<!-- ══════════════ MODALS ══════════════ -->
-<!-- Login Admin -->
+<!-- MODALS -->
 <div class="modal-overlay" id="modal-login">
   <div class="modal">
     <h3>🔒 Accès Admin</h3>
@@ -1052,8 +979,6 @@
     </div>
   </div>
 </div>
-
-<!-- Login Fondateur -->
 <div class="modal-overlay" id="modal-founder-login">
   <div class="founder-modal">
     <h3>👑 Accès Fondateur</h3>
@@ -1067,8 +992,6 @@
     </div>
   </div>
 </div>
-
-<!-- Ban -->
 <div class="modal-overlay" id="modal-ban">
   <div class="ban-modal">
     <h3>🚫 Bannir un utilisateur</h3>
@@ -1120,15 +1043,65 @@
 </div>
 
 <script>
-/* ══════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   🔥 FIREBASE — STREAM PUBLIC TEMPS RÉEL
+   Ta config Firebase footballzone-france
+════════════════════════════════════════════════════ */
+const firebaseConfig = {
+  apiKey: "AIzaSyClhfjRn6aNxiEEl7O8zVCeNV-xAiEKiKk",
+  authDomain: "footballzone-france.firebaseapp.com",
+  databaseURL: "https://footballzone-france-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "footballzone-france",
+  storageBucket: "footballzone-france.firebasestorage.app",
+  messagingSenderId: "491185640451",
+  appId: "1:491185640451:web:64cefeb7afbd1f0ecd6a36",
+  measurementId: "G-RJBCSF6DR2"
+};
+
+firebase.initializeApp(firebaseConfig);
+const fireDB = firebase.database();
+
+// ✅ Écoute temps réel : dès qu'un admin lance un stream,
+//    TOUS les visiteurs (peu importe leur navigateur/appareil) le voient instantanément
+fireDB.ref('stream').on('value', (snapshot) => {
+  const data = snapshot.val();
+  if (!data) return;
+  if (data.streams) activeStreams = data.streams;
+  if (data.mode) currentStreamMode = data.mode;
+  applyStreamsState(activeStreams, currentStreamMode);
+  if (adminLoggedIn) renderStreamSlotsAdmin();
+  showSyncIndicator();
+}, (error) => {
+  console.warn('Firebase stream error:', error);
+  document.getElementById('firebase-badge').style.background = 'rgba(220,38,38,0.12)';
+  document.getElementById('firebase-badge').style.borderColor = 'rgba(220,38,38,0.35)';
+  document.getElementById('firebase-badge').style.color = '#f87171';
+  document.getElementById('firebase-badge').textContent = '🔥 Firebase hors ligne';
+});
+
+// Badge connecté quand Firebase est prêt
+fireDB.ref('.info/connected').on('value', (snap) => {
+  const badge = document.getElementById('firebase-badge');
+  if (snap.val() === true) {
+    badge.style.cssText = '';
+    badge.innerHTML = '🔥 Firebase connecté';
+  } else {
+    badge.style.background = 'rgba(220,38,38,0.12)';
+    badge.style.borderColor = 'rgba(220,38,38,0.35)';
+    badge.style.color = '#f87171';
+    badge.innerHTML = '🔥 Reconnexion...';
+  }
+});
+
+/* ════════════════════════════════════════════════════
    CONFIG MOTS DE PASSE
-══════════════════════════════════════════════════════ */
+════════════════════════════════════════════════════ */
 const ADMIN_PASSWORD   = "fzf2026";
 const FOUNDER_PASSWORD = "fzfFounder2026!";
 
-/* ══════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════
    ÉTAT GLOBAL
-══════════════════════════════════════════════════════ */
+════════════════════════════════════════════════════ */
 let adminLoggedIn    = false;
 let founderLoggedIn  = false;
 let adminSidebarOpen = false;
@@ -1164,15 +1137,9 @@ let pronosticConfig  = { teamA:'', teamB:'', match:'' };
 let pronostics       = [];
 let pronosticVoted   = false;
 
-/* ══════════════════════════════════════════════════════
-   STORAGE CLÉ-VALEUR (localStorage = même domaine)
-   Pour synchroniser entre onglets/navigateurs sur le
-   MÊME domaine, on utilise localStorage.
-   Pour partager entre navigateurs différents (Firefox/Opera),
-   il faudrait un vrai backend. En attendant, on persiste
-   tout dans localStorage et on utilise BroadcastChannel
-   pour les onglets du même navigateur.
-══════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════
+   STORAGE LOCAL (pour chat, planning, bans, etc.)
+════════════════════════════════════════════════════ */
 const LS = {
   streams:   'fzf3_streams',
   streamMode:'fzf3_stream_mode',
@@ -1200,8 +1167,6 @@ function broadcast(type,data={}) { if(bc) bc.postMessage({type,data,ts:Date.now(
 if(bc) {
   bc.onmessage = ({data:ev}) => {
     const {type,data} = ev;
-    if(type==='streams_update')   applyStreamsState(data.streams, data.mode);
-    if(type==='stream_stop')      applyStreamStop(data.slot);
     if(type==='chat_toggle')      { document.getElementById('toggle-chat').checked=data.enabled; applyChatToggle(data.enabled,true); }
     if(type==='chat_message')     appendLiveChatMsg(data.type,data.username,data.text,data.time,false,true);
     if(type==='chat_clear')       applyChatClear();
@@ -1223,9 +1188,7 @@ function showSyncIndicator() {
   setTimeout(()=>el.classList.remove('show'),2000);
 }
 
-/* ══════════════════════════════════════════════════════
-   THEME
-══════════════════════════════════════════════════════ */
+/* ════ THEME ════ */
 function toggleTheme() {
   const html=document.documentElement;
   const isDark=html.getAttribute('data-theme')==='dark';
@@ -1236,9 +1199,7 @@ function toggleTheme() {
 const savedTheme=localStorage.getItem('fzf-theme');
 if(savedTheme){document.documentElement.setAttribute('data-theme',savedTheme);document.getElementById('theme-btn').textContent=savedTheme==='light'?'☀️':'🌙';}
 
-/* ══════════════════════════════════════════════════════
-   SESSION VISITEUR (temps réel)
-══════════════════════════════════════════════════════ */
+/* ════ SESSION VISITEUR ════ */
 let sessionId = sessionStorage.getItem('fzf_sid3')||('u_'+Date.now()+'_'+Math.random().toString(36).substr(2,6));
 sessionStorage.setItem('fzf_sid3',sessionId);
 function getDevice(){return /Mobi|Android/i.test(navigator.userAgent)?'📱':/iPad|Tablet/i.test(navigator.userAgent)?'📲':'💻';}
@@ -1281,28 +1242,17 @@ function updateRealVisitorsList(){
 setInterval(updateRealVisitorsList,5000);
 updateRealVisitorsList();
 
-/* ══════════════════════════════════════════════════════
-   SESSION ADMIN PERSISTANTE (cross-navigation même navigateur)
-   Utilise localStorage → survit aux actualisations.
-   Entre navigateurs différents (Firefox/Opera) : impossible
-   sans backend, mais on explique et on donne la solution
-   avec les données lsGet/lsSet déjà en place.
-══════════════════════════════════════════════════════ */
-function saveAdminSession(role, pseudo) {
-  lsSet(LS.adminSess,{role,pseudo,ts:Date.now(),sessionId});
-}
+/* ════ SESSION ADMIN ════ */
+function saveAdminSession(role, pseudo) { lsSet(LS.adminSess,{role,pseudo,ts:Date.now(),sessionId}); }
 function loadAdminSession() {
   const s=lsGet(LS.adminSess,null);
   if(!s)return null;
-  // Session valide 24h
   if(Date.now()-s.ts>24*3600000){localStorage.removeItem(LS.adminSess);return null;}
   return s;
 }
 function clearAdminSession(){localStorage.removeItem(LS.adminSess);}
 
-/* ══════════════════════════════════════════════════════
-   STAFF PERSISTANT
-══════════════════════════════════════════════════════ */
+/* ════ STAFF ════ */
 function getStaffList(){return lsGet(LS.staff,[]);}
 function saveStaffList(list){
   const filtered=list.filter(s=>!s.loginTime||(Date.now()-new Date(s.loginTime).getTime()<24*3600000));
@@ -1325,62 +1275,35 @@ function renderFounderStaff(){
   }).join('');
 }
 
-/* ══════════════════════════════════════════════════════
-   CHARGEMENT ÉTAT AU DÉMARRAGE
-══════════════════════════════════════════════════════ */
+/* ════ CHARGEMENT ÉTAT AU DÉMARRAGE ════ */
 function loadSharedState(){
-  // Streams
-  const ss=lsGet(LS.streams);
-  if(ss){activeStreams=ss;const mode=lsGet(LS.streamMode,'single');applyStreamsState(ss,mode);}
-
-  // Chat toggle
   const cs=lsGet(LS.chat);
   if(cs&&cs.enabled){document.getElementById('toggle-chat').checked=true;applyChatToggle(true,true);}
-
-  // Messages chat
   const msgs=lsGet(LS.chatMsgs,[]);
   if(msgs.length){document.getElementById('live-chat-msgs').innerHTML='';msgs.slice(-50).forEach(m=>appendLiveChatMsg(m.type,m.username,m.text,m.time,false,true));}
-
-  // Planning
   planningMatches=lsGet(LS.planning,[]);
   if(planningMatches.length)renderPlanning();
-
-  // Bans
   bannedUsers=lsGet(LS.bans,{});
   if(Object.keys(bannedUsers).length)renderBanList();
-
-  // Revoked
   revokedAdmins=lsGet(LS.revoked,{});
   if(Object.keys(revokedAdmins).length)renderRevokedAdmins();
-
-  // Countdown
   const cd=lsGet(LS.countdown);
   if(cd&&cd.active&&cd.target>Date.now())applyCountdownState(cd);
-
-  // Sondage
   const poll=lsGet(LS.poll);
   if(poll&&poll.active)applyPollState(poll);
-
-  // Pronostics
   const pr=lsGet(LS.prono);
   if(pr){pronostics=pr.pronostics||[];pronosticConfig=pr.config||{teamA:'',teamB:'',match:''};pronosticActive=pr.active||false;renderPronosticPublic();if(pronosticActive)document.getElementById('pronostic-panel').style.display='block';}
-
-  // Session admin persistante
   const adminSess=loadAdminSession();
   if(adminSess){
     adminPseudo=adminSess.pseudo||'Admin';
     if(adminSess.role==='founder'){adminLoggedIn=true;founderLoggedIn=true;openAdminSidebar(true);addStaff(adminPseudo,'👑 Fondateur');}
     else{adminLoggedIn=true;openAdminSidebar(false);addStaff(adminPseudo,'Administrateur');}
   }
-
-  // Stream slots admin UI
   renderStreamSlotsAdmin();
   renderFounderStaff();
 }
 
-/* ══════════════════════════════════════════════════════
-   NAVIGATION
-══════════════════════════════════════════════════════ */
+/* ════ NAVIGATION ════ */
 function showPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
@@ -1396,16 +1319,13 @@ function switchAdminTab(tab){
   });
 }
 
-/* ══════════════════════════════════════════════════════
-   ADMIN LOGIN (avec pseudo obligatoire)
-══════════════════════════════════════════════════════ */
+/* ════ ADMIN LOGIN ════ */
 function toggleAdminSidebar(){
   if(!adminLoggedIn&&!founderLoggedIn){
     document.getElementById('admin-pseudo-input').value='';
     document.getElementById('admin-password-input').value='';
     document.getElementById('admin-error').style.display='none';
     document.getElementById('admin-info').style.display='none';
-    // Pré-remplir le pseudo si déjà connu
     const savedSess=loadAdminSession();
     if(savedSess&&savedSess.pseudo){document.getElementById('admin-pseudo-input').value=savedSess.pseudo;}
     document.getElementById('modal-login').classList.add('open');
@@ -1422,13 +1342,10 @@ function checkAdminLogin(){
   const pw=document.getElementById('admin-password-input').value;
   const errEl=document.getElementById('admin-error');
   errEl.style.display='none';
-
   if(!pseudo){errEl.textContent='⚠️ Entre ton pseudo d\'abord.';errEl.style.display='block';document.getElementById('admin-pseudo-input').focus();return;}
   if(!pw){errEl.textContent='⚠️ Entre le mot de passe.';errEl.style.display='block';document.getElementById('admin-password-input').focus();return;}
-
   const revoked=lsGet(LS.revoked,{});
   if(revoked[pseudo]){errEl.textContent='🚫 Ce compte a été révoqué par le Fondateur.';errEl.style.display='block';return;}
-
   if(pw===ADMIN_PASSWORD){
     adminPseudo=pseudo;adminLoggedIn=true;
     closeModal('modal-login');openAdminSidebar(false);
@@ -1538,9 +1455,7 @@ function restoreAdmin(name){
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
 
-/* ══════════════════════════════════════════════════════
-   FONDATEUR — PLANNING EXCLUSIF
-══════════════════════════════════════════════════════ */
+/* ════ FONDATEUR PLANNING ════ */
 function addFounderPlanning(){
   if(!founderLoggedIn)return;
   const match=document.getElementById('founder-plan-match').value.trim();
@@ -1554,18 +1469,20 @@ function addFounderPlanning(){
   showBanToastMsg('✅ Match ajouté au planning');
 }
 
-/* ══════════════════════════════════════════════════════
-   MULTI-STREAM
-══════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════
+   🔥 MULTI-STREAM AVEC FIREBASE PUBLIC
+   launchSlot et stopSlot écrivent dans Firebase
+   → tous les visiteurs reçoivent le stream en temps réel
+════════════════════════════════════════════════════ */
 function setStreamMode(mode){
   currentStreamMode=mode;
   lsSet(LS.streamMode,mode);
-  // Mettre à jour les boutons admin
+  // Sauver le mode dans Firebase pour tous
+  fireDB.ref('stream/mode').set(mode);
   ['single','dual','quad'].forEach(m=>{
     const btn=document.getElementById('mode-btn-'+m);if(btn){btn.className='a-btn '+(m===mode?'a-btn-primary':'a-btn-ghost');btn.style.flex='1';}
     const pubBtn=document.getElementById('pub-mode-'+m);if(pubBtn)pubBtn.classList.toggle('active',m===mode);
   });
-  // Configurer la grille publique
   const grid=document.getElementById('stream-grid');
   grid.className='stream-grid '+mode;
   const slotCount={single:1,dual:2,quad:4}[mode]||1;
@@ -1573,7 +1490,6 @@ function setStreamMode(mode){
     const slot=document.getElementById('slot-'+i);
     if(slot)slot.style.display=i<slotCount?'block':'none';
   }
-  // Afficher la barre de mode si au moins un stream actif
   const anyActive=activeStreams.some(s=>s.active);
   document.getElementById('stream-mode-bar').style.display=anyActive&&slotCount>1?'flex':'none';
   broadcast('streams_update',{streams:activeStreams,mode});
@@ -1586,15 +1502,15 @@ function renderStreamSlotsAdmin(){
   let html='<div class="a-section-title"><span class="dot"></span>Sources des streams</div>';
   for(let i=0;i<slotCount;i++){
     const s=activeStreams[i]||{url:'',label:'',active:false};
-    html+=`<div style="background:var(--admin-input-bg);border:1px solid var(--admin-border);border-radius:10px;padding:12px;margin-bottom:10px;">
-      <div style="font-size:11px;font-weight:800;color:${s.active?'#4ade80':'var(--muted)'};letter-spacing:1px;margin-bottom:8px;">📺 ÉCRAN ${i+1} ${s.active?'● EN DIRECT':''}</div>
+    html+=`<div style="background:var(--admin-input-bg);border:1px solid ${s.active?'rgba(74,222,128,0.4)':'var(--admin-border)'};border-radius:10px;padding:12px;margin-bottom:10px;">
+      <div style="font-size:11px;font-weight:800;color:${s.active?'#4ade80':'var(--muted)'};letter-spacing:1px;margin-bottom:8px;">📺 ÉCRAN ${i+1} ${s.active?'🔴 EN DIRECT':''}</div>
       <label class="a-label">URL du flux</label>
       <input type="text" class="a-input" id="slot-url-${i}" value="${s.url||''}" placeholder="https://..." style="margin-bottom:6px;" />
       <label class="a-label">Nom du match</label>
       <input type="text" class="a-input" id="slot-label-${i}" value="${s.label||''}" placeholder="Ex: PSG vs Real" style="margin-bottom:8px;" />
       <div style="display:flex;gap:7px;">
         <button class="a-btn a-btn-primary" style="flex:1;font-size:11px;" onclick="launchSlot(${i})">▶ Lancer</button>
-        <button class="a-btn a-btn-danger" style="font-size:11px;" onclick="stopSlot(${i})">⏹</button>
+        <button class="a-btn a-btn-danger" style="font-size:11px;" onclick="stopSlot(${i})">⏹ Stop</button>
       </div>
     </div>`;
   }
@@ -1607,7 +1523,14 @@ function launchSlot(i){
   if(!url){alert('Entre une URL de stream pour l\'écran '+(i+1)+'.');return;}
   activeStreams[i]={url,label,active:true,startTime:Date.now()};
   if(i===0&&!streamDurationInterval){streamStartTime=Date.now();streamDurationInterval=setInterval(updateDuration,1000);}
-  lsSet(LS.streams,activeStreams);broadcast('streams_update',{streams:activeStreams,mode:currentStreamMode});
+
+  // 🔥 FIREBASE : envoie le stream à TOUS les visiteurs en temps réel
+  fireDB.ref('stream').set({ streams: activeStreams, mode: currentStreamMode })
+    .then(() => showBanToastMsg('🔴 Stream lancé pour tous !'))
+    .catch(err => { console.error(err); showBanToastMsg('⚠️ Erreur Firebase : ' + err.message); });
+
+  lsSet(LS.streams,activeStreams);
+  broadcast('streams_update',{streams:activeStreams,mode:currentStreamMode});
   applyStreamsState(activeStreams,currentStreamMode);
   if(i===0&&document.getElementById('toggle-auto-notif').checked){
     const notifTitle=label?`🔴 ${label} — En direct !`:'🔴 Diffusion en cours !';
@@ -1620,7 +1543,14 @@ function launchSlot(i){
 function stopSlot(i){
   if(hlsInstances[i]){hlsInstances[i].destroy();hlsInstances[i]=null;}
   activeStreams[i]={url:'',label:'',active:false};
-  lsSet(LS.streams,activeStreams);broadcast('streams_update',{streams:activeStreams,mode:currentStreamMode});
+
+  // 🔥 FIREBASE : arrête le stream pour tout le monde
+  fireDB.ref('stream').set({ streams: activeStreams, mode: currentStreamMode })
+    .then(() => showBanToastMsg('⏹ Stream arrêté pour tous'))
+    .catch(err => console.error(err));
+
+  lsSet(LS.streams,activeStreams);
+  broadcast('streams_update',{streams:activeStreams,mode:currentStreamMode});
   applyStreamsState(activeStreams,currentStreamMode);
   renderStreamSlotsAdmin();
 }
@@ -1628,7 +1558,6 @@ function stopSlot(i){
 function applyStreamsState(streams, mode){
   currentStreamMode=mode||currentStreamMode;
   activeStreams=streams||activeStreams;
-  // Mettre à jour la grille
   const slotCount={single:1,dual:2,quad:4}[currentStreamMode]||1;
   const grid=document.getElementById('stream-grid');
   if(grid){grid.className='stream-grid '+currentStreamMode;}
@@ -1640,15 +1569,16 @@ function applyStreamsState(streams, mode){
     const s=activeStreams[i]||{};
     if(s.active&&s.url){
       anyActive=true;
-      // Supprimer l'ancien player
       const old=slot.querySelector('.active-player');if(old)old.remove();
       const ph=slot.querySelector('.no-stream-placeholder');if(ph)ph.remove();
-      // Label + live badge
       let lb=slot.querySelector('.stream-slot-label');if(!lb){lb=document.createElement('div');lb.className='stream-slot-label';slot.appendChild(lb);}
       lb.textContent='Écran '+(i+1)+(s.label?' · '+s.label:'');
       let liveBadge=slot.querySelector('.stream-slot-live');
       if(!liveBadge){liveBadge=document.createElement('div');liveBadge.className='stream-slot-live';liveBadge.textContent='🔴 LIVE';slot.appendChild(liveBadge);}
-      // Player
+      // Éviter de recharger si déjà le même src
+      const existingPlayer=slot.querySelector('.active-player');
+      if(existingPlayer && existingPlayer.src===s.url) continue;
+      if(existingPlayer) existingPlayer.remove();
       if(s.url.includes('.m3u8')){
         const video=document.createElement('video');
         video.className='active-player';video.controls=true;video.autoplay=true;
@@ -1662,7 +1592,6 @@ function applyStreamsState(streams, mode){
         slot.appendChild(iframe);
       }
     } else {
-      // Placeholder
       const old=slot.querySelector('.active-player');if(old)old.remove();
       const lb=slot.querySelector('.stream-slot-label');if(lb)lb.remove();
       const liv=slot.querySelector('.stream-slot-live');if(liv)liv.remove();
@@ -1673,7 +1602,6 @@ function applyStreamsState(streams, mode){
       }
     }
   }
-  // Status badge + info bar
   const badge=document.getElementById('live-status-badge');
   const infoBar=document.getElementById('stream-info-bar');
   if(anyActive){
@@ -1686,22 +1614,13 @@ function applyStreamsState(streams, mode){
     infoBar.style.display='none';
     document.getElementById('stats-section').style.display='none';
   }
-  // Barre mode
   document.getElementById('stream-mode-bar').style.display=anyActive&&slotCount>1?'flex':'none';
-  // Boutons mode public
   ['single','dual','quad'].forEach(m=>{
     const pb=document.getElementById('pub-mode-'+m);if(pb)pb.classList.toggle('active',m===currentStreamMode);
   });
 }
 
-function applyStreamStop(slot){
-  if(slot!==undefined)stopSlot(slot);
-  else{for(let i=0;i<4;i++)stopSlot(i);}
-}
-
-/* ══════════════════════════════════════════════════════
-   COUNTDOWN
-══════════════════════════════════════════════════════ */
+/* ════ COUNTDOWN ════ */
 function toggleCountdownAdmin(enabled){
   document.getElementById('countdown-config').style.display=enabled?'block':'none';
   if(!enabled){document.getElementById('countdown-banner').classList.remove('visible');if(countdownInterval){clearInterval(countdownInterval);countdownInterval=null;}lsSet(LS.countdown,{active:false});broadcast('countdown_update',{active:false});}
@@ -1736,9 +1655,7 @@ function updateCountdown(){
   document.getElementById('cd-secs').textContent=String(s).padStart(2,'0');
 }
 
-/* ══════════════════════════════════════════════════════
-   PLANNING
-══════════════════════════════════════════════════════ */
+/* ════ PLANNING ════ */
 function addPlanningMatch(){
   const match=document.getElementById('plan-match').value.trim();
   const date=document.getElementById('plan-date').value;
@@ -1773,9 +1690,7 @@ function renderPlanning(){
   }).join('');
 }
 
-/* ══════════════════════════════════════════════════════
-   LIVE CHAT
-══════════════════════════════════════════════════════ */
+/* ════ LIVE CHAT ════ */
 function toggleLiveChat(enabled){lsSet(LS.chat,{enabled});broadcast('chat_toggle',{enabled});applyChatToggle(enabled);}
 function applyChatToggle(enabled,silent=false){
   liveChatEnabled=enabled;
@@ -1831,9 +1746,7 @@ function sendAnnounce(){
   document.getElementById('announce-input').value='';
 }
 
-/* ══════════════════════════════════════════════════════
-   BAN SYSTEM
-══════════════════════════════════════════════════════ */
+/* ════ BAN ════ */
 function openBanModal(username,msgEl){if(!adminLoggedIn)return;pendingBanUsername=username;pendingBanMsgEl=msgEl;selectedBanReason='';document.getElementById('ban-target-display').textContent='🚫 '+username;document.querySelectorAll('.ban-reason-chip').forEach(c=>c.classList.remove('selected'));document.getElementById('modal-ban').classList.add('open');}
 function selectBanReason(el,reason){selectedBanReason=reason;document.querySelectorAll('.ban-reason-chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
 function confirmBan(){
@@ -1855,9 +1768,7 @@ function unban(username){delete bannedUsers[username];lsSet(LS.bans,bannedUsers)
 function clearAllBans(){if(!confirm('Supprimer tous les bans ?'))return;bannedUsers={};lsSet(LS.bans,{});broadcast('ban_update',{});renderBanList();}
 function showBanToastMsg(msg){const t=document.getElementById('ban-toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 
-/* ══════════════════════════════════════════════════════
-   ═══ SONDAGES LIVE ═══
-══════════════════════════════════════════════════════ */
+/* ════ SONDAGES ════ */
 function launchPoll(){
   if(!adminLoggedIn)return;
   const question=document.getElementById('poll-question-input').value.trim();
@@ -1869,13 +1780,7 @@ function launchPoll(){
   ].filter(o=>o!=='');
   const duration=parseInt(document.getElementById('poll-duration').value)||5;
   if(!question||opts.length<2){alert('Question et au moins 2 options obligatoires.');return;}
-  const poll={
-    question,
-    options:opts.map(o=>({text:o,votes:0})),
-    active:true,
-    endTime:Date.now()+duration*60000,
-    totalVotes:0,
-  };
+  const poll={question,options:opts.map(o=>({text:o,votes:0})),active:true,endTime:Date.now()+duration*60000,totalVotes:0};
   currentPoll=poll;pollVoted=false;
   lsSet(LS.poll,poll);broadcast('poll_update',poll);
   applyPollState(poll);updateAdminPollStatus();
@@ -1883,25 +1788,19 @@ function launchPoll(){
   if(pollTimerInterval)clearInterval(pollTimerInterval);
   pollTimerInterval=setInterval(updatePollTimer,1000);
 }
-
 function closePoll(){
-  if(!adminLoggedIn)return;
-  if(!currentPoll)return;
+  if(!adminLoggedIn)return;if(!currentPoll)return;
   currentPoll.active=false;
   lsSet(LS.poll,currentPoll);broadcast('poll_update',currentPoll);
   applyPollState(currentPoll);updateAdminPollStatus();
   if(pollTimerInterval){clearInterval(pollTimerInterval);pollTimerInterval=null;}
   showBanToastMsg('⏹ Sondage terminé');
 }
-
 function applyPollState(poll){
   currentPoll=poll;
   const statusBadge=document.getElementById('poll-status-badge');
   const content=document.getElementById('poll-content');
-  if(!poll||!poll.options||!poll.options.length){
-    statusBadge.textContent='Aucun sondage';statusBadge.style.background='';
-    content.innerHTML='<div class="poll-no-poll">Aucun sondage actif pour le moment.</div>';return;
-  }
+  if(!poll||!poll.options||!poll.options.length){statusBadge.textContent='Aucun sondage';statusBadge.style.background='';content.innerHTML='<div class="poll-no-poll">Aucun sondage actif pour le moment.</div>';return;}
   statusBadge.textContent=poll.active?'🟢 EN COURS':'⏹ TERMINÉ';
   statusBadge.style.background=poll.active?'rgba(74,222,128,0.15)':'rgba(148,163,184,0.15)';
   const maxVotes=Math.max(...poll.options.map(o=>o.votes),1);
@@ -1913,21 +1812,15 @@ function applyPollState(poll){
     const barW=poll.totalVotes>0?Math.round(opt.votes/maxVotes*100):0;
     const isWinner=isEnded&&opt.votes===winnerVotes&&opt.votes>0;
     const isMyVote=pollVoted&&sessionStorage.getItem('fzf_poll_vote')==String(i);
-    html+=`<button class="poll-option-btn ${isMyVote?'voted':''} ${isWinner?'winner':''}" ${pollVoted||isEnded?'disabled':''} onclick="votePoll(${i})">
-      <div class="poll-bar" style="width:${barW}%;"></div>
-      <div class="poll-option-content"><span>${opt.text}</span><span class="poll-pct">${pollVoted||isEnded?pct+'%':''}</span></div>
-    </button>`;
+    html+=`<button class="poll-option-btn ${isMyVote?'voted':''} ${isWinner?'winner':''}" ${pollVoted||isEnded?'disabled':''} onclick="votePoll(${i})"><div class="poll-bar" style="width:${barW}%;"></div><div class="poll-option-content"><span>${opt.text}</span><span class="poll-pct">${pollVoted||isEnded?pct+'%':''}</span></div></button>`;
   });
   html+='</div>';
   html+=`<div class="poll-footer"><span class="poll-total">${poll.totalVotes} vote(s)</span>`;
-  if(poll.active&&poll.endTime>Date.now()){
-    const remain=Math.max(0,Math.floor((poll.endTime-Date.now())/1000));
-    html+=`<span class="poll-timer" id="poll-timer">${formatPollTime(remain)}</span>`;
-  } else if(!poll.active){html+='<span class="poll-closed-badge">Terminé</span>';}
+  if(poll.active&&poll.endTime>Date.now()){const remain=Math.max(0,Math.floor((poll.endTime-Date.now())/1000));html+=`<span class="poll-timer" id="poll-timer">${formatPollTime(remain)}</span>`;}
+  else if(!poll.active){html+='<span class="poll-closed-badge">Terminé</span>';}
   html+='</div>';
   content.innerHTML=html;
 }
-
 function votePoll(optionIndex){
   if(pollVoted||!currentPoll||!currentPoll.active)return;
   pollVoted=true;sessionStorage.setItem('fzf_poll_vote',String(optionIndex));
@@ -1935,16 +1828,13 @@ function votePoll(optionIndex){
   lsSet(LS.poll,currentPoll);broadcast('poll_update',currentPoll);
   applyPollState(currentPoll);updateAdminPollStatus();
 }
-
 function updatePollTimer(){
   if(!currentPoll||!currentPoll.active)return;
   const remain=Math.max(0,Math.floor((currentPoll.endTime-Date.now())/1000));
   const el=document.getElementById('poll-timer');if(el)el.textContent=formatPollTime(remain);
   if(remain<=0){closePoll();}
 }
-
 function formatPollTime(s){const m=Math.floor(s/60);return m>0?m+'min '+String(s%60).padStart(2,'0')+'s':s+'s';}
-
 function updateAdminPollStatus(){
   const el=document.getElementById('admin-poll-status');if(!el)return;
   if(!currentPoll||!currentPoll.options){el.textContent='Aucun sondage actif.';return;}
@@ -1952,14 +1842,8 @@ function updateAdminPollStatus(){
   el.innerHTML=`<div style="font-weight:700;color:${currentPoll.active?'#4ade80':'var(--muted)'};">${currentPoll.active?'🟢 En cours':'⏹ Terminé'} — ${currentPoll.totalVotes} vote(s)</div><div style="font-size:11px;color:var(--muted);margin-top:4px;">${currentPoll.question}</div>${currentPoll.active&&remain>0?`<div style="font-size:11px;color:#818cf8;margin-top:4px;">⏱ ${formatPollTime(remain)}</div>`:''}`;
 }
 
-/* ══════════════════════════════════════════════════════
-   ═══ PRONOSTICS ═══
-══════════════════════════════════════════════════════ */
-function togglePronostic(enabled){
-  pronosticActive=enabled;
-  document.getElementById('pronostic-panel').style.display=enabled?'block':'none';
-  savePronos();broadcast('prono_update',{pronostics,config:pronosticConfig,active:pronosticActive});
-}
+/* ════ PRONOSTICS ════ */
+function togglePronostic(enabled){pronosticActive=enabled;document.getElementById('pronostic-panel').style.display=enabled?'block':'none';savePronos();broadcast('prono_update',{pronostics,config:pronosticConfig,active:pronosticActive});}
 function configPronostic(){
   const teamA=document.getElementById('prono-team-a').value.trim();
   const teamB=document.getElementById('prono-team-b').value.trim();
@@ -1996,7 +1880,7 @@ function revealPronosticResult(){
   const exact=pronostics.filter(p=>p.exact);
   savePronos();broadcast('prono_update',{pronostics,config:pronosticConfig,active:pronosticActive});
   renderPronosticPublic();updateAdminPronoList();
-  const msg=exact.length?`🏆 ${exact.map(p=>p.pseudo).join(', ')} ont trouvé le bon score (${rA}–${rB}) !`:`❌ Personne n\'a trouvé le score exact (${rA}–${rB}).`;
+  const msg=exact.length?`🏆 ${exact.map(p=>p.pseudo).join(', ')} ont trouvé le bon score (${rA}–${rB}) !`:`❌ Personne n'a trouvé le score exact (${rA}–${rB}).`;
   appendLiveChatMsg('system','',msg,'');broadcast('announce',{text:msg});
   showBanToastMsg(exact.length?`🏆 ${exact.length} gagnant(s) !`:'❌ Aucun gagnant');
 }
@@ -2022,9 +1906,7 @@ function updateAdminPronoList(){
   el.innerHTML=pronostics.map(p=>`<div class="pronostic-result-item${p.exact?' exact':''}"><span class="pronostic-result-user">${p.pseudo}</span><span class="pronostic-result-score">${p.scoreA} – ${p.scoreB}${p.exact?' 🏆':''}</span></div>`).join('');
 }
 
-/* ══════════════════════════════════════════════════════
-   NOTIFICATIONS PUSH
-══════════════════════════════════════════════════════ */
+/* ════ NOTIFICATIONS ════ */
 function requestNotifPermission(){
   if(!('Notification'in window)){alert('Ton navigateur ne supporte pas les notifications push.');return;}
   Notification.requestPermission().then(perm=>{
@@ -2068,9 +1950,7 @@ function showPushToast(title,body){
 }
 function dismissPushToast(){if(pushToastTimer){clearTimeout(pushToastTimer);pushToastTimer=null;}document.getElementById('push-preview-toast').classList.remove('show');}
 
-/* ══════════════════════════════════════════════════════
-   STATS STREAM
-══════════════════════════════════════════════════════ */
+/* ════ STATS ════ */
 function updateDuration(){
   if(!streamStartTime)return;
   const e=Math.floor((Date.now()-streamStartTime)/1000);
@@ -2079,16 +1959,14 @@ function updateDuration(){
 }
 function resetStats(){streamStartTime=Date.now();lsSet(LS.peak,getRealVisitorCount());lsSet(LS.joins,getRealVisitorCount());updateRealViewerCount();}
 
-/* ══════════════════════════════════════════════════════
-   CHATBOT IA
-══════════════════════════════════════════════════════ */
+/* ════ CHATBOT IA ════ */
 const PRESET_RESPONSES=[
-  {keywords:['paypal','paiement','payer','comment payer'],response:`💳 **Paiement**\n\nNous acceptons uniquement **PayPal**.\n\nAprès ta commande sur Discord, un admin t'envoie l'adresse PayPal en MP. Tu peux payer sans compte PayPal avec ta carte.\n\n→ discord.gg/ftzf`},
+  {keywords:['paypal','paiement','payer','comment payer'],response:`💳 **Paiement**\n\nNous acceptons uniquement **PayPal**.\n\nAprès ta commande sur Discord, un admin t'envoie l'adresse PayPal en MP.\n\n→ discord.gg/ftzf`},
   {keywords:['prix','coût','combien','tarif'],response:`💶 **Tarifs FZF IPTV**\n\n⚡ **Starter — 10€** (3 mois)\n👑 **À Vie — 35€** (paiement unique)\n\n→ Commander sur discord.gg/ftzf`},
   {keywords:['commander','commande','acheter','abonner'],response:`🛒 **Commander :**\n1. Rejoins discord.gg/ftzf\n2. Contacte un admin\n3. Choisis ton plan\n4. Paiement **PayPal**\n5. Accès en 24h ✅`},
-  {keywords:['appareil','compatible','télé','tv','smartphone','firestick'],response:`📱 **Appareils compatibles**\n✅ Smart TV / Android TV\n✅ Firestick / Apple TV\n✅ iPhone / Android\n✅ PC / Mac / Tablette\n\nApps : Tivimate, IPTV Smarters Pro`},
+  {keywords:['appareil','compatible','télé','tv','smartphone','firestick'],response:`📱 **Appareils compatibles**\n✅ Smart TV / Android TV\n✅ Firestick / Apple TV\n✅ iPhone / Android\n✅ PC / Mac / Tablette`},
   {keywords:['starter','à vie','différence','comparer'],response:`⚖️ **Starter vs À Vie**\n\n⚡ Starter (10€/3 mois) — pour tester\n👑 À Vie (35€ unique) — illimité + Coupe du Monde incluse 🔥`},
-  {keywords:['essai','gratuit','test','free'],response:`🎁 Pas d'essai gratuit, mais le Starter à 10€ pour 3 mois est idéal pour tester sans risque !\n\n→ discord.gg/ftzf`},
+  {keywords:['essai','gratuit','test'],response:`🎁 Pas d'essai gratuit, mais le Starter à 10€ pour 3 mois est idéal pour tester !\n\n→ discord.gg/ftzf`},
   {keywords:['discord','rejoindre','serveur'],response:`💬 **Rejoindre FZF :**\n→ discord.gg/ftzf\n\nMatchs en direct, support, commandes IPTV ✅`},
   {keywords:['bonjour','salut','hello','coucou'],response:`👋 Salut ! Bienvenue sur **Football Zone France** !\n\nJe peux t'aider avec les tarifs, les paiements, ou la commande. ⚽`},
 ];
@@ -2098,7 +1976,7 @@ function checkPresetResponse(message){
   return null;
 }
 const FZF_SYSTEM=`Tu es le bot officiel de Football Zone France (FZF), service IPTV et streaming foot français. Réponds TOUJOURS en français. Sois sympathique, concis, enthousiaste.
-INFOS : Starter 10€/3 mois, À Vie 35€. Commande sur Discord (discord.gg/ftzf). Paiement PayPal UNIQUEMENT. Activation sous 24h. Compatible TV, Firestick, smartphone, PC. Apps : Tivimate, IPTV Smarters. Qualité HD/Full HD. Support Discord 7j/7. Pas d'essai gratuit.
+INFOS : Starter 10€/3 mois, À Vie 35€. Commande sur Discord (discord.gg/ftzf). Paiement PayPal UNIQUEMENT. Activation sous 24h. Compatible TV, Firestick, smartphone, PC. Support Discord 7j/7.
 Sois bref (max 4 lignes). Emojis pertinents. Pour commander → discord.gg/ftzf.`;
 function toggleChatbot(enabled){chatbotEnabled=enabled;document.getElementById('chat-btn').style.display=enabled?'flex':'none';if(!enabled&&chatOpen)toggleChat();}
 function toggleChat(){
@@ -2134,9 +2012,7 @@ async function processUserMessage(message){
 function sendChat(){const input=document.getElementById('chat-input');const msg=input.value.trim();if(!msg)return;input.value='';processUserMessage(msg);}
 function quickAsk(question){processUserMessage(question);}
 
-/* ══════════════════════════════════════════════════════
-   REVIEWS
-══════════════════════════════════════════════════════ */
+/* ════ REVIEWS ════ */
 let selectedRating=0;
 function setRating(n){selectedRating=n;for(let i=1;i<=5;i++)document.getElementById('star-'+i).classList.toggle('active',i<=n);}
 function submitReview(){
@@ -2154,12 +2030,12 @@ function submitReview(){
   setTimeout(()=>{document.getElementById('review-success').style.display='none';wrapper.querySelectorAll('h4,p,.star-rating-label,.star-input,.form-row,.form-group,.btn-submit-review').forEach(el=>el.style.display='');document.getElementById('review-name').value='';document.getElementById('review-text').value='';selectedRating=0;for(let i=1;i<=5;i++)document.getElementById('star-'+i).classList.remove('active');},3500);
 }
 
-/* ══════════════════════════════════════════════════════
-   INIT
-══════════════════════════════════════════════════════ */
+/* ════ INIT ════ */
 loadSharedState();
 setInterval(updatePollTimer, 1000);
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
 </body>
 </html>
+HTMLEOF
+echo "✅ HTML généré : $(wc -c < /mnt/user-data/outputs/index.html) octets"
