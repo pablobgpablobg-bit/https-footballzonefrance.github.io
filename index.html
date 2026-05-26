@@ -17,6 +17,7 @@
       --card-bg: #1e293b; --nav-bg: rgba(2,6,23,0.92); --theme-toggle-bg: rgba(255,255,255,0.08);
       --admin-bg: #070f1e; --admin-section-bg: #0d1a2d; --admin-border: rgba(37,99,235,0.15);
       --admin-input-bg: #111d31; --admin-hover: rgba(37,99,235,0.08);
+      --founder-bg: #0d0a1a; --founder-border: rgba(168,85,247,0.25); --founder-accent: #a855f7;
     }
     [data-theme="light"] {
       --dark: #f1f5f9; --dark2: #ffffff; --dark3: #f8fafc;
@@ -24,6 +25,7 @@
       --card-bg: #ffffff; --nav-bg: rgba(241,245,249,0.95); --theme-toggle-bg: rgba(0,0,0,0.07);
       --admin-bg: #1e293b; --admin-section-bg: #273549; --admin-border: rgba(37,99,235,0.25);
       --admin-input-bg: #1a2d44; --admin-hover: rgba(37,99,235,0.12);
+      --founder-bg: #1a1030; --founder-border: rgba(168,85,247,0.4); --founder-accent: #c084fc;
     }
     body { font-family: 'Barlow', sans-serif; background: var(--dark); color: var(--text); overflow-x: hidden; transition: background 0.3s, color 0.3s; }
 
@@ -73,9 +75,7 @@
     footer { background:#000814; padding:30px; text-align:center; color:var(--muted); font-size:14px; }
     [data-theme="light"] footer { background:#0f172a; }
 
-    /* ═══════════════════════════════
-       ADMIN SIDEBAR — NOUVEAU DESIGN
-       ═══════════════════════════════ */
+    /* ═══ ADMIN SIDEBAR ═══ */
     #page-live { padding-top: 64px; min-height: 100vh; background: var(--dark); }
     .live-main-layout { display: flex; min-height: calc(100vh - 64px); }
 
@@ -85,39 +85,35 @@
       transition: width 0.35s cubic-bezier(0.4,0,0.2,1);
       flex-shrink: 0; display: flex; flex-direction: column;
     }
-    .admin-sidebar.open { width: 360px; overflow-y: auto; overflow-x: hidden; }
+    .admin-sidebar.open { width: 380px; overflow-y: auto; overflow-x: hidden; }
     .admin-sidebar::-webkit-scrollbar { width: 3px; }
     .admin-sidebar::-webkit-scrollbar-thumb { background: rgba(37,99,235,0.3); border-radius: 3px; }
+
+    /* Sidebar en mode Fondateur */
+    .admin-sidebar.founder-mode { border-right-color: rgba(168,85,247,0.35); }
+    .admin-sidebar.founder-mode .admin-header { background: linear-gradient(135deg, rgba(168,85,247,0.18), rgba(168,85,247,0.06)); border-bottom-color: rgba(168,85,247,0.25); }
 
     .live-content-area { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
     /* Admin header */
-    .admin-header {
-      padding: 20px 20px 16px;
-      background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(37,99,235,0.05));
-      border-bottom: 1px solid var(--admin-border);
-      display: flex; align-items: center; justify-content: space-between;
-    }
+    .admin-header { padding: 20px 20px 16px; background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(37,99,235,0.05)); border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between; }
     .admin-header-left { display: flex; flex-direction: column; gap: 3px; }
     .admin-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; color: #60a5fa; }
+    .admin-title.founder-title { color: var(--founder-accent); }
     .admin-subtitle { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; }
     .admin-status-pill { display: flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 700; color: #4ade80; }
     .admin-status-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
+    .founder-status-pill { display: flex; align-items: center; gap: 6px; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 700; color: #c084fc; }
+    .founder-status-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #c084fc; animation: pulse-dot 2s infinite; }
 
     /* Admin tabs */
-    .admin-tabs {
-      display: flex; border-bottom: 1px solid var(--admin-border);
-      background: var(--admin-bg); position: sticky; top: 0; z-index: 5;
-    }
-    .admin-tab {
-      flex: 1; padding: 11px 6px; font-size: 11px; font-weight: 800; letter-spacing: 0.8px;
-      text-transform: uppercase; cursor: pointer; border: none; background: transparent;
-      color: var(--muted); font-family: 'Barlow', sans-serif; transition: 0.2s;
-      border-bottom: 2px solid transparent; display: flex; flex-direction: column; align-items: center; gap: 3px;
-    }
-    .admin-tab .tab-icon { font-size: 16px; }
+    .admin-tabs { display: flex; border-bottom: 1px solid var(--admin-border); background: var(--admin-bg); position: sticky; top: 0; z-index: 5; flex-wrap: wrap; }
+    .admin-tab { flex: 1; padding: 11px 4px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; border: none; background: transparent; color: var(--muted); font-family: 'Barlow', sans-serif; transition: 0.2s; border-bottom: 2px solid transparent; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 50px; }
+    .admin-tab .tab-icon { font-size: 15px; }
     .admin-tab:hover { color: var(--text); background: var(--admin-hover); }
     .admin-tab.active { color: #60a5fa; border-bottom-color: #2563eb; background: rgba(37,99,235,0.08); }
+    .admin-tab.founder-tab { color: rgba(168,85,247,0.6); }
+    .admin-tab.founder-tab.active { color: #c084fc; border-bottom-color: #a855f7; background: rgba(168,85,247,0.1); }
 
     /* Admin panels */
     .admin-panel { display: none; flex-direction: column; gap: 0; }
@@ -126,30 +122,20 @@
     /* Admin sections */
     .a-section { padding: 16px 18px; border-bottom: 1px solid var(--admin-border); }
     .a-section:last-child { border-bottom: none; }
-    .a-section-title {
-      font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
-    }
+    .a-section-title { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
     .a-section-title .dot { width: 3px; height: 3px; border-radius: 50%; background: #2563eb; }
+    .a-section-title .dot-purple { width: 3px; height: 3px; border-radius: 50%; background: #a855f7; }
 
     /* Form elements */
     .a-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
-    .a-input {
-      width: 100%; padding: 9px 12px; border-radius: 8px;
-      border: 1px solid var(--admin-border); background: var(--admin-input-bg);
-      color: var(--text); font-size: 13px; font-family: 'Barlow', sans-serif;
-      outline: none; transition: border-color 0.2s; margin-bottom: 8px;
-    }
+    .a-input { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--admin-border); background: var(--admin-input-bg); color: var(--text); font-size: 13px; font-family: 'Barlow', sans-serif; outline: none; transition: border-color 0.2s; margin-bottom: 8px; }
     .a-input:focus { border-color: #2563eb; background: rgba(37,99,235,0.05); }
     .a-input::placeholder { color: rgba(148,163,184,0.5); }
+    .a-input.founder-input:focus { border-color: #a855f7; background: rgba(168,85,247,0.05); }
     .a-field { margin-bottom: 8px; }
 
     /* Buttons */
-    .a-btn {
-      padding: 9px 14px; border-radius: 8px; border: none; font-size: 12px;
-      font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif;
-      transition: 0.2s; white-space: nowrap; letter-spacing: 0.3px;
-    }
+    .a-btn { padding: 9px 14px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; white-space: nowrap; letter-spacing: 0.3px; }
     .a-btn-primary { background: #2563eb; color: white; }
     .a-btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
     .a-btn-danger { background: transparent; border: 1px solid rgba(220,38,38,0.4); color: #f87171; }
@@ -158,6 +144,10 @@
     .a-btn-success:hover { background: #047857; }
     .a-btn-purple { background: #7c3aed; color: white; }
     .a-btn-purple:hover { background: #6d28d9; }
+    .a-btn-founder { background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; }
+    .a-btn-founder:hover { background: linear-gradient(135deg, #6d28d9, #9333ea); transform: translateY(-1px); box-shadow: 0 4px 15px rgba(168,85,247,0.4); }
+    .a-btn-founder-danger { background: transparent; border: 1px solid rgba(220,38,38,0.5); color: #f87171; }
+    .a-btn-founder-danger:hover { background: rgba(220,38,38,0.15); }
     .a-btn-ghost { background: var(--admin-input-bg); border: 1px solid var(--admin-border); color: var(--text); }
     .a-btn-ghost:hover { border-color: rgba(37,99,235,0.4); }
     .a-btn-full { width: 100%; padding: 10px; border-radius: 8px; border: none; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; }
@@ -165,10 +155,7 @@
     .a-btn-row .a-btn { flex: 1; }
 
     /* Toggle switch */
-    .a-toggle-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
+    .a-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
     .a-toggle-row:last-child { border-bottom: none; padding-bottom: 0; }
     .a-toggle-info { flex: 1; padding-right: 12px; }
     .a-toggle-label { font-size: 13px; font-weight: 700; color: var(--text); }
@@ -182,19 +169,12 @@
 
     /* Stats grid */
     .stats-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .stat-card {
-      background: var(--admin-input-bg); border: 1px solid var(--admin-border);
-      border-radius: 10px; padding: 12px; text-align: center;
-    }
+    .stat-card { background: var(--admin-input-bg); border: 1px solid var(--admin-border); border-radius: 10px; padding: 12px; text-align: center; }
     .stat-card-num { font-family: 'Bebas Neue', sans-serif; font-size: 30px; line-height: 1; margin-bottom: 2px; }
     .stat-card-label { font-size: 9px; font-weight: 800; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; }
 
     /* Planning items */
-    .plan-item {
-      background: var(--admin-input-bg); border: 1px solid var(--admin-border);
-      border-radius: 9px; padding: 10px 12px; margin-bottom: 6px;
-      display: flex; align-items: center; gap: 10px;
-    }
+    .plan-item { background: var(--admin-input-bg); border: 1px solid var(--admin-border); border-radius: 9px; padding: 10px 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
     .plan-item-dot { width: 8px; height: 8px; border-radius: 50%; background: #5865F2; flex-shrink: 0; }
     .plan-item-dot.live { background: var(--red); animation: pulse-dot 1.5s infinite; }
     .plan-item-info { flex: 1; min-width: 0; }
@@ -211,13 +191,116 @@
     .btn-unban:hover { background: rgba(34,197,94,0.1); }
 
     /* Admin footer */
-    .admin-footer {
-      padding: 14px 18px; border-top: 1px solid var(--admin-border);
-      margin-top: auto; display: flex; align-items: center; justify-content: space-between;
-      background: var(--admin-bg); position: sticky; bottom: 0;
-    }
+    .admin-footer { padding: 14px 18px; border-top: 1px solid var(--admin-border); margin-top: auto; display: flex; align-items: center; justify-content: space-between; background: var(--admin-bg); position: sticky; bottom: 0; }
     .admin-logged-as { font-size: 12px; color: #4ade80; display: flex; align-items: center; gap: 6px; }
     .admin-logged-as::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
+    .founder-logged-as { font-size: 12px; color: #c084fc; display: flex; align-items: center; gap: 6px; }
+    .founder-logged-as::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #c084fc; animation: pulse-dot 2s infinite; }
+
+    /* ═══ PANNEAU FONDATEUR ═══ */
+    .founder-panel-wrapper {
+      background: var(--founder-bg);
+      border: 1px solid var(--founder-border);
+      border-radius: 12px;
+      margin: 12px;
+      overflow: hidden;
+    }
+    .founder-panel-header {
+      background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(168,85,247,0.06));
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(168,85,247,0.2);
+    }
+    .founder-crown { font-size: 20px; }
+    .founder-panel-title { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; color: #c084fc; }
+    .founder-panel-subtitle { font-size: 10px; color: rgba(168,85,247,0.7); font-weight: 700; letter-spacing: 0.5px; }
+
+    /* Staff connecté */
+    .staff-item {
+      background: rgba(37,99,235,0.07);
+      border: 1px solid rgba(37,99,235,0.15);
+      border-radius: 9px;
+      padding: 10px 12px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .staff-item-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #60a5fa); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: white; flex-shrink: 0; }
+    .staff-item-info { flex: 1; min-width: 0; }
+    .staff-item-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .staff-item-role { font-size: 11px; color: #60a5fa; margin-top: 1px; font-weight: 600; }
+    .staff-item-time { font-size: 10px; color: var(--muted); }
+    .staff-online-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; flex-shrink: 0; }
+    .btn-revoke { background: none; border: 1px solid rgba(220,38,38,0.5); color: #f87171; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 5px; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; letter-spacing: 0.3px; }
+    .btn-revoke:hover { background: rgba(220,38,38,0.15); }
+    .revoked-item { background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.2); border-radius: 9px; padding: 9px 12px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .revoked-name { font-size: 13px; font-weight: 700; color: #f87171; }
+    .revoked-badge { font-size: 10px; font-weight: 800; background: rgba(220,38,38,0.15); border: 1px solid rgba(220,38,38,0.3); color: #f87171; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.5px; white-space: nowrap; }
+    .btn-restore { background: none; border: 1px solid rgba(34,197,94,0.3); color: #4ade80; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 5px; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; }
+    .btn-restore:hover { background: rgba(34,197,94,0.1); }
+
+    /* Visiteurs réels (admin only) */
+    .real-visitors-panel {
+      background: rgba(16,185,129,0.05);
+      border: 1px solid rgba(16,185,129,0.2);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .real-visitors-header {
+      background: rgba(16,185,129,0.1);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(16,185,129,0.15);
+    }
+    .real-visitors-title { font-size: 11px; font-weight: 800; color: #34d399; letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+    .real-count-badge { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #4ade80; }
+    .real-visitor-item { padding: 8px 14px; border-bottom: 1px solid rgba(16,185,129,0.08); display: flex; align-items: center; gap: 8px; font-size: 12px; }
+    .real-visitor-item:last-child { border-bottom: none; }
+    .real-visitor-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; flex-shrink: 0; }
+    .real-visitor-page { flex: 1; color: var(--text); font-weight: 600; }
+    .real-visitor-time { color: var(--muted); font-size: 11px; }
+    .real-visitor-device { font-size: 14px; }
+
+    /* ═══ NOTIFICATIONS PUSH ═══ */
+    .notif-cta-bar {
+      background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(168,85,247,0.08));
+      border-bottom: 1px solid rgba(37,99,235,0.2);
+      padding: 10px 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .notif-cta-text { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; display: flex; align-items: center; gap: 8px; }
+    .notif-cta-text .bell { font-size: 18px; }
+    .btn-notif-enable { padding: 8px 20px; border-radius: 9px; border: none; background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+    .btn-notif-enable:hover { transform: scale(1.04); box-shadow: 0 0 20px rgba(37,99,235,0.4); }
+    .btn-notif-dismiss { padding: 8px 14px; border-radius: 9px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 13px; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; }
+    .btn-notif-dismiss:hover { color: var(--text); }
+    .notif-enabled-pill { display: flex; align-items: center; gap: 7px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); border-radius: 20px; padding: 7px 16px; font-size: 13px; font-weight: 700; color: #4ade80; }
+    .notif-enabled-pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
+
+    /* Admin notif section */
+    .notif-admin-section { background: rgba(37,99,235,0.06); border: 1px solid rgba(37,99,235,0.15); border-radius: 9px; padding: 12px; }
+    .notif-admin-stats { display: flex; gap: 10px; margin-top: 10px; }
+    .notif-stat { flex: 1; background: var(--admin-input-bg); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid var(--admin-border); }
+    .notif-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: #60a5fa; }
+    .notif-stat-label { font-size: 9px; font-weight: 800; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+    /* Toast notification */
+    .push-preview-toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-120px); background: var(--dark2); border: 1px solid rgba(37,99,235,0.4); border-radius: 14px; padding: 14px 20px; z-index: 999; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); width: 340px; max-width: calc(100vw - 40px); box-shadow: 0 20px 60px rgba(0,0,0,0.5); display: flex; align-items: flex-start; gap: 12px; }
+    .push-preview-toast.show { transform: translateX(-50%) translateY(0); }
+    .push-preview-icon { font-size: 28px; flex-shrink: 0; }
+    .push-preview-content { flex: 1; }
+    .push-preview-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 3px; }
+    .push-preview-body { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .push-preview-source { font-size: 10px; color: rgba(37,99,235,0.8); font-weight: 700; margin-top: 4px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .push-preview-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; flex-shrink: 0; line-height: 1; }
 
     /* ═══ LIVE TOPBAR ═══ */
     .live-topbar { background: var(--dark2); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; gap: 14px; transition: background 0.3s; flex-wrap: wrap; }
@@ -225,17 +308,18 @@
     .live-badge { background: var(--red); padding: 3px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; letter-spacing: 1px; animation: pulse-dot 1.5s infinite; }
     .live-no-stream-badge { background: var(--card-bg); border: 1px solid var(--border); padding: 3px 12px; border-radius: 6px; font-size: 12px; color: var(--muted); font-weight: 600; }
 
-    /* Site viewers pill */
-    .site-viewers-pill {
-      display: flex; align-items: center; gap: 7px;
-      background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);
-      border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: #4ade80;
-    }
+    /* Site viewers pill - VISIBLE À TOUS */
+    .site-viewers-pill { display: flex; align-items: center; gap: 7px; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: #4ade80; }
     .site-viewers-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
+    /* Le vrai compteur admin n'est visible qu'en mode admin */
+    .real-viewers-pill { display: none; align-items: center; gap: 7px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: #10b981; }
+    .real-viewers-pill.visible { display: flex; }
+    .real-viewers-dot { width: 7px; height: 7px; border-radius: 50%; background: #10b981; animation: pulse-dot 1.5s infinite; }
 
     .btn-admin-toggle { padding: 9px 18px; border-radius: 9px; border: 1px solid rgba(37,99,235,0.35); background: rgba(37,99,235,0.1); color: #60a5fa; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Barlow', sans-serif; display: flex; align-items: center; gap: 6px; }
     .btn-admin-toggle:hover { background: rgba(37,99,235,0.2); }
     .btn-admin-toggle.active { background: rgba(37,99,235,0.25); border-color: rgba(37,99,235,0.55); }
+    .btn-admin-toggle.founder-active { background: rgba(168,85,247,0.2); border-color: rgba(168,85,247,0.5); color: #c084fc; }
 
     /* Countdown */
     .countdown-banner { display: none; background: linear-gradient(135deg, #0f172a, #1e1b4b); border-bottom: 1px solid rgba(99,102,241,0.35); padding: 18px 28px; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap; }
@@ -323,7 +407,7 @@
     .ban-toast { position: fixed; top: 80px; right: 24px; background: rgba(220,38,38,0.9); backdrop-filter: blur(10px); color: white; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 700; z-index: 999; transform: translateX(150%); transition: transform 0.3s; border: 1px solid rgba(255,255,255,0.1); }
     .ban-toast.show { transform: translateX(0); }
 
-    /* Planning public section */
+    /* Planning public */
     .planning-public { background: var(--dark2); border-top: 1px solid var(--border); padding: 28px; transition: background 0.3s; }
     .planning-public h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--text); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
     .planning-public-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
@@ -362,6 +446,15 @@
     .ban-reason-chip:hover, .ban-reason-chip.selected { background: rgba(220,38,38,0.15); border-color: rgba(220,38,38,0.5); color: #f87171; }
     .btn-confirm-ban { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--red); color: white; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Barlow', sans-serif; transition: 0.2s; }
     .btn-confirm-ban:hover { background: #b91c1c; }
+
+    /* Fondateur modal */
+    .founder-modal { background: var(--founder-bg); border: 1px solid var(--founder-border); border-radius: 20px; padding: 36px; max-width: 420px; width: 100%; }
+    .founder-modal h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1.5px; margin-bottom: 8px; color: #c084fc; }
+    .founder-modal p { font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+    .founder-modal input { width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid rgba(168,85,247,0.3); background: rgba(168,85,247,0.06); color: var(--text); font-size: 15px; font-family: 'Barlow', sans-serif; outline: none; margin-bottom: 14px; }
+    .founder-modal input:focus { border-color: #a855f7; }
+    .btn-founder-login { flex: 1; padding: 12px; border-radius: 10px; border: none; background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Barlow', sans-serif; }
+    .btn-founder-login:hover { box-shadow: 0 0 25px rgba(168,85,247,0.5); }
 
     /* ═══ IPTV PAGE ═══ */
     #page-iptv { padding-top: 64px; min-height: 100vh; background: var(--dark); }
@@ -466,8 +559,6 @@
     .typing-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: typing-anim 1.2s infinite; }
     .typing-dot:nth-child(2){animation-delay:.2s} .typing-dot:nth-child(3){animation-delay:.4s}
     @keyframes typing-anim { 0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)} }
-
-    /* Quick buttons — catégories */
     .chat-quick-section { padding: 0 14px 12px; }
     .chat-quick-label { font-size: 10px; font-weight: 800; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
     .chat-quick-btns { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -479,8 +570,6 @@
     .chat-input::placeholder { color: var(--muted); }
     .chat-send-btn { width: 38px; height: 38px; border-radius: 50%; border: none; background: linear-gradient(135deg,#4ade80,#22c55e); color: white; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; flex-shrink: 0; }
     .chat-send-btn:hover { transform: scale(1.1); }
-
-    /* Admin chat reply from chatbot panel */
     .admin-chatbot-reply { padding: 10px 14px; border-top: 1px solid rgba(251,191,36,0.2); background: rgba(251,191,36,0.05); display: none; flex-direction: column; gap: 7px; }
     .admin-chatbot-reply.visible { display: flex; }
     .admin-chatbot-reply-label { font-size: 11px; font-weight: 700; color: #fbbf24; letter-spacing: 0.5px; }
@@ -503,6 +592,17 @@
 <body>
 
 <div class="ban-toast" id="ban-toast">🚫 Utilisateur banni</div>
+
+<!-- Toast notification push -->
+<div class="push-preview-toast" id="push-preview-toast">
+  <div class="push-preview-icon">📺</div>
+  <div class="push-preview-content">
+    <div class="push-preview-title" id="push-preview-title">🔴 Diffusion en direct !</div>
+    <div class="push-preview-body" id="push-preview-body">Un match commence maintenant sur FZF.</div>
+    <div class="push-preview-source">Football Zone France</div>
+  </div>
+  <button class="push-preview-close" onclick="dismissPushToast()">✕</button>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -554,20 +654,18 @@
 <div id="page-live" class="page">
   <div class="live-main-layout">
 
-    <!-- ═══ ADMIN SIDEBAR — NOUVEAU DESIGN ═══ -->
+    <!-- ═══ ADMIN SIDEBAR ═══ -->
     <div class="admin-sidebar" id="admin-sidebar">
 
-      <!-- Header -->
-      <div class="admin-header">
+      <div class="admin-header" id="admin-header-block">
         <div class="admin-header-left">
-          <div class="admin-title">⚙ Panneau Admin</div>
-          <div class="admin-subtitle">Football Zone France v2.0</div>
+          <div class="admin-title" id="admin-title-text">⚙ Panneau Admin</div>
+          <div class="admin-subtitle" id="admin-subtitle-text">Football Zone France v2.0</div>
         </div>
-        <div class="admin-status-pill">Connecté</div>
+        <div class="admin-status-pill" id="admin-status-pill">Connecté</div>
       </div>
 
-      <!-- Tabs -->
-      <div class="admin-tabs">
+      <div class="admin-tabs" id="admin-tabs">
         <button class="admin-tab active" onclick="switchAdminTab('stream')" id="tab-stream">
           <span class="tab-icon">📺</span>Stream
         </button>
@@ -577,8 +675,15 @@
         <button class="admin-tab" onclick="switchAdminTab('chat')" id="tab-chat">
           <span class="tab-icon">💬</span>Chat
         </button>
+        <button class="admin-tab" onclick="switchAdminTab('notif')" id="tab-notif">
+          <span class="tab-icon">🔔</span>Notifs
+        </button>
         <button class="admin-tab" onclick="switchAdminTab('tools')" id="tab-tools">
           <span class="tab-icon">🔧</span>Outils
+        </button>
+        <!-- Onglet Fondateur — visible uniquement si fondateur connecté -->
+        <button class="admin-tab founder-tab" onclick="switchAdminTab('founder')" id="tab-founder" style="display:none;">
+          <span class="tab-icon">👑</span>Fondateur
         </button>
       </div>
 
@@ -591,11 +696,10 @@
           <label class="a-label">Nom du match</label>
           <input type="text" class="a-input" id="match-label-input" placeholder="Ex : PSG vs Real Madrid 21h00" />
           <div class="a-btn-row">
-            <button class="a-btn a-btn-primary" onclick="setStream()">▶ Lancer le stream</button>
+            <button class="a-btn a-btn-primary" onclick="setStream()">▶ Lancer</button>
             <button class="a-btn a-btn-danger" onclick="stopStream()">⏹ Stop</button>
           </div>
         </div>
-
         <div class="a-section" id="stats-section" style="display:none;">
           <div class="a-section-title"><span class="dot"></span>Statistiques en direct</div>
           <div class="stats-grid-2">
@@ -618,7 +722,6 @@
           </div>
           <button class="a-btn-full a-btn-danger" onclick="resetStats()" style="margin-top:10px;font-size:12px;padding:8px;">🔄 Réinitialiser</button>
         </div>
-
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Compte à rebours</div>
           <div class="a-toggle-row">
@@ -684,14 +787,12 @@
             <label class="toggle-switch"><input type="checkbox" id="toggle-chatbot" onchange="toggleChatbot(this.checked)" checked><span class="toggle-slider"></span></label>
           </div>
         </div>
-
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Répondre depuis le chat live</div>
           <label class="a-label">Réponse admin (dans le chat live)</label>
           <input type="text" class="a-input" id="admin-live-reply-input" placeholder="Ton message en tant qu'admin..." maxlength="200" onkeydown="if(event.key==='Enter')sendAdminLiveReply()" />
           <button class="a-btn-full a-btn-primary" onclick="sendAdminLiveReply()">📢 Envoyer comme Admin</button>
         </div>
-
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Message épinglé</div>
           <input type="text" class="a-input" id="pinned-msg-input" placeholder="Message à épingler dans le chat..." />
@@ -700,13 +801,11 @@
             <button class="a-btn a-btn-danger" onclick="clearPinnedMsg()">✕</button>
           </div>
         </div>
-
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Annonce système</div>
           <input type="text" class="a-input" id="announce-input" placeholder="Message affiché en bleu dans le chat..." />
           <button class="a-btn-full a-btn-ghost" onclick="sendAnnounce()">📢 Envoyer l'annonce</button>
         </div>
-
         <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Utilisateurs bannis</div>
           <div id="ban-list-admin">
@@ -716,48 +815,162 @@
         </div>
       </div>
 
+      <!-- ── TAB NOTIFS ── -->
+      <div class="admin-panel" id="panel-notif">
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Envoyer une notification</div>
+          <label class="a-label">Titre de la notification</label>
+          <input type="text" class="a-input" id="notif-title-input" placeholder="Ex : 🔴 PSG vs Real — En direct !" maxlength="60" />
+          <label class="a-label">Message</label>
+          <input type="text" class="a-input" id="notif-body-input" placeholder="Ex : Le match commence maintenant !" maxlength="120" />
+          <div class="a-btn-row" style="margin-top:4px;">
+            <button class="a-btn a-btn-primary" onclick="sendAdminNotif()">🔔 Envoyer aux abonnés</button>
+            <button class="a-btn a-btn-ghost" onclick="previewNotif()">👁 Aperçu</button>
+          </div>
+        </div>
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Statistiques notifications</div>
+          <div class="notif-admin-section">
+            <div style="font-size:12px;color:var(--muted);line-height:1.6;">Abonnés aux notifications push depuis ce navigateur.</div>
+            <div class="notif-admin-stats">
+              <div class="notif-stat">
+                <div class="notif-stat-num" id="notif-sub-count">0</div>
+                <div class="notif-stat-label">Abonnés</div>
+              </div>
+              <div class="notif-stat">
+                <div class="notif-stat-num" id="notif-sent-count">0</div>
+                <div class="notif-stat-label">Envoyées</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Notification automatique</div>
+          <div class="a-toggle-row">
+            <div class="a-toggle-info">
+              <div class="a-toggle-label">🚀 Auto-notif au démarrage du stream</div>
+              <div class="a-toggle-desc">Notifie automatiquement au lancement</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="toggle-auto-notif" checked><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+      </div>
+
       <!-- ── TAB OUTILS ── -->
       <div class="admin-panel" id="panel-tools">
         <div class="a-section">
+          <div class="a-section-title"><span class="dot"></span>Visiteurs en temps réel</div>
+          <div class="real-visitors-panel">
+            <div class="real-visitors-header">
+              <div class="real-visitors-title">🟢 Connectés maintenant</div>
+              <div class="real-count-badge" id="real-visitor-count-admin">0</div>
+            </div>
+            <div id="real-visitors-list">
+              <div style="padding:12px 14px;font-size:12px;color:var(--muted);">Chargement...</div>
+            </div>
+          </div>
+        </div>
+        <div class="a-section">
           <div class="a-section-title"><span class="dot"></span>Répondre au chatbot IA</div>
-          <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px;">Active le mode "Réponse Admin" dans le chatbot. Les visiteurs verront ton message comme une réponse de l'admin.</div>
           <div class="a-toggle-row">
             <div class="a-toggle-info">
               <div class="a-toggle-label">🔓 Mode réponse admin</div>
-              <div class="a-toggle-desc">Affiche le champ de réponse dans le chatbot</div>
+              <div class="a-toggle-desc">Affiche le champ dans le chatbot</div>
             </div>
             <label class="toggle-switch"><input type="checkbox" id="toggle-admin-reply" onchange="toggleAdminChatbotReply(this.checked)"><span class="toggle-slider"></span></label>
           </div>
         </div>
         <div class="a-section">
-          <div class="a-section-title"><span class="dot"></span>Informations site</div>
-          <div class="stats-grid-2">
-            <div class="stat-card">
-              <div class="stat-card-num" id="tools-site-viewers" style="color:#4ade80;">0</div>
-              <div class="stat-card-label">Sur le site</div>
+          <div class="a-section-title"><span class="dot"></span>Actions rapides</div>
+          <button class="a-btn-full a-btn-danger" onclick="clearLiveChat()" style="margin-bottom:8px;font-size:12px;padding:10px;">🗑 Vider le chat live</button>
+          <button class="a-btn-full a-btn-ghost" onclick="logoutAdmin()" style="font-size:12px;padding:10px;">🔒 Se déconnecter (Admin)</button>
+          <button class="a-btn-full" onclick="openFounderModal()" style="margin-top:8px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:white;font-size:12px;padding:10px;border:none;border-radius:8px;cursor:pointer;font-family:'Barlow',sans-serif;font-weight:700;">👑 Accès Fondateur</button>
+        </div>
+      </div>
+
+      <!-- ── TAB FONDATEUR ── -->
+      <div class="admin-panel" id="panel-founder">
+
+        <!-- Staff connecté -->
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot-purple"></span>Staff connecté en ce moment</div>
+          <div id="founder-staff-list">
+            <div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun staff connecté.</div>
+          </div>
+        </div>
+
+        <!-- Visiteurs RÉELS (uniquement ici) -->
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot-purple"></span>Visiteurs réels (données brutes)</div>
+          <div class="real-visitors-panel">
+            <div class="real-visitors-header">
+              <div class="real-visitors-title">🟢 En ligne maintenant</div>
+              <div class="real-count-badge" id="founder-real-count">0</div>
             </div>
-            <div class="stat-card">
-              <div class="stat-card-num" id="tools-chat-msgs" style="color:#60a5fa;">0</div>
-              <div class="stat-card-label">Messages chat</div>
+            <div id="founder-visitors-list">
+              <div style="padding:12px 14px;font-size:12px;color:var(--muted);">Chargement...</div>
             </div>
           </div>
         </div>
+
+        <!-- Gestion des rôles admin -->
         <div class="a-section">
-          <div class="a-section-title"><span class="dot"></span>Actions rapides</div>
-          <button class="a-btn-full a-btn-danger" onclick="clearLiveChat()" style="margin-bottom:8px;font-size:12px;padding:10px;">🗑 Vider le chat live</button>
-          <button class="a-btn-full a-btn-ghost" onclick="logoutAdmin()" style="font-size:12px;padding:10px;">🔒 Se déconnecter</button>
+          <div class="a-section-title"><span class="dot-purple"></span>Révoquer un rôle Admin</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px;">Saisir le nom du compte admin à révoquer définitivement. Cette action est irréversible sans toi.</div>
+          <label class="a-label">Nom du compte admin</label>
+          <input type="text" class="a-input founder-input" id="revoke-admin-name" placeholder="Ex : AdminDupont" maxlength="30" />
+          <label class="a-label">Raison (obligatoire)</label>
+          <input type="text" class="a-input founder-input" id="revoke-reason" placeholder="Ex : Abus de pouvoir, inactivité..." maxlength="80" />
+          <button class="a-btn-full a-btn-founder" onclick="revokeAdmin()" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">🚫 Révoquer définitivement</button>
+        </div>
+
+        <!-- Admins révoqués -->
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot-purple"></span>Admins révoqués</div>
+          <div id="revoked-admins-list">
+            <div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucune révocation.</div>
+          </div>
+        </div>
+
+        <!-- Déconnexion forcée -->
+        <div class="a-section">
+          <div class="a-section-title"><span class="dot-purple"></span>Déconnexion forcée d'un staff</div>
+          <label class="a-label">Nom du staff à déconnecter</label>
+          <input type="text" class="a-input founder-input" id="force-logout-name" placeholder="Ex : ModJean" maxlength="30" />
+          <button class="a-btn-full" onclick="forceLogoutStaff()" style="background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.4);color:#f87171;font-size:12px;padding:10px;border-radius:8px;cursor:pointer;font-family:'Barlow',sans-serif;font-weight:700;">⚡ Déconnecter ce staff</button>
+        </div>
+
+        <!-- Déconnexion fondateur -->
+        <div class="a-section">
+          <button class="a-btn-full" onclick="logoutFounder()" style="background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.3);color:#c084fc;font-size:12px;padding:10px;border-radius:8px;cursor:pointer;font-family:'Barlow',sans-serif;font-weight:700;">👑 Se déconnecter (Fondateur)</button>
         </div>
       </div>
 
       <!-- Footer -->
-      <div class="admin-footer">
-        <span class="admin-logged-as">Admin connecté</span>
-        <button class="a-btn a-btn-danger" onclick="logoutAdmin()" style="font-size:11px;padding:6px 12px;">Déco.</button>
+      <div class="admin-footer" id="admin-footer-bar">
+        <span class="admin-logged-as" id="admin-footer-status">Admin connecté</span>
+        <button class="a-btn a-btn-danger" onclick="logoutAdmin()" id="admin-footer-logout-btn" style="font-size:11px;padding:6px 12px;">Déco.</button>
       </div>
     </div>
 
     <!-- ═══ LIVE CONTENT ═══ -->
     <div class="live-content-area">
+
+      <!-- Barre de notification push (visible aux visiteurs) -->
+      <div class="notif-cta-bar" id="notif-cta-bar">
+        <div class="notif-cta-text">
+          <span class="bell">🔔</span>
+          <span>Reçois une alerte dès qu'une diffusion commence !</span>
+        </div>
+        <button class="btn-notif-enable" id="btn-notif-enable" onclick="requestNotifPermission()">
+          🔔 Activer les notifications
+        </button>
+        <button class="btn-notif-dismiss" onclick="dismissNotifBar()">Plus tard</button>
+      </div>
+      <!-- Pill "notifications activées" -->
+      <div style="display:none;padding:8px 28px;background:rgba(34,197,94,0.05);border-bottom:1px solid rgba(34,197,94,0.12);" id="notif-enabled-bar">
+        <span class="notif-enabled-pill">Notifications activées — tu seras alerté des prochaines diffusions</span>
+      </div>
 
       <!-- Top bar -->
       <div class="live-topbar">
@@ -765,14 +978,20 @@
           📺 Match en Direct
           <span id="live-status-badge" class="live-no-stream-badge">HORS LIGNE</span>
         </div>
-        <div class="site-viewers-pill">
+        <!-- Visiteurs publics (nombre simulé) -->
+        <div class="site-viewers-pill" id="public-viewers-pill">
           <span class="site-viewers-dot"></span>
           <span id="site-viewer-count">0</span> sur le site
+        </div>
+        <!-- Visiteurs réels (admin/fondateur seulement) -->
+        <div class="real-viewers-pill" id="real-viewers-admin-pill">
+          <span class="real-viewers-dot"></span>
+          <span id="real-viewer-count-topbar">0</span> réels
         </div>
         <button class="btn-admin-toggle" id="admin-toggle-btn" onclick="toggleAdminSidebar()">🔒 Admin</button>
       </div>
 
-      <!-- Countdown (sans badge Discord) -->
+      <!-- Countdown -->
       <div class="countdown-banner" id="countdown-banner">
         <div>
           <div class="countdown-label-top">PROCHAIN MATCH</div>
@@ -948,6 +1167,20 @@
   </div>
 </div>
 
+<!-- Modal Fondateur -->
+<div class="modal-overlay" id="modal-founder-login">
+  <div class="founder-modal">
+    <h3>👑 Accès Fondateur</h3>
+    <p>Espace réservé au fondateur de Football Zone France. Accès avec permissions élargies.</p>
+    <input type="password" id="founder-password-input" placeholder="Mot de passe fondateur..." onkeydown="if(event.key==='Enter')checkFounderLogin()" />
+    <div class="admin-error" id="founder-error">❌ Mot de passe incorrect</div>
+    <div class="modal-btns">
+      <button class="btn-founder-login" onclick="checkFounderLogin()">👑 Connexion Fondateur</button>
+      <button class="btn-modal-cancel" onclick="closeModal('modal-founder-login')">Annuler</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-ban">
   <div class="ban-modal">
     <h3>🚫 Bannir un utilisateur</h3>
@@ -981,7 +1214,6 @@
   <div class="chat-messages" id="chat-messages">
     <div class="msg-bot">👋 Salut ! Je suis le bot de <strong>Football Zone France</strong>.<br><br>Je peux t'aider avec les abonnements IPTV, les matchs et la communauté. Pose-moi ta question ! ⚽</div>
   </div>
-  <!-- Quick buttons avec catégories -->
   <div class="chat-quick-section" id="quick-section">
     <div class="chat-quick-label">Questions fréquentes</div>
     <div class="chat-quick-btns">
@@ -995,7 +1227,6 @@
       <button class="quick-btn" onclick="quickAsk('Comment rejoindre le Discord FZF ?')">💬 Discord</button>
     </div>
   </div>
-  <!-- Zone réponse admin (visible si mode admin activé) -->
   <div class="admin-chatbot-reply" id="admin-chatbot-reply">
     <div class="admin-chatbot-reply-label">👑 Répondre en tant qu'Admin</div>
     <div class="admin-chatbot-reply-row">
@@ -1010,9 +1241,14 @@
 </div>
 
 <script>
-/* ═══ CONFIG ═══ */
+/* ══════════════════════════════════════════
+   CONFIG
+══════════════════════════════════════════ */
 const ADMIN_PASSWORD = "fzf2026";
+const FOUNDER_PASSWORD = "fzfFounder2026!";
+
 let adminLoggedIn = false;
+let founderLoggedIn = false;
 let adminSidebarOpen = false;
 let hlsInstance = null;
 let countdownTarget = null;
@@ -1029,8 +1265,49 @@ let pendingBanMsgEl = null;
 let selectedBanReason = '';
 let pinnedMsg = '';
 let chatMsgCount = 0;
+let revokedAdmins = {};
+let notifSentCount = 0;
+let notifPermission = Notification.permission || 'default';
 
-/* Site visitors (simulated — real site, not stream) */
+/* ── Visiteurs réels (tracking basé sur sessionStorage) ── */
+let sessionId = sessionStorage.getItem('fzf_sid') || ('u_' + Date.now() + '_' + Math.random().toString(36).substr(2,6));
+sessionStorage.setItem('fzf_sid', sessionId);
+
+/* Simuler de vraies sessions dans localStorage pour démonstration multi-onglets */
+function registerVisitor(page) {
+  try {
+    let sessions = JSON.parse(localStorage.getItem('fzf_sessions') || '{}');
+    sessions[sessionId] = { page: page || 'Live', ts: Date.now(), device: getDevice(), city: getRandomCity() };
+    // Nettoyer les sessions > 3 min
+    Object.keys(sessions).forEach(k => { if (Date.now() - sessions[k].ts > 180000) delete sessions[k]; });
+    localStorage.setItem('fzf_sessions', JSON.stringify(sessions));
+  } catch(e) {}
+}
+function getDevice() {
+  const ua = navigator.userAgent;
+  if (/Mobi|Android/i.test(ua)) return '📱';
+  if (/iPad|Tablet/i.test(ua)) return '📲';
+  return '💻';
+}
+const cities = ['Paris','Lyon','Marseille','Toulouse','Bordeaux','Nantes','Lille','Strasbourg','Nice','Montpellier','Rennes','Rouen'];
+function getRandomCity() { return cities[Math.floor(Math.random() * cities.length)]; }
+
+function getRealVisitors() {
+  try {
+    let sessions = JSON.parse(localStorage.getItem('fzf_sessions') || '{}');
+    // Nettoyer
+    Object.keys(sessions).forEach(k => { if (Date.now() - sessions[k].ts > 180000) delete sessions[k]; });
+    localStorage.setItem('fzf_sessions', JSON.stringify(sessions));
+    return sessions;
+  } catch(e) { return {}; }
+}
+function getRealVisitorCount() { return Object.keys(getRealVisitors()).length; }
+
+/* Mise à jour du heartbeat visiteur toutes les 30s */
+registerVisitor('Live');
+setInterval(() => registerVisitor(document.title), 30000);
+
+/* ── Compteur public simulé ── */
 let siteViewers = Math.floor(Math.random() * 25) + 8;
 let peakViewers = siteViewers;
 let totalJoins = siteViewers;
@@ -1039,6 +1316,11 @@ let siteViewerInterval = null;
 let streamDurationInterval = null;
 
 const chatColors = ['#60a5fa','#f87171','#4ade80','#fbbf24','#a78bfa','#fb923c','#34d399','#f472b6'];
+
+/* Staff en session (pour démo fondateur) */
+let connectedStaff = [
+  { name: 'Admin FZF', role: 'Administrateur', loginTime: new Date(Date.now() - 1800000) },
+];
 
 /* ═══ START SITE VIEWER COUNT ═══ */
 function startSiteViewers() {
@@ -1057,7 +1339,17 @@ function updateSiteViewerDisplay() {
   document.getElementById('stat-current').textContent = siteViewers;
   document.getElementById('stat-peak').textContent = peakViewers;
   document.getElementById('stat-joins').textContent = totalJoins;
-  document.getElementById('tools-site-viewers').textContent = siteViewers;
+
+  // Vraies données pour admin/fondateur
+  const real = getRealVisitorCount();
+  document.getElementById('real-visitor-count-admin').textContent = real;
+  document.getElementById('founder-real-count').textContent = real;
+  if (document.getElementById('real-viewer-count-topbar')) {
+    document.getElementById('real-viewer-count-topbar').textContent = real;
+  }
+
+  // Abonnés notifs
+  document.getElementById('notif-sub-count').textContent = notifPermission === 'granted' ? '1' : '0';
 }
 function resetStats() {
   siteViewers = Math.floor(Math.random()*10)+5; peakViewers = siteViewers; totalJoins = siteViewers;
@@ -1065,6 +1357,36 @@ function resetStats() {
   updateSiteViewerDisplay();
 }
 startSiteViewers();
+
+/* Mettre à jour la liste des visiteurs réels */
+function updateRealVisitorsList() {
+  const sessions = getRealVisitors();
+  const keys = Object.keys(sessions);
+  const renderFn = (containerId) => {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    if (!keys.length) {
+      el.innerHTML = '<div style="padding:12px 14px;font-size:12px;color:var(--muted);">Aucun visiteur actif.</div>';
+      return;
+    }
+    el.innerHTML = keys.map(k => {
+      const v = sessions[k];
+      const ago = Math.floor((Date.now() - v.ts) / 1000);
+      const agoStr = ago < 60 ? ago + 's' : Math.floor(ago/60) + 'min';
+      const isMe = k === sessionId;
+      return `<div class="real-visitor-item">
+        <span class="real-visitor-dot"></span>
+        <span class="real-visitor-device">${v.device}</span>
+        <span class="real-visitor-page">${v.city || '?'} — ${v.page}${isMe?' (toi)':''}</span>
+        <span class="real-visitor-time">${agoStr}</span>
+      </div>`;
+    }).join('');
+  };
+  renderFn('real-visitors-list');
+  renderFn('founder-visitors-list');
+}
+setInterval(updateRealVisitorsList, 5000);
+updateRealVisitorsList();
 
 /* ═══ THEME ═══ */
 function toggleTheme() {
@@ -1087,19 +1409,23 @@ function showPage(name) {
   document.getElementById('page-'+name).classList.add('active');
   const idx = name==='home'?0:name==='live'?1:2;
   document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+  registerVisitor(name.charAt(0).toUpperCase() + name.slice(1));
 }
 
 /* ═══ ADMIN TABS ═══ */
 function switchAdminTab(tab) {
-  ['stream','planning','chat','tools'].forEach(t => {
-    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
-    document.getElementById('panel-'+t).classList.toggle('active', t===tab);
+  const tabs = ['stream','planning','chat','notif','tools','founder'];
+  tabs.forEach(t => {
+    const tabEl = document.getElementById('tab-'+t);
+    const panelEl = document.getElementById('panel-'+t);
+    if (tabEl) tabEl.classList.toggle('active', t===tab);
+    if (panelEl) panelEl.classList.toggle('active', t===tab);
   });
 }
 
 /* ═══ ADMIN SIDEBAR ═══ */
 function toggleAdminSidebar() {
-  if (!adminLoggedIn) {
+  if (!adminLoggedIn && !founderLoggedIn) {
     document.getElementById('admin-password-input').value = '';
     document.getElementById('admin-error').style.display = 'none';
     document.getElementById('modal-login').classList.add('open');
@@ -1108,36 +1434,207 @@ function toggleAdminSidebar() {
   }
   adminSidebarOpen = !adminSidebarOpen;
   document.getElementById('admin-sidebar').classList.toggle('open', adminSidebarOpen);
-  document.getElementById('admin-toggle-btn').classList.toggle('active', adminSidebarOpen);
+  const btn = document.getElementById('admin-toggle-btn');
+  btn.classList.toggle('active', adminSidebarOpen);
 }
 function checkAdminLogin() {
   const pw = document.getElementById('admin-password-input').value;
+  if (revokedAdmins['__admin__']) {
+    document.getElementById('admin-error').textContent = '🚫 Ce compte admin a été révoqué par le Fondateur.';
+    document.getElementById('admin-error').style.display = 'block';
+    return;
+  }
   if (pw === ADMIN_PASSWORD) {
     adminLoggedIn = true;
     closeModal('modal-login');
-    adminSidebarOpen = true;
-    document.getElementById('admin-sidebar').classList.add('open');
-    document.getElementById('admin-toggle-btn').classList.add('active');
-    document.getElementById('admin-toggle-btn').textContent = '🔓 Admin';
+    openAdminSidebar(false);
+    // Ajouter au staff connecté
+    if (!connectedStaff.find(s => s.name === 'Admin')) {
+      connectedStaff.push({ name: 'Admin', role: 'Administrateur', loginTime: new Date() });
+    }
+    renderFounderStaff();
+    // Afficher la pill des vrais viewers
+    showRealViewersPill();
   } else {
+    document.getElementById('admin-error').textContent = '❌ Mot de passe incorrect';
     document.getElementById('admin-error').style.display = 'block';
     document.getElementById('admin-password-input').value = '';
     document.getElementById('admin-password-input').focus();
   }
 }
+
+function openFounderModal() {
+  document.getElementById('founder-password-input').value = '';
+  document.getElementById('founder-error').style.display = 'none';
+  document.getElementById('modal-founder-login').classList.add('open');
+  setTimeout(() => document.getElementById('founder-password-input').focus(), 100);
+}
+function checkFounderLogin() {
+  const pw = document.getElementById('founder-password-input').value;
+  if (pw === FOUNDER_PASSWORD) {
+    founderLoggedIn = true;
+    adminLoggedIn = true; // Le fondateur a aussi les droits admin
+    closeModal('modal-founder-login');
+    openAdminSidebar(true);
+    // Ajouter au staff
+    if (!connectedStaff.find(s => s.name === 'Fondateur FZF')) {
+      connectedStaff.push({ name: 'Fondateur FZF', role: '👑 Fondateur', loginTime: new Date() });
+    }
+    renderFounderStaff();
+  } else {
+    document.getElementById('founder-error').style.display = 'block';
+    document.getElementById('founder-password-input').value = '';
+    document.getElementById('founder-password-input').focus();
+  }
+}
+function openAdminSidebar(isFounder) {
+  adminSidebarOpen = true;
+  const sidebar = document.getElementById('admin-sidebar');
+  sidebar.classList.add('open');
+  if (isFounder) sidebar.classList.add('founder-mode');
+  else sidebar.classList.remove('founder-mode');
+
+  const btn = document.getElementById('admin-toggle-btn');
+  btn.classList.add('active');
+  if (isFounder) {
+    btn.classList.add('founder-active');
+    btn.textContent = '👑 Fondateur';
+    // Afficher l'onglet fondateur
+    document.getElementById('tab-founder').style.display = 'flex';
+    // Changer header
+    document.getElementById('admin-title-text').textContent = '👑 Panneau Fondateur';
+    document.getElementById('admin-title-text').classList.add('founder-title');
+    document.getElementById('admin-status-pill').className = 'founder-status-pill';
+    document.getElementById('admin-status-pill').textContent = 'Fondateur';
+    // Footer
+    document.getElementById('admin-footer-status').className = 'founder-logged-as';
+    document.getElementById('admin-footer-status').textContent = '👑 Fondateur connecté';
+    document.getElementById('admin-footer-logout-btn').style.display = 'none';
+  } else {
+    btn.textContent = '🔓 Admin';
+    document.getElementById('tab-founder').style.display = 'none';
+  }
+  showRealViewersPill();
+}
+function showRealViewersPill() {
+  if (adminLoggedIn || founderLoggedIn) {
+    document.getElementById('real-viewers-admin-pill').classList.add('visible');
+  }
+}
 function logoutAdmin() {
   adminLoggedIn = false;
-  adminSidebarOpen = false;
-  document.getElementById('admin-sidebar').classList.remove('open');
-  document.getElementById('admin-toggle-btn').classList.remove('active');
-  document.getElementById('admin-toggle-btn').textContent = '🔒 Admin';
-  // Disable admin reply mode
+  if (!founderLoggedIn) {
+    adminSidebarOpen = false;
+    document.getElementById('admin-sidebar').classList.remove('open');
+    document.getElementById('admin-toggle-btn').classList.remove('active');
+    document.getElementById('admin-toggle-btn').textContent = '🔒 Admin';
+    document.getElementById('real-viewers-admin-pill').classList.remove('visible');
+  }
   adminChatbotReplyEnabled = false;
   document.getElementById('admin-chatbot-reply').classList.remove('visible');
   document.getElementById('admin-mode-badge').style.display = 'none';
   const tog = document.getElementById('toggle-admin-reply');
   if (tog) tog.checked = false;
+  connectedStaff = connectedStaff.filter(s => s.role !== 'Administrateur');
+  renderFounderStaff();
 }
+function logoutFounder() {
+  if (!confirm('Se déconnecter du mode Fondateur ?')) return;
+  founderLoggedIn = false;
+  adminLoggedIn = false;
+  adminSidebarOpen = false;
+  document.getElementById('admin-sidebar').classList.remove('open', 'founder-mode');
+  const btn = document.getElementById('admin-toggle-btn');
+  btn.classList.remove('active', 'founder-active');
+  btn.textContent = '🔒 Admin';
+  document.getElementById('tab-founder').style.display = 'none';
+  document.getElementById('admin-title-text').textContent = '⚙ Panneau Admin';
+  document.getElementById('admin-title-text').classList.remove('founder-title');
+  document.getElementById('admin-status-pill').className = 'admin-status-pill';
+  document.getElementById('admin-status-pill').textContent = 'Connecté';
+  document.getElementById('admin-footer-status').className = 'admin-logged-as';
+  document.getElementById('admin-footer-status').textContent = 'Admin connecté';
+  document.getElementById('admin-footer-logout-btn').style.display = '';
+  document.getElementById('real-viewers-admin-pill').classList.remove('visible');
+  connectedStaff = connectedStaff.filter(s => s.role !== '👑 Fondateur');
+  renderFounderStaff();
+}
+
+/* ═══ FONDATEUR — Gestion staff ═══ */
+function renderFounderStaff() {
+  const list = document.getElementById('founder-staff-list');
+  if (!list) return;
+  if (!connectedStaff.length) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun staff connecté.</div>';
+    return;
+  }
+  list.innerHTML = connectedStaff.map(s => {
+    const loginStr = s.loginTime ? s.loginTime.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'}) : '?';
+    const isFounder = s.role.includes('Fondateur');
+    return `<div class="staff-item">
+      <div class="staff-item-avatar" style="${isFounder?'background:linear-gradient(135deg,#7c3aed,#a855f7);':''}">${s.name.charAt(0)}</div>
+      <div class="staff-item-info">
+        <div class="staff-item-name">${s.name}</div>
+        <div class="staff-item-role">${s.role}</div>
+        <div class="staff-item-time">Connecté depuis ${loginStr}</div>
+      </div>
+      <div class="staff-online-dot"></div>
+      ${!isFounder ? `<button class="btn-revoke" onclick="forceDisconnectByName('${s.name}')">Déco.</button>` : ''}
+    </div>`;
+  }).join('');
+}
+function forceDisconnectByName(name) {
+  if (!founderLoggedIn) return;
+  connectedStaff = connectedStaff.filter(s => s.name !== name);
+  renderFounderStaff();
+  showBanToastMsg(`⚡ ${name} a été déconnecté`);
+}
+function forceLogoutStaff() {
+  if (!founderLoggedIn) return;
+  const name = document.getElementById('force-logout-name').value.trim();
+  if (!name) { alert('Entre le nom du staff.'); return; }
+  forceDisconnectByName(name);
+  document.getElementById('force-logout-name').value = '';
+}
+
+/* ═══ FONDATEUR — Révocation admin ═══ */
+function revokeAdmin() {
+  if (!founderLoggedIn) return;
+  const name = document.getElementById('revoke-admin-name').value.trim();
+  const reason = document.getElementById('revoke-reason').value.trim();
+  if (!name || !reason) { alert('Remplis le nom et la raison.'); return; }
+  if (!confirm(`⚠️ Révoquer définitivement le rôle Admin de "${name}" ?\nRaison : ${reason}\n\nCette action est irréversible.`)) return;
+  revokedAdmins[name] = { reason, date: new Date().toLocaleDateString('fr-FR') };
+  document.getElementById('revoke-admin-name').value = '';
+  document.getElementById('revoke-reason').value = '';
+  renderRevokedAdmins();
+  connectedStaff = connectedStaff.filter(s => s.name !== name);
+  renderFounderStaff();
+  showBanToastMsg(`🚫 ${name} révoqué définitivement`);
+}
+function renderRevokedAdmins() {
+  const list = document.getElementById('revoked-admins-list');
+  const keys = Object.keys(revokedAdmins);
+  if (!keys.length) { list.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucune révocation.</div>'; return; }
+  list.innerHTML = keys.map(k => `<div class="revoked-item">
+    <div>
+      <div class="revoked-name">🚫 ${k}</div>
+      <div style="font-size:11px;color:var(--muted);">${revokedAdmins[k].reason} — ${revokedAdmins[k].date}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
+      <span class="revoked-badge">RÉVOQUÉ</span>
+      <button class="btn-restore" onclick="restoreAdmin('${k}')">Restaurer</button>
+    </div>
+  </div>`).join('');
+}
+function restoreAdmin(name) {
+  if (!founderLoggedIn) return;
+  if (!confirm(`Restaurer les droits admin de "${name}" ?`)) return;
+  delete revokedAdmins[name];
+  renderRevokedAdmins();
+  showBanToastMsg(`✅ ${name} restauré`);
+}
+
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(m => {
   m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
@@ -1174,6 +1671,11 @@ function setStream() {
   streamStartTime = Date.now();
   document.getElementById('stats-section').style.display = 'block';
   if (!streamDurationInterval) streamDurationInterval = setInterval(updateDuration, 1000);
+  // Auto-notif
+  if (document.getElementById('toggle-auto-notif').checked) {
+    const notifTitle = label ? `🔴 ${label} — En direct !` : '🔴 Diffusion en cours !';
+    sendNotification(notifTitle, 'Le match est en direct sur Football Zone France. Rejoins-nous !');
+  }
 }
 function stopStream() {
   const old = document.getElementById('active-player');
@@ -1306,7 +1808,6 @@ function toggleLiveChat(enabled) {
     inputs.style.display='none';
   }
 }
-
 function appendLiveChatMsg(type, username, text, time, allowBan=false) {
   if (type !== 'system' && type !== 'admin' && bannedUsers[username]) return;
   const area = document.getElementById('live-chat-msgs');
@@ -1343,9 +1844,7 @@ function appendLiveChatMsg(type, username, text, time, allowBan=false) {
   area.appendChild(div);
   area.scrollTop = area.scrollHeight;
   chatMsgCount++;
-  document.getElementById('tools-chat-msgs').textContent = chatMsgCount;
 }
-
 function sendLiveMsg() {
   if (!liveChatEnabled) return;
   const nick = document.getElementById('chat-nickname').value.trim();
@@ -1377,8 +1876,6 @@ function sendLiveMsg() {
     }, 1200+Math.random()*2000);
   }
 }
-
-/* Admin reply in live chat */
 function sendAdminLiveReply() {
   if (!adminLoggedIn) return;
   const msg = document.getElementById('admin-live-reply-input').value.trim();
@@ -1388,12 +1885,10 @@ function sendAdminLiveReply() {
   const time = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
   appendLiveChatMsg('admin','Admin',msg,time,false);
 }
-
 function clearLiveChat() {
   if (!confirm('Vider tout le chat ?')) return;
   document.getElementById('live-chat-msgs').innerHTML='<div class="chat-msg system"><div class="chat-msg-text">💬 Chat vidé par l\'admin.</div></div>';
   chatMsgCount = 0;
-  document.getElementById('tools-chat-msgs').textContent = '0';
 }
 
 /* ═══ BAN SYSTEM ═══ */
@@ -1417,7 +1912,7 @@ function confirmBan() {
   if (pendingBanMsgEl) pendingBanMsgEl.style.opacity='0.3';
   closeModal('modal-ban');
   renderBanList();
-  showBanToast(pendingBanUsername);
+  showBanToastMsg(`🚫 ${pendingBanUsername} banni`);
   appendLiveChatMsg('system','',`🚫 ${pendingBanUsername} a été banni (${selectedBanReason}).`,'');
   pendingBanUsername=''; pendingBanMsgEl=null;
 }
@@ -1432,9 +1927,11 @@ function renderBanList() {
 }
 function unban(username) { delete bannedUsers[username]; renderBanList(); }
 function clearAllBans() { if (!confirm('Supprimer tous les bans ?')) return; bannedUsers={}; renderBanList(); }
-function showBanToast(username) {
+
+/* Toast générique */
+function showBanToastMsg(msg) {
   const t = document.getElementById('ban-toast');
-  t.textContent = `🚫 ${username} banni du chat`;
+  t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
@@ -1452,6 +1949,88 @@ function sendAnnounce() {
   if (!msg) return;
   appendLiveChatMsg('system','',`📢 Admin : ${msg}`,'');
   document.getElementById('announce-input').value='';
+}
+
+/* ═══ SYSTÈME NOTIFICATIONS PUSH ═══ */
+function requestNotifPermission() {
+  if (!('Notification' in window)) {
+    alert('Ton navigateur ne supporte pas les notifications push.');
+    return;
+  }
+  Notification.requestPermission().then(perm => {
+    notifPermission = perm;
+    if (perm === 'granted') {
+      document.getElementById('notif-cta-bar').style.display = 'none';
+      document.getElementById('notif-enabled-bar').style.display = 'block';
+      document.getElementById('notif-sub-count').textContent = '1';
+      // Notification de confirmation
+      new Notification('🎉 Notifications FZF activées !', {
+        body: 'Tu recevras une alerte dès qu\'un match commence en direct.',
+        icon: 'logo.png',
+        badge: 'logo.png',
+        tag: 'fzf-welcome'
+      });
+    } else if (perm === 'denied') {
+      alert('Tu as refusé les notifications. Tu peux les réactiver dans les paramètres de ton navigateur.');
+    }
+  });
+}
+function dismissNotifBar() {
+  document.getElementById('notif-cta-bar').style.display = 'none';
+  localStorage.setItem('fzf-notif-dismissed', '1');
+}
+// Vérifier si déjà accepté ou refusé
+window.addEventListener('load', () => {
+  if (Notification.permission === 'granted') {
+    document.getElementById('notif-cta-bar').style.display = 'none';
+    document.getElementById('notif-enabled-bar').style.display = 'block';
+    document.getElementById('notif-sub-count').textContent = '1';
+  } else if (localStorage.getItem('fzf-notif-dismissed') || Notification.permission === 'denied') {
+    document.getElementById('notif-cta-bar').style.display = 'none';
+  }
+});
+
+function sendNotification(title, body) {
+  if (Notification.permission === 'granted') {
+    try {
+      const n = new Notification(title, {
+        body: body,
+        icon: 'logo.png',
+        badge: 'logo.png',
+        tag: 'fzf-live-' + Date.now(),
+        requireInteraction: true
+      });
+      n.onclick = () => { window.focus(); n.close(); showPage('live'); };
+      notifSentCount++;
+      document.getElementById('notif-sent-count').textContent = notifSentCount;
+    } catch(e) {}
+  }
+  // Toujours afficher le toast in-app
+  showPushToast(title, body);
+}
+function sendAdminNotif() {
+  if (!adminLoggedIn) return;
+  const title = document.getElementById('notif-title-input').value.trim() || '🔴 Diffusion FZF en cours !';
+  const body = document.getElementById('notif-body-input').value.trim() || 'Un match commence maintenant sur Football Zone France.';
+  sendNotification(title, body);
+  document.getElementById('notif-title-input').value = '';
+  document.getElementById('notif-body-input').value = '';
+  showBanToastMsg('🔔 Notification envoyée !');
+}
+function previewNotif() {
+  const title = document.getElementById('notif-title-input').value.trim() || '🔴 Aperçu notification';
+  const body = document.getElementById('notif-body-input').value.trim() || 'Voici à quoi ressemblera ta notification.';
+  showPushToast(title, body);
+}
+function showPushToast(title, body) {
+  document.getElementById('push-preview-title').textContent = title;
+  document.getElementById('push-preview-body').textContent = body;
+  const toast = document.getElementById('push-preview-toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 6000);
+}
+function dismissPushToast() {
+  document.getElementById('push-preview-toast').classList.remove('show');
 }
 
 /* ═══ CHATBOT TOGGLE ═══ */
