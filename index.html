@@ -1,8 +1,5 @@
-
-
 bash
-
-cat > /home/claude/index.html << 'ENDDOC'
+cat > /mnt/user-data/outputs/index.html << 'ENDOFHTML'
 <!DOCTYPE html>
 <html lang="fr" data-theme="dark">
 <head>
@@ -222,8 +219,7 @@ cat > /home/claude/index.html << 'ENDDOC'
     .stream-slot iframe, .stream-slot video { width:100%; height:100%; border:none; }
     .stream-slot-label { position:absolute; top:8px; left:8px; background:rgba(0,0,0,0.7); color:white; font-size:11px; font-weight:700; padding:3px 8px; border-radius:6px; z-index:5; pointer-events:none; }
     .stream-slot-live { position:absolute; top:8px; right:8px; background:var(--red); color:white; font-size:10px; font-weight:800; padding:2px 8px; border-radius:6px; z-index:5; animation:pulse-dot 1.5s infinite; pointer-events:none; }
-    .stream-protect-overlay { position:absolute; inset:0; z-index:6; background:transparent; cursor:default; }
-    .admin-active .stream-protect-overlay { display:none; }
+    /* ✅ CORRECTION: stream-protect-overlay SUPPRIMÉ — ne bloque plus les visiteurs */
     .stream-fullscreen-btn { position:absolute; bottom:10px; right:10px; z-index:10; width:36px; height:36px; border-radius:8px; background:rgba(0,0,0,0.65); border:1px solid rgba(255,255,255,0.2); color:white; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; backdrop-filter:blur(4px); opacity:0; }
     .stream-slot:hover .stream-fullscreen-btn { opacity:1; }
     .stream-fullscreen-btn:hover { background:rgba(37,99,235,0.7); border-color:rgba(37,99,235,0.8); }
@@ -540,7 +536,7 @@ cat > /home/claude/index.html << 'ENDDOC'
       <div class="admin-header">
         <div>
           <div class="admin-title" id="admin-title-text">⚙ Panneau Admin</div>
-          <div class="admin-subtitle" id="admin-subtitle-text">Football Zone France v4.0</div>
+          <div class="admin-subtitle" id="admin-subtitle-text">Football Zone France v4.1</div>
         </div>
         <div class="admin-status-pill" id="admin-status-pill">Connecté</div>
       </div>
@@ -1122,7 +1118,7 @@ cat > /home/claude/index.html << 'ENDDOC'
 
 <script>
 /* ════════════════════════════════════════════════════════
-   FIREBASE — CONFIG + INIT
+   FIREBASE CONFIG
 ════════════════════════════════════════════════════════ */
 const firebaseConfig = {
   apiKey: "AIzaSyClhfjRn6aNxiEEl7O8zVCeNV-xAiEKiKk",
@@ -1136,7 +1132,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const DB = firebase.database();
 
-/* Badge Firebase connexion */
 DB.ref('.info/connected').on('value', snap => {
   const b = document.getElementById('firebase-badge');
   if (snap.val()) { b.style.cssText=''; b.innerHTML='🔥 Firebase connecté'; }
@@ -1144,7 +1139,7 @@ DB.ref('.info/connected').on('value', snap => {
 });
 
 /* ═══════════════════════════════════════════════════════
-   CONSTANTES + ÉTAT GLOBAL
+   ÉTAT GLOBAL
 ═══════════════════════════════════════════════════════ */
 const ADMIN_PASSWORD   = "fzf2026";
 const FOUNDER_PASSWORD = "fzfFounder2026!";
@@ -1164,7 +1159,7 @@ let streamStartTime=null, streamDurationInterval=null;
 let notifLog=[];
 
 /* ═══════════════════════════════════════════════════════
-   SESSION + VISITEURS (Firebase)
+   SESSION VISITEUR
 ═══════════════════════════════════════════════════════ */
 let sessionId = sessionStorage.getItem('fzf_sid4') || ('u_'+Date.now()+'_'+Math.random().toString(36).substr(2,6));
 sessionStorage.setItem('fzf_sid4', sessionId);
@@ -1180,7 +1175,6 @@ function registerVisitor(page){
 }
 setInterval(()=> registerVisitor('Live'), 30000);
 
-/* Écoute en temps réel des visiteurs */
 DB.ref('visitors').on('value', snap => {
   const data = snap.val() || {};
   const now = Date.now();
@@ -1190,7 +1184,6 @@ DB.ref('visitors').on('value', snap => {
     const el=document.getElementById(id); if(el) el.textContent=count;
   });
   const co=document.getElementById('chat-online-count'); if(co) co.textContent=count+' en ligne';
-  // Listes visiteurs
   ['real-visitors-list','founder-visitors-list'].forEach(cid=>{
     const el=document.getElementById(cid); if(!el) return;
     if(!active.length){ el.innerHTML='<div style="padding:12px 14px;font-size:12px;color:var(--muted);">Aucun visiteur actif.</div>'; return; }
@@ -1201,7 +1194,6 @@ DB.ref('visitors').on('value', snap => {
       return `<div class="real-visitor-item"><span class="real-visitor-dot"></span><span style="font-size:14px;">${v.device}</span><span class="real-visitor-page">${v.city||'?'} — ${v.page}${isMe?' <b>(toi)</b>':''}</span><span class="real-visitor-time">${agoStr}</span></div>`;
     }).join('');
   });
-  // Stats admin
   let peak = parseInt(localStorage.getItem('fzf_peak')||'0');
   if(count>peak){ peak=count; localStorage.setItem('fzf_peak',peak); }
   const sc=document.getElementById('stat-current'); if(sc) sc.textContent=count;
@@ -1212,10 +1204,8 @@ DB.ref('visitors').on('value', snap => {
 function showSyncIndicator(){ const el=document.getElementById('sync-indicator'); el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2000); }
 
 /* ═══════════════════════════════════════════════════════
-   FIREBASE LISTENERS TEMPS RÉEL — toutes les features
+   FIREBASE LISTENERS
 ═══════════════════════════════════════════════════════ */
-
-/* STREAM */
 DB.ref('stream').on('value', snap => {
   const data = snap.val();
   if(!data) return;
@@ -1226,12 +1216,10 @@ DB.ref('stream').on('value', snap => {
   showSyncIndicator();
 });
 
-/* COUNTDOWN */
 DB.ref('countdown').on('value', snap => {
   const data = snap.val();
   if(!data) return;
   applyCountdownState(data);
-  // Sync toggle admin
   const tog=document.getElementById('toggle-countdown');
   if(tog) tog.checked=!!data.active;
   if(data.active && document.getElementById('countdown-config'))
@@ -1239,7 +1227,6 @@ DB.ref('countdown').on('value', snap => {
   showSyncIndicator();
 });
 
-/* PLANNING */
 DB.ref('planning').on('value', snap => {
   const data = snap.val();
   planningMatches = data ? Object.values(data) : [];
@@ -1248,7 +1235,6 @@ DB.ref('planning').on('value', snap => {
   showSyncIndicator();
 });
 
-/* CHAT TOGGLE */
 DB.ref('chat_toggle').on('value', snap => {
   const data = snap.val();
   if(data===null) return;
@@ -1259,7 +1245,6 @@ DB.ref('chat_toggle').on('value', snap => {
   showSyncIndicator();
 });
 
-/* CHAT MESSAGES */
 DB.ref('chat_messages').limitToLast(100).on('value', snap => {
   const data = snap.val();
   if(!data) return;
@@ -1272,13 +1257,11 @@ DB.ref('chat_messages').limitToLast(100).on('value', snap => {
   showSyncIndicator();
 });
 
-/* BANS */
 DB.ref('bans').on('value', snap => {
   bannedUsers = snap.val() || {};
   renderBanList();
 });
 
-/* SONDAGE */
 DB.ref('poll').on('value', snap => {
   const data = snap.val();
   if(!data) return;
@@ -1288,11 +1271,10 @@ DB.ref('poll').on('value', snap => {
   showSyncIndicator();
 });
 
-/* PRONOSTICS */
 DB.ref('pronostic').on('value', snap => {
   const data = snap.val();
   if(!data) return;
-  pronostics = data.pronostics || [];
+  pronostics = data.pronostics ? Object.values(data.pronostics) : [];
   pronosticConfig = data.config || {teamA:'',teamB:'',match:''};
   pronosticActive = !!data.active;
   renderPronosticPublic();
@@ -1304,7 +1286,6 @@ DB.ref('pronostic').on('value', snap => {
   showSyncIndicator();
 });
 
-/* STAFF CHAT */
 DB.ref('staff_chat').limitToLast(50).on('value', snap => {
   const data = snap.val();
   if(!data || !adminLoggedIn) return;
@@ -1315,7 +1296,6 @@ DB.ref('staff_chat').limitToLast(50).on('value', snap => {
   showSyncIndicator();
 });
 
-/* STAFF CONNECTÉ */
 DB.ref('staff_online').on('value', snap => {
   const data = snap.val() || {};
   const list = Object.values(data);
@@ -1326,21 +1306,19 @@ DB.ref('staff_online').on('value', snap => {
   showSyncIndicator();
 });
 
-/* NOTIFICATIONS LOG */
 DB.ref('notif_log').limitToLast(20).on('value', snap => {
   const data = snap.val();
   notifLog = data ? Object.values(data) : [];
   renderNotifLog();
 });
 
-/* RÉVOCATIONS */
 DB.ref('revoked_admins').on('value', snap => {
   revokedAdmins = snap.val() || {};
   renderRevokedAdmins();
 });
 
 /* ═══════════════════════════════════════════════════════
-   SESSION ADMIN + STAFF EN LIGNE
+   SESSION ADMIN
 ═══════════════════════════════════════════════════════ */
 function saveAdminSession(role,pseudo){ localStorage.setItem('fzf_admin_sess4', JSON.stringify({role,pseudo,ts:Date.now()})); }
 function loadAdminSession(){ try{ const s=JSON.parse(localStorage.getItem('fzf_admin_sess4')); if(!s) return null; if(Date.now()-s.ts>24*3600000){ localStorage.removeItem('fzf_admin_sess4'); return null; } return s; } catch(e){ return null; } }
@@ -1373,10 +1351,6 @@ function renderStaffChatMembersFromData(list){
     return `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(16,185,129,0.08);"><div style="width:28px;height:28px;border-radius:50%;background:${isFounder?'linear-gradient(135deg,#7c3aed,#a855f7)':'linear-gradient(135deg,#10b981,#34d399)'};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;">${(s.name||'?').charAt(0).toUpperCase()}</div><div style="flex:1;"><div style="font-size:12px;font-weight:700;color:${isFounder?'#c084fc':'#34d399'};">${s.name}${isMe?' (toi)':''}</div><div style="font-size:10px;color:var(--muted);">${s.role}</div></div><div style="width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pulse-dot 2s infinite;"></div></div>`;
   }).join('');
 }
-
-/* Alias pour compatibilité */
-function renderFounderStaff(){}
-function renderStaffChatMembers(){}
 
 /* ═══════════════════════════════════════════════════════
    STAFF CHAT
@@ -1453,7 +1427,6 @@ function toggleAdminSidebar(){
   adminSidebarOpen=!adminSidebarOpen;
   document.getElementById('admin-sidebar').classList.toggle('open',adminSidebarOpen);
   document.getElementById('admin-toggle-btn').classList.toggle('active',adminSidebarOpen);
-  updateStreamProtection();
 }
 
 function checkAdminLogin(){
@@ -1467,7 +1440,6 @@ function checkAdminLogin(){
     adminPseudo=pseudo; adminLoggedIn=true;
     closeModal('modal-login'); openAdminSidebar(false);
     registerStaffOnline(pseudo,'Administrateur'); saveAdminSession('admin',pseudo);
-    updateStreamProtection();
   } else {
     errEl.textContent='❌ Mot de passe incorrect.'; errEl.style.display='block';
     document.getElementById('admin-password-input').value='';
@@ -1491,7 +1463,6 @@ function checkFounderLogin(){
     adminPseudo=pseudo; founderLoggedIn=true; adminLoggedIn=true;
     closeModal('modal-founder-login'); openAdminSidebar(true);
     registerStaffOnline(pseudo,'👑 Fondateur'); saveAdminSession('founder',pseudo);
-    updateStreamProtection();
   } else {
     errEl.textContent='❌ Mot de passe incorrect.'; errEl.style.display='block';
     document.getElementById('founder-password-input').value='';
@@ -1522,7 +1493,6 @@ function openAdminSidebar(isFounder){
   document.getElementById('planning-private-section').style.display='block';
   renderStreamSlotsAdmin(); renderBanList(); renderPlanning();
   updateAdminPronoList(); updateAdminPollStatus();
-  updateStreamProtection();
 }
 
 function logoutAdmin(){
@@ -1534,7 +1504,6 @@ function logoutAdmin(){
     document.getElementById('real-viewers-admin-pill').classList.remove('visible');
     document.getElementById('private-planning-admin-section').style.display='none';
     document.getElementById('planning-private-section').style.display='none';
-    updateStreamProtection();
   }
 }
 
@@ -1555,7 +1524,6 @@ function logoutFounder(){
   document.getElementById('real-viewers-admin-pill').classList.remove('visible');
   document.getElementById('private-planning-admin-section').style.display='none';
   document.getElementById('planning-private-section').style.display='none';
-  updateStreamProtection();
 }
 
 function revokeAdmin(){
@@ -1580,26 +1548,8 @@ function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); }));
 
 /* ═══════════════════════════════════════════════════════
-   PROTECTION STREAM + PLEIN ÉCRAN
+   ✅ PLEIN ÉCRAN (sans overlay bloquant)
 ═══════════════════════════════════════════════════════ */
-function updateStreamProtection(){
-  const isAdmin=adminLoggedIn||founderLoggedIn;
-  for(let i=0;i<4;i++){
-    const slot=document.getElementById('slot-'+i); if(!slot) continue;
-    const existingOverlay=slot.querySelector('.stream-protect-overlay');
-    if(existingOverlay&&isAdmin){ existingOverlay.remove(); }
-    else if(!existingOverlay&&!isAdmin){
-      const hasStream=activeStreams[i]&&activeStreams[i].active;
-      if(hasStream){
-        const overlay=document.createElement('div');
-        overlay.className='stream-protect-overlay';
-        overlay.addEventListener('dblclick',()=>enterFullscreen(i));
-        slot.appendChild(overlay);
-      }
-    }
-  }
-}
-
 function enterFullscreen(slotIndex){
   const slot=document.getElementById('slot-'+slotIndex); if(!slot) return;
   if(document.fullscreenElement){ document.exitFullscreen().catch(()=>{}); }
@@ -1618,8 +1568,11 @@ document.addEventListener('fullscreenchange',()=>{
 });
 
 /* ═══════════════════════════════════════════════════════
-   STREAMS (Firebase)
+   ✅ STREAMS — SANS OVERLAY BLOQUANT
 ═══════════════════════════════════════════════════════ */
+/* updateStreamProtection est conservée vide pour compatibilité */
+function updateStreamProtection(){ /* overlay supprimé — visiteurs accèdent directement au player */ }
+
 function setStreamMode(mode){
   currentStreamMode=mode;
   DB.ref('stream/mode').set(mode);
@@ -1691,7 +1644,6 @@ function applyStreamsState(streams,mode){
     const s=activeStreams[i]||{};
     if(s.active&&s.url){
       anyActive=true;
-      const old=slot.querySelector('.active-player'); if(old) old.remove();
       const ph=slot.querySelector('.no-stream-placeholder'); if(ph) ph.remove();
       let lb=slot.querySelector('.stream-slot-label');
       if(!lb){ lb=document.createElement('div'); lb.className='stream-slot-label'; slot.appendChild(lb); }
@@ -1701,32 +1653,28 @@ function applyStreamsState(streams,mode){
       const existingPlayer=slot.querySelector('.active-player');
       if(existingPlayer&&existingPlayer.src===s.url) { addFullscreenBtn(slot,i); continue; }
       if(existingPlayer) existingPlayer.remove();
+      /* ✅ CORRECTION : iframe SANS overlay bloquant — visiteurs peuvent interagir */
       if(s.url.includes('.m3u8')){
         const video=document.createElement('video');
         video.className='active-player'; video.controls=true; video.autoplay=true;
+        video.muted=false; video.playsInline=true;
         video.style.cssText='width:100%;height:100%;background:#000;'; slot.appendChild(video);
         if(window.Hls&&Hls.isSupported()){ if(hlsInstances[i]) hlsInstances[i].destroy(); hlsInstances[i]=new Hls(); hlsInstances[i].loadSource(s.url); hlsInstances[i].attachMedia(video); }
         else if(video.canPlayType('application/vnd.apple.mpegurl')) video.src=s.url;
       } else {
         const iframe=document.createElement('iframe');
         iframe.className='active-player'; iframe.src=s.url; iframe.allowFullscreen=true;
-        iframe.allow='autoplay; fullscreen'; iframe.style.cssText='width:100%;height:100%;border:none;';
+        iframe.allow='autoplay; fullscreen; picture-in-picture; encrypted-media';
+        iframe.setAttribute('allowfullscreen','true');
+        iframe.style.cssText='width:100%;height:100%;border:none;';
         slot.appendChild(iframe);
       }
+      /* ✅ Bouton plein écran visible au survol */
       addFullscreenBtn(slot,i);
-      if(!(adminLoggedIn||founderLoggedIn)){
-        if(!slot.querySelector('.stream-protect-overlay')){
-          const overlay=document.createElement('div');
-          overlay.className='stream-protect-overlay';
-          overlay.addEventListener('dblclick',()=>enterFullscreen(i));
-          slot.appendChild(overlay);
-        }
-      }
     } else {
       const old=slot.querySelector('.active-player'); if(old) old.remove();
       const lb=slot.querySelector('.stream-slot-label'); if(lb) lb.remove();
       const liv=slot.querySelector('.stream-slot-live'); if(liv) liv.remove();
-      const ovl=slot.querySelector('.stream-protect-overlay'); if(ovl) ovl.remove();
       const fsBtn=slot.querySelector('.stream-fullscreen-btn'); if(fsBtn) fsBtn.remove();
       if(!slot.querySelector('.no-stream-placeholder')){
         const ph=document.createElement('div'); ph.className='no-stream-placeholder';
@@ -1751,7 +1699,7 @@ function applyStreamsState(streams,mode){
 }
 
 /* ═══════════════════════════════════════════════════════
-   COUNTDOWN (Firebase)
+   COUNTDOWN
 ═══════════════════════════════════════════════════════ */
 function toggleCountdownAdmin(enabled){
   document.getElementById('countdown-config').style.display=enabled?'block':'none';
@@ -1800,7 +1748,7 @@ function updateCountdown(){
 }
 
 /* ═══════════════════════════════════════════════════════
-   PLANNING (Firebase)
+   PLANNING
 ═══════════════════════════════════════════════════════ */
 function addPlanningMatch(){
   const match=document.getElementById('plan-match').value.trim();
@@ -1814,9 +1762,7 @@ function addPlanningMatch(){
   showBanToastMsg('✅ Match ajouté !');
 }
 
-function removePlanningMatch(id){
-  DB.ref('planning/'+id).remove();
-}
+function removePlanningMatch(id){ DB.ref('planning/'+id).remove(); }
 
 function addFounderPlanning(){
   if(!founderLoggedIn) return;
@@ -1835,10 +1781,8 @@ function renderPlanning(){
   const adminPrivateList=document.getElementById('admin-private-planning-list');
   const publicGrid=document.getElementById('planning-public-grid');
   const privateGrid=document.getElementById('planning-private-grid');
-
   const publicMatches=planningMatches.filter(m=>!m.privateAdmin);
   const privateMatches=planningMatches.filter(m=>m.privateAdmin);
-
   if(adminList){
     if(!publicMatches.length){ adminList.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun match planifié.</div>'; }
     else { adminList.innerHTML=publicMatches.map(m=>{
@@ -1847,7 +1791,6 @@ function renderPlanning(){
       return `<div class="plan-item"><div class="plan-item-dot${isLive?' live':''}"></div><div class="plan-item-info"><div class="plan-item-match">${m.match}</div><div class="plan-item-date">${dateStr}${m.comp?' · '+m.comp:''}</div></div><button class="plan-item-delete" onclick="removePlanningMatch(${m.id})">✕</button></div>`;
     }).join(''); }
   }
-
   if(adminPrivateList){
     if(!privateMatches.length){ adminPrivateList.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">Aucun match privé.</div>'; }
     else { adminPrivateList.innerHTML=privateMatches.map(m=>{
@@ -1856,7 +1799,6 @@ function renderPlanning(){
       return `<div class="plan-item" style="border-color:rgba(168,85,247,0.3);"><div class="plan-item-dot private"></div><div class="plan-item-info"><div class="plan-item-match">${m.match} <span class="private-badge">🔒</span></div><div class="plan-item-date">${dateStr}</div></div><button class="plan-item-delete" onclick="removePlanningMatch(${m.id})">✕</button></div>`;
     }).join(''); }
   }
-
   if(publicGrid){
     if(!publicMatches.length){ publicGrid.innerHTML='<div class="planning-empty">Aucun match planifié. Restez connectés !</div>'; }
     else { publicGrid.innerHTML=publicMatches.map(m=>{
@@ -1865,7 +1807,6 @@ function renderPlanning(){
       return `<div class="planning-public-card${isLive?' is-live':''}"><div class="planning-card-top"><div class="planning-card-dot${isLive?' live':''}"></div><div class="planning-card-match">${m.match}</div></div><div class="planning-card-details"><div><div class="planning-card-date">${dateStr}</div>${m.comp?`<div style="font-size:11px;color:var(--muted);margin-top:2px;">${m.comp}</div>`:''}</div>${m.discord?`<a href="https://discord.gg/ftzf" class="planning-card-discord" target="_blank">Discord</a>`:''}</div><div class="planning-card-author${m.isFounder?' founder':''}">Ajouté par : ${m.author||'Admin'}${m.isFounder?' 👑':''}</div></div>`;
     }).join(''); }
   }
-
   if(privateGrid){
     if(!privateMatches.length){ privateGrid.innerHTML='<div class="planning-empty">Aucun match privé planifié.</div>'; }
     else { privateGrid.innerHTML=privateMatches.map(m=>{
@@ -1877,12 +1818,9 @@ function renderPlanning(){
 }
 
 /* ═══════════════════════════════════════════════════════
-   LIVE CHAT (Firebase)
+   CHAT LIVE
 ═══════════════════════════════════════════════════════ */
-function toggleLiveChat(enabled){
-  DB.ref('chat_toggle').set({enabled});
-  applyChatToggle(enabled);
-}
+function toggleLiveChat(enabled){ DB.ref('chat_toggle').set({enabled}); applyChatToggle(enabled); }
 
 function applyChatToggle(enabled,silent=false){
   liveChatEnabled=enabled;
@@ -1934,11 +1872,7 @@ function sendAdminLiveReply(){
   DB.ref('chat_messages').push({type:'admin',username:'Admin FZF',text:msg,time,ts:Date.now()});
 }
 
-function clearLiveChat(){
-  if(!confirm('Vider tout le chat ?')) return;
-  DB.ref('chat_messages').remove();
-}
-
+function clearLiveChat(){ if(!confirm('Vider tout le chat ?')) return; DB.ref('chat_messages').remove(); }
 function sendAnnounce(){
   const msg=document.getElementById('announce-input').value.trim(); if(!msg) return;
   const now=new Date();
@@ -1948,15 +1882,9 @@ function sendAnnounce(){
 }
 
 /* ═══════════════════════════════════════════════════════
-   BANS (Firebase)
+   BANS
 ═══════════════════════════════════════════════════════ */
-function openBanModal(username,msgEl){
-  if(!adminLoggedIn) return;
-  pendingBanUsername=username; pendingBanMsgEl=msgEl; selectedBanReason='';
-  document.getElementById('ban-target-display').textContent='🚫 '+username;
-  document.querySelectorAll('.ban-reason-chip').forEach(c=>c.classList.remove('selected'));
-  document.getElementById('modal-ban').classList.add('open');
-}
+function openBanModal(username,msgEl){ if(!adminLoggedIn) return; pendingBanUsername=username; pendingBanMsgEl=msgEl; selectedBanReason=''; document.getElementById('ban-target-display').textContent='🚫 '+username; document.querySelectorAll('.ban-reason-chip').forEach(c=>c.classList.remove('selected')); document.getElementById('modal-ban').classList.add('open'); }
 function selectBanReason(el,reason){ selectedBanReason=reason; document.querySelectorAll('.ban-reason-chip').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); }
 function confirmBan(){
   if(!pendingBanUsername||!selectedBanReason){ alert('Sélectionne une raison.'); return; }
@@ -1974,11 +1902,10 @@ function renderBanList(){
 }
 function unban(username){ DB.ref('bans/'+username.replace(/[.#$/\[\]]/g,'_')).remove(); }
 function clearAllBans(){ if(!confirm('Supprimer tous les bans ?')) return; DB.ref('bans').remove(); }
-
 function showBanToastMsg(msg){ const t=document.getElementById('ban-toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
 
 /* ═══════════════════════════════════════════════════════
-   SONDAGES (Firebase)
+   SONDAGES
 ═══════════════════════════════════════════════════════ */
 function launchPoll(){
   if(!adminLoggedIn) return;
@@ -2005,10 +1932,7 @@ function applyPollState(poll){
   currentPoll=poll;
   const statusBadge=document.getElementById('poll-status-badge');
   const content=document.getElementById('poll-content');
-  if(!poll||!poll.options||!poll.options.length){
-    statusBadge.textContent='Aucun sondage'; statusBadge.style.background='';
-    content.innerHTML='<div class="poll-no-poll">Aucun sondage actif pour le moment.</div>'; return;
-  }
+  if(!poll||!poll.options||!poll.options.length){ statusBadge.textContent='Aucun sondage'; statusBadge.style.background=''; content.innerHTML='<div class="poll-no-poll">Aucun sondage actif pour le moment.</div>'; return; }
   statusBadge.textContent=poll.active?'🟢 EN COURS':'⏹ TERMINÉ';
   statusBadge.style.background=poll.active?'rgba(74,222,128,0.15)':'rgba(148,163,184,0.15)';
   const myVoteIdx=sessionStorage.getItem('fzf_poll_vote_'+poll.endTime);
@@ -2037,7 +1961,6 @@ function votePoll(optionIndex){
   const myVoteIdx=sessionStorage.getItem('fzf_poll_vote_'+currentPoll.endTime);
   if(myVoteIdx!==null) return;
   sessionStorage.setItem('fzf_poll_vote_'+currentPoll.endTime,String(optionIndex));
-  // Transaction Firebase pour incrémenter
   DB.ref('poll/options/'+optionIndex+'/votes').transaction(v=>(v||0)+1);
   DB.ref('poll/totalVotes').transaction(v=>(v||0)+1);
 }
@@ -2059,13 +1982,9 @@ function updateAdminPollStatus(){
 }
 
 /* ═══════════════════════════════════════════════════════
-   PRONOSTICS (Firebase)
+   PRONOSTICS
 ═══════════════════════════════════════════════════════ */
-function togglePronostic(enabled){
-  pronosticActive=enabled;
-  document.getElementById('pronostic-panel').style.display=enabled?'block':'none';
-  DB.ref('pronostic/active').set(enabled);
-}
+function togglePronostic(enabled){ pronosticActive=enabled; document.getElementById('pronostic-panel').style.display=enabled?'block':'none'; DB.ref('pronostic/active').set(enabled); }
 
 function configPronostic(){
   const teamA=document.getElementById('prono-team-a').value.trim();
@@ -2096,17 +2015,10 @@ function revealPronosticResult(){
   const rA=parseInt(document.getElementById('real-score-a').value);
   const rB=parseInt(document.getElementById('real-score-b').value);
   if(isNaN(rA)||isNaN(rB)){ alert('Entre le score réel.'); return; }
-  const updates={};
-  pronostics.forEach((p,idx)=>{
-    // Trouver la clé Firebase... on refait via snapshot
-  });
-  // Simpler: re-fetch and update
   DB.ref('pronostic/pronostics').once('value').then(snap=>{
     const data=snap.val(); if(!data) return;
     const upd={};
-    Object.entries(data).forEach(([key,p])=>{
-      upd[key+'/exact'] = p.scoreA===rA && p.scoreB===rB;
-    });
+    Object.entries(data).forEach(([key,p])=>{ upd[key+'/exact'] = p.scoreA===rA && p.scoreB===rB; });
     DB.ref('pronostic/pronostics').update(upd);
     const exactNames=Object.values(data).filter(p=>p.scoreA===rA&&p.scoreB===rB).map(p=>p.pseudo);
     const msg=exactNames.length?`🏆 ${exactNames.join(', ')} ont trouvé le bon score (${rA}–${rB}) !`:`❌ Personne n'a trouvé le score exact (${rA}–${rB}).`;
@@ -2115,21 +2027,12 @@ function revealPronosticResult(){
   });
 }
 
-function resetPronostic(){
-  if(!confirm('Réinitialiser tous les pronostics ?')) return;
-  DB.ref('pronostic/pronostics').remove();
-  pronosticVoted=false;
-  showBanToastMsg('🗑 Pronostics réinitialisés');
-}
+function resetPronostic(){ if(!confirm('Réinitialiser tous les pronostics ?')) return; DB.ref('pronostic/pronostics').remove(); pronosticVoted=false; showBanToastMsg('🗑 Pronostics réinitialisés'); }
 
 function renderPronosticPublic(){
   const list=document.getElementById('prono-results-list'); if(!list) return;
   const badge=document.getElementById('prono-count-badge'); if(badge) badge.textContent=pronostics.length+' pronostic(s)';
-  if(pronosticConfig.teamA){
-    document.getElementById('prono-team-a-display').textContent=pronosticConfig.teamA;
-    document.getElementById('prono-team-b-display').textContent=pronosticConfig.teamB;
-    document.getElementById('prono-match-display').textContent=pronosticConfig.match||pronosticConfig.teamA+' vs '+pronosticConfig.teamB;
-  }
+  if(pronosticConfig.teamA){ document.getElementById('prono-team-a-display').textContent=pronosticConfig.teamA; document.getElementById('prono-team-b-display').textContent=pronosticConfig.teamB; document.getElementById('prono-match-display').textContent=pronosticConfig.match||pronosticConfig.teamA+' vs '+pronosticConfig.teamB; }
   if(!pronostics.length){ list.innerHTML='<div class="pronostic-no-match">Sois le premier à pronostiquer !</div>'; return; }
   const sorted=[...pronostics].sort((a,b)=>b.ts-a.ts);
   list.innerHTML=sorted.slice(0,15).map(p=>`<div class="pronostic-result-item${p.exact?' exact':''}"><span class="pronostic-result-user">🎯 ${p.pseudo}</span><span class="pronostic-result-score">${p.scoreA} – ${p.scoreB}${p.exact?' 🏆':''}</span></div>`).join('');
@@ -2142,7 +2045,7 @@ function updateAdminPronoList(){
 }
 
 /* ═══════════════════════════════════════════════════════
-   NOTIFICATIONS (Firebase — log + push)
+   NOTIFICATIONS
 ═══════════════════════════════════════════════════════ */
 function requestNotifPermission(){
   if(!('Notification' in window)){ alert('Ton navigateur ne supporte pas les notifications push.'); return; }
@@ -2167,7 +2070,6 @@ function sendNotification(title,body){
     try{ const n=new Notification(title,{body,icon:'logo.png',tag:'fzf-live-'+Date.now(),requireInteraction:true}); n.onclick=()=>{ window.focus(); n.close(); showPage('live'); }; } catch(e){}
   }
   showPushToast(title,body);
-  // Log dans Firebase
   DB.ref('notif_log').push({title,body,ts:Date.now(),sentBy:adminPseudo||'Système'});
 }
 
@@ -2284,7 +2186,6 @@ function submitReview(){
 /* ═══════════════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════════════ */
-// Restaurer session admin
 const adminSess = loadAdminSession();
 if(adminSess){
   adminPseudo = adminSess.pseudo || 'Admin';
@@ -2292,10 +2193,8 @@ if(adminSess){
   else { adminLoggedIn=true; openAdminSidebar(false); registerStaffOnline(adminPseudo,'Administrateur'); }
 }
 
-// Init visiteur
 registerVisitor('Live');
 
-// Nettoyage des anciennes entrées visitors périodiquement
 setInterval(()=>{
   DB.ref('visitors').once('value').then(snap=>{
     const data=snap.val(); if(!data) return;
@@ -2304,9 +2203,13 @@ setInterval(()=>{
   });
 }, 60000);
 
-// Timer sondage
 setInterval(updatePollTimer,1000);
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
 </body>
 </html>
+ENDOFHTML
+
+echo "Fichier créé, vérification taille..."
+wc -l /mnt/user-data/outputs/index.html
+ls -la /mnt/user-data/outputs/index.html
