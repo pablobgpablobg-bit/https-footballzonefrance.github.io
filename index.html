@@ -2311,5 +2311,780 @@ setInterval(updatePollTimer,1000);
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
 </body>
 </html>
+bash
 
+cat > /mnt/user-data/outputs/worldcup-patch.html << 'PATCH_EOF'
+<!-- ════════════════════════════════════════════════════════
+     FZF PATCH — COUPE DU MONDE 2026
+     COLLER CE BLOC JUSTE AVANT </body> dans index.html
+════════════════════════════════════════════════════════ -->
+
+<!-- ── STYLES PATCH ── -->
+<style>
+/* ── NAV : nouvel onglet Mondial ── */
+.nav-tab.wc-tab { color:#f59e0b; }
+.nav-tab.wc-tab.active {
+  background:linear-gradient(135deg,rgba(245,158,11,0.25),rgba(220,38,38,0.15));
+  border:1px solid rgba(245,158,11,0.5); color:#fbbf24;
+}
+
+/* ── Hero : badge CDM + bouton doré ── */
+.wc-hero-badge {
+  display:inline-flex; align-items:center; gap:10px;
+  background:linear-gradient(135deg,rgba(245,158,11,0.3),rgba(220,38,38,0.2));
+  border:2px solid rgba(245,158,11,0.6); border-radius:16px;
+  padding:10px 24px; margin-bottom:18px;
+  font-size:15px; font-weight:800; color:#fbbf24; letter-spacing:1px;
+  animation:gold-glow 2s ease-in-out infinite;
+}
+@keyframes gold-glow {
+  0%,100%{box-shadow:0 0 20px rgba(245,158,11,0.3)}
+  50%{box-shadow:0 0 40px rgba(245,158,11,0.6)}
+}
+.btn-wc {
+  display:inline-block; padding:16px 44px; font-size:18px; font-weight:700;
+  border-radius:14px; text-decoration:none; color:black;
+  background:linear-gradient(135deg,#f59e0b,#ffd700);
+  transition:0.3s; margin:6px; cursor:pointer; border:none;
+  font-family:'Barlow',sans-serif;
+}
+.btn-wc:hover { transform:scale(1.07); box-shadow:0 0 45px rgba(255,215,0,0.7); }
+
+/* ── Plan cards : badge + prix barré + promo ── */
+.plan-wc-badge {
+  display:inline-block;
+  background:linear-gradient(135deg,rgba(245,158,11,0.2),rgba(220,38,38,0.2));
+  border:1px solid rgba(245,158,11,0.5); color:#fbbf24;
+  font-size:11px; font-weight:800; padding:4px 12px;
+  border-radius:20px; margin-bottom:14px; letter-spacing:0.5px;
+}
+.plan-price-old {
+  font-size:18px; color:var(--muted); text-decoration:line-through;
+  display:inline-block; margin-left:8px; vertical-align:middle;
+}
+
+/* ── Bannière promo IPTV ── */
+.wc-promo-banner {
+  background:linear-gradient(135deg,#1a0a00,#2d1500);
+  border:2px solid rgba(245,158,11,0.5); border-radius:20px;
+  padding:28px 36px; margin:30px auto; max-width:960px;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:24px; flex-wrap:wrap; position:relative; overflow:hidden;
+}
+.wc-promo-banner::before {
+  content:"🏆"; position:absolute; right:20px; top:50%;
+  transform:translateY(-50%); font-size:80px; opacity:0.07;
+  pointer-events:none;
+}
+.wc-promo-badge {
+  display:inline-block;
+  background:linear-gradient(135deg,#f59e0b,#dc2626);
+  color:white; font-size:13px; font-weight:800;
+  padding:6px 16px; border-radius:20px; letter-spacing:1px; margin-bottom:10px;
+}
+.wc-promo-left h3 {
+  font-family:'Bebas Neue',sans-serif; font-size:30px;
+  letter-spacing:2px; color:#fbbf24; margin-bottom:8px;
+}
+.wc-promo-left p { font-size:15px; color:#e2e8f0; line-height:1.6; }
+.wc-promo-prices { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; }
+.wc-price-item {
+  background:rgba(0,0,0,0.4); border:1px solid rgba(245,158,11,0.3);
+  border-radius:14px; padding:16px 22px; text-align:center; min-width:120px;
+}
+.wc-price-item.best { border-color:rgba(245,158,11,0.7); box-shadow:0 0 30px rgba(245,158,11,0.15); }
+.wc-price-old { font-size:14px; color:var(--muted); text-decoration:line-through; }
+.wc-price-new { font-family:'Bebas Neue',sans-serif; font-size:44px; color:#fbbf24; line-height:1; }
+.wc-price-label { font-size:12px; color:var(--muted); font-weight:600; margin-top:4px; }
+.wc-price-discount {
+  display:inline-block; font-size:11px; font-weight:800; color:#4ade80;
+  background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3);
+  padding:2px 8px; border-radius:20px; margin-top:4px;
+}
+
+/* ── PAGE COUPE DU MONDE ── */
+#page-worldcup { padding-top:64px; min-height:100vh; background:var(--dark); }
+
+.wc-hero {
+  background:linear-gradient(135deg,#0a0800,#1a1000,#0a0800);
+  border-bottom:2px solid rgba(245,158,11,0.3);
+  padding:60px 40px; text-align:center;
+  position:relative; overflow:hidden;
+}
+.wc-hero::before {
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(circle at 50% -20%, rgba(245,158,11,0.22) 0%, transparent 65%);
+  pointer-events:none;
+}
+.wc-hero-content { position:relative; z-index:2; }
+.wc-trophy {
+  font-size:80px; margin-bottom:16px; display:block;
+  animation:trophy-bounce 3s ease-in-out infinite;
+}
+@keyframes trophy-bounce {
+  0%,100%{transform:translateY(0) rotate(-3deg)}
+  50%{transform:translateY(-10px) rotate(3deg)}
+}
+.wc-title {
+  font-family:'Bebas Neue',sans-serif; font-size:72px;
+  letter-spacing:4px; line-height:1;
+  background:linear-gradient(135deg,#ffd700,#f59e0b,#dc2626);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text; margin-bottom:12px;
+}
+.wc-subtitle { font-size:20px; color:#e2e8f0; margin-bottom:20px; }
+.wc-host-badges { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:32px; }
+.wc-host-badge {
+  background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.4);
+  border-radius:12px; padding:8px 18px; font-size:14px; font-weight:700; color:#fbbf24;
+}
+
+/* Countdown Mondial */
+.wc-countdown-section {
+  background:linear-gradient(135deg,#0f0a00,#1a1000);
+  border-bottom:1px solid rgba(245,158,11,0.2);
+  padding:32px 20px; text-align:center;
+}
+.wc-cd-label-top {
+  font-size:13px; font-weight:800; color:#f59e0b;
+  letter-spacing:2px; text-transform:uppercase; margin-bottom:20px;
+}
+.wc-cd-units { display:flex; justify-content:center; align-items:center; gap:12px; flex-wrap:wrap; }
+.wc-cd-unit { text-align:center; }
+.wc-cd-num {
+  font-family:'Bebas Neue',sans-serif; font-size:60px; line-height:1;
+  color:#fbbf24; background:rgba(245,158,11,0.1);
+  border:2px solid rgba(245,158,11,0.4); border-radius:14px;
+  min-width:80px; padding:8px 14px; display:block;
+}
+.wc-cd-unit-label {
+  font-size:11px; font-weight:700; color:#f59e0b;
+  letter-spacing:1.5px; text-transform:uppercase; margin-top:6px;
+}
+.wc-cd-sep { font-family:'Bebas Neue',sans-serif; font-size:50px; color:rgba(245,158,11,0.4); margin-top:-8px; }
+.wc-next-match-box {
+  margin-top:20px; padding:14px 28px;
+  background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25);
+  border-radius:12px; display:inline-block;
+}
+.wc-next-match-label-sm { font-size:11px; color:#f59e0b; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+.wc-next-match-name-big { font-size:18px; font-weight:800; color:white; }
+.wc-next-match-time-sm { font-size:13px; color:var(--muted); margin-top:4px; }
+
+/* Tabs Mondial */
+.wc-tabs {
+  display:flex; border-bottom:2px solid rgba(245,158,11,0.2);
+  background:rgba(0,0,0,0.4); padding:0 20px; overflow-x:auto;
+}
+.wc-tab-btn {
+  padding:14px 24px; font-size:14px; font-weight:700; cursor:pointer;
+  border:none; background:transparent; color:var(--muted);
+  font-family:'Barlow',sans-serif; transition:0.2s;
+  border-bottom:3px solid transparent; white-space:nowrap; margin-bottom:-2px;
+}
+.wc-tab-btn:hover { color:var(--text); }
+.wc-tab-btn.active { color:#fbbf24; border-bottom-color:#f59e0b; }
+.wc-tab-panel { display:none; padding:28px 20px; }
+.wc-tab-panel.active { display:block; }
+
+/* Groupes */
+.wc-groups-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:20px; max-width:1400px; margin:0 auto;
+}
+.wc-group-card {
+  background:var(--dark2); border:1px solid rgba(245,158,11,0.2); border-radius:16px; overflow:hidden;
+}
+.wc-group-header {
+  background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(220,38,38,0.1));
+  padding:12px 18px; display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(245,158,11,0.15);
+}
+.wc-group-name { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; color:#fbbf24; }
+.wc-group-table { width:100%; border-collapse:collapse; }
+.wc-group-table th {
+  padding:8px 12px; font-size:10px; font-weight:800; color:var(--muted);
+  letter-spacing:1px; text-transform:uppercase; text-align:center;
+  border-bottom:1px solid var(--border);
+}
+.wc-group-table th:first-child { text-align:left; }
+.wc-group-table td {
+  padding:10px 12px; font-size:13px;
+  border-bottom:1px solid rgba(255,255,255,0.03); text-align:center;
+}
+.wc-group-table td:first-child { text-align:left; }
+.wc-group-table tr:last-child td { border-bottom:none; }
+.wc-group-table tr.qualified td:first-child span.wc-tname { font-weight:700; color:#4ade80; }
+.wc-q-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:#4ade80; margin-right:6px; flex-shrink:0; }
+.wc-team-row td:first-child { display:flex; align-items:center; gap:6px; }
+.wc-pts { font-weight:800; color:#fbbf24; }
+
+/* Tableau Final (bracket) */
+.wc-bracket-scroll { overflow-x:auto; padding-bottom:20px; }
+.wc-bracket { display:flex; gap:0; min-width:900px; }
+.bracket-round { display:flex; flex-direction:column; flex:1; }
+.bracket-round-title {
+  font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:1.5px;
+  color:#f59e0b; text-align:center; padding:12px;
+  background:rgba(245,158,11,0.08); border-bottom:1px solid rgba(245,158,11,0.15);
+}
+.bracket-matches { display:flex; flex-direction:column; justify-content:space-around; flex:1; padding:12px 6px; gap:10px; }
+.bracket-match { background:var(--dark2); border:1px solid rgba(245,158,11,0.2); border-radius:10px; overflow:hidden; }
+.bracket-team {
+  display:flex; align-items:center; gap:8px;
+  padding:9px 12px; font-size:13px; font-weight:600; color:var(--text);
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.bracket-team:last-child { border-bottom:none; }
+.bracket-team.winner { background:rgba(245,158,11,0.1); color:#fbbf24; font-weight:800; }
+.bracket-team.tbd { color:var(--muted); font-style:italic; }
+.bracket-score { margin-left:auto; font-family:'Bebas Neue',sans-serif; font-size:18px; color:#fbbf24; }
+
+/* Calendrier */
+.wc-schedule { max-width:900px; margin:0 auto; }
+.wc-schedule-date-header {
+  font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:1.5px;
+  color:#f59e0b; margin-bottom:12px; padding:8px 16px;
+  background:rgba(245,158,11,0.08); border-left:3px solid #f59e0b;
+  border-radius:0 8px 8px 0;
+}
+.wc-match-row {
+  display:flex; align-items:center; gap:16px; padding:12px 18px;
+  background:var(--dark2); border:1px solid var(--border);
+  border-radius:12px; margin-bottom:8px; transition:0.2s; flex-wrap:wrap;
+}
+.wc-match-row:hover { border-color:rgba(245,158,11,0.3); }
+.wc-match-time { font-family:'Bebas Neue',sans-serif; font-size:18px; color:#f59e0b; width:60px; flex-shrink:0; }
+.wc-match-teams { flex:1; display:flex; align-items:center; gap:10px; font-size:15px; font-weight:700; color:var(--text); }
+.wc-match-vs { color:var(--muted); font-size:13px; }
+.wc-match-score {
+  font-family:'Bebas Neue',sans-serif; font-size:22px; color:#fbbf24;
+  background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3);
+  border-radius:8px; padding:2px 12px;
+}
+.wc-match-score.tbd {
+  color:var(--muted); border-color:var(--border); background:transparent;
+  font-size:13px; font-family:'Barlow',sans-serif; font-weight:600;
+}
+.wc-match-group { font-size:11px; color:var(--muted); font-weight:700; letter-spacing:0.5px; }
+
+/* Offres sur la page WC */
+.wc-iptv-promo-box {
+  background:linear-gradient(135deg,#0f0700,#1a1000);
+  border:2px solid rgba(245,158,11,0.4); border-radius:20px;
+  padding:36px; margin:0 auto 32px; max-width:900px; text-align:center;
+  position:relative; overflow:hidden;
+}
+.wc-iptv-promo-box::after {
+  content:"🏆"; position:absolute; right:20px; top:50%;
+  transform:translateY(-50%); font-size:100px; opacity:0.05; pointer-events:none;
+}
+.wc-offer-row { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin:20px 0; }
+.wc-offer-card {
+  background:rgba(0,0,0,0.5); border:1px solid rgba(245,158,11,0.3);
+  border-radius:14px; padding:20px 28px; min-width:160px; text-align:center;
+  position:relative;
+}
+.wc-offer-card.best { border-color:rgba(245,158,11,0.7); box-shadow:0 0 30px rgba(245,158,11,0.2); }
+.wc-offer-plan { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:1.5px; color:#fbbf24; margin-bottom:4px; }
+.wc-offer-old { font-size:13px; color:var(--muted); text-decoration:line-through; }
+.wc-offer-price { font-family:'Bebas Neue',sans-serif; font-size:52px; color:#ffd700; line-height:1; }
+.wc-offer-sub { font-size:12px; color:var(--muted); }
+.wc-offer-pct-badge {
+  position:absolute; top:-10px; right:-10px;
+  background:linear-gradient(135deg,#22c55e,#16a34a); color:white;
+  font-size:12px; font-weight:800; padding:4px 10px; border-radius:20px;
+}
+
+/* Flag select dans le chat */
+.chat-flag-select {
+  width:60px; padding:7px 4px; border-radius:8px; border:1px solid var(--border);
+  background:var(--dark3); color:var(--text); font-size:16px;
+  font-family:'Barlow',sans-serif; outline:none; cursor:pointer; text-align:center;
+}
+
+/* Confetti canvas */
+#fzf-confetti-canvas {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  pointer-events:none; z-index:9998;
+}
+
+@media(max-width:768px){
+  .wc-title{font-size:44px} .wc-cd-num{font-size:40px;min-width:60px}
+  .wc-bracket{min-width:700px} .wc-offer-row{flex-direction:column;align-items:center}
+  .wc-promo-banner{flex-direction:column}
+}
+</style>
+
+<!-- ── CONFETTI CANVAS ── -->
+<canvas id="fzf-confetti-canvas"></canvas>
+
+<!-- ── ONGLET NAV MONDIAL (injecter après l'onglet IPTV) ── -->
+<script>
+// Injection de l'onglet Mondial dans la nav
+(function(){
+  const navTabs = document.querySelector('.nav-tabs');
+  if(!navTabs) return;
+  const iptvTab = Array.from(navTabs.querySelectorAll('.nav-tab')).find(t=>t.textContent.includes('IPTV'));
+  const wcBtn = document.createElement('button');
+  wcBtn.className = 'nav-tab wc-tab';
+  wcBtn.setAttribute('onclick', "showPage('worldcup')");
+  wcBtn.innerHTML = '🏆 Mondial 2026';
+  if(iptvTab) navTabs.insertBefore(wcBtn, iptvTab);
+  else navTabs.appendChild(wcBtn);
+})();
+</script>
+
+<!-- ── BADGE CDM + BOUTON SUR LA HERO HOME ── -->
+<script>
+(function(){
+  // Ajouter badge CDM et bouton Mondial sur la hero
+  const heroCont = document.querySelector('.hero-content');
+  if(!heroCont) return;
+  // Badge
+  const badge = document.createElement('div');
+  badge.className = 'wc-hero-badge';
+  badge.innerHTML = '🏆 COUPE DU MONDE 2026 — USA / CANADA / MEXIQUE';
+  const h1 = heroCont.querySelector('h1');
+  if(h1) heroCont.insertBefore(badge, h1);
+  // Bouton
+  const btnRow = heroCont.querySelector('.btn-primary');
+  if(btnRow){
+    const btnWc = document.createElement('button');
+    btnWc.className = 'btn-wc';
+    btnWc.setAttribute('onclick', "showPage('worldcup')");
+    btnWc.innerHTML = '🏆 Voir le Mondial';
+    btnRow.parentNode.insertBefore(btnWc, btnRow.nextSibling);
+  }
+})();
+</script>
+
+<!-- ── BANNIÈRE PROMO + BADGE PLAN SUR IPTV ── -->
+<script>
+(function(){
+  // Bannière promo en haut de la page IPTV
+  const iptvHeader = document.querySelector('.iptv-header');
+  if(iptvHeader){
+    const banner = document.createElement('div');
+    banner.className = 'wc-promo-banner';
+    banner.innerHTML = `
+      <div class="wc-promo-left">
+        <div class="wc-promo-badge">🏆 OFFRE SPÉCIALE COUPE DU MONDE 2026</div>
+        <h3>Mondial 2026 — Offre Limitée !</h3>
+        <p>Ne ratez aucun des 104 matchs de la Coupe du Monde.<br>
+        Profitez de <strong style="color:#fbbf24;">-20% sur tous nos abonnements</strong> pour le tournoi.</p>
+      </div>
+      <div>
+        <div class="wc-promo-prices">
+          <div class="wc-price-item">
+            <div class="wc-price-old">10€</div>
+            <div class="wc-price-new"><sup style="font-size:18px;vertical-align:top;margin-top:6px;">€</sup>8</div>
+            <div class="wc-price-label">Starter · 3 mois</div>
+            <div class="wc-price-discount">-20% 🎉</div>
+          </div>
+          <div class="wc-price-item best">
+            <div class="wc-price-old">35€</div>
+            <div class="wc-price-new"><sup style="font-size:18px;vertical-align:top;margin-top:6px;">€</sup>28</div>
+            <div class="wc-price-label">À Vie</div>
+            <div class="wc-price-discount">-20% 🔥</div>
+          </div>
+        </div>
+      </div>`;
+    iptvHeader.appendChild(banner);
+  }
+
+  // Badge CDM + prix barré sur les plan-cards
+  const cards = document.querySelectorAll('.plan-card');
+  cards.forEach(card => {
+    const isStarter = card.classList.contains('starter');
+    const isLifetime = card.classList.contains('lifetime');
+    if(!isStarter && !isLifetime) return;
+
+    // Badge CDM
+    const badge = document.createElement('div');
+    badge.className = 'plan-wc-badge';
+    badge.innerHTML = isLifetime ? '🏆 Toutes les Coupes du Monde incluses' : '🏆 Coupe du Monde 2026 incluse';
+    const planDuration = card.querySelector('.plan-duration');
+    if(planDuration) planDuration.parentNode.insertBefore(badge, planDuration.nextSibling);
+
+    // Prix barré
+    const priceEl = card.querySelector('.plan-price');
+    if(priceEl){
+      const newPrice = isStarter ? '8' : '28';
+      const oldPrice = isStarter ? '10€' : '35€';
+      priceEl.innerHTML = `<sup>€</sup>${newPrice}<span class="plan-price-old">${oldPrice}</span>`;
+    }
+    const priceNote = card.querySelector('.plan-pricenote');
+    if(priceNote) priceNote.textContent = isStarter ? 'Promo CDM 2026 — soit 2,67€/mois !' : 'Promo CDM 2026 — Paiement unique';
+
+    // Bouton
+    const btn = card.querySelector('.btn-buy');
+    if(btn) btn.textContent = isStarter ? 'Commander — 8€ 🏆' : 'Commander — 28€ 👑';
+
+    // Ajouter feat CDM dans la liste
+    const featList = card.querySelector('.plan-features');
+    if(featList){
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="feat-check">✔</span> <strong style="color:#fbbf24;">🏆 ${isLifetime ? 'Toutes les CDM futures' : 'Coupe du Monde 2026'}</strong>`;
+      const firstLi = featList.querySelector('li');
+      if(firstLi) featList.insertBefore(li, firstLi.nextSibling);
+    }
+  });
+
+  // Flag select dans le chat live
+  const chatNameRow = document.querySelector('.chat-name-row');
+  if(chatNameRow && !document.getElementById('chat-flag-select')){
+    const sel = document.createElement('select');
+    sel.className = 'chat-flag-select'; sel.id = 'chat-flag-select'; sel.title = 'Ton pays';
+    const flags = ['','🇫🇷','🇩🇿','🇲🇦','🇹🇳','🇧🇪','🇨🇭','🇵🇹','🇪🇸','🇮🇹','🇩🇪','🏴󠁧󠁢󠁥󠁮󠁧󠁿','🇧🇷','🇦🇷','🇺🇸','🇸🇳','🇨🇲','🇯🇵','🇰🇷','🇲🇽','🇨🇦'];
+    flags.forEach(f=>{ const o=document.createElement('option'); o.value=f; o.textContent=f||'🏳️'; sel.appendChild(o); });
+    const msgInput = chatNameRow.querySelector('.chat-msg-input');
+    if(msgInput) chatNameRow.insertBefore(sel, msgInput);
+  }
+})();
+</script>
+
+<!-- ── PAGE COUPE DU MONDE ── -->
+<div id="page-worldcup" class="page">
+
+  <!-- Hero CDM -->
+  <div class="wc-hero">
+    <div class="wc-hero-content">
+      <span class="wc-trophy">🏆</span>
+      <div class="wc-title">COUPE DU MONDE 2026</div>
+      <div class="wc-subtitle">Le plus grand événement footballistique de la planète</div>
+      <div class="wc-host-badges">
+        <span class="wc-host-badge">🇺🇸 États-Unis</span>
+        <span class="wc-host-badge">🇨🇦 Canada</span>
+        <span class="wc-host-badge">🇲🇽 Mexique</span>
+        <span class="wc-host-badge">⚽ 48 équipes · 104 matchs</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Countdown Mondial -->
+  <div class="wc-countdown-section">
+    <div class="wc-cd-label-top">⏱ Compte à rebours — Coup d'envoi officiel</div>
+    <div class="wc-cd-units">
+      <div class="wc-cd-unit"><span class="wc-cd-num" id="wc-d">00</span><div class="wc-cd-unit-label">Jours</div></div>
+      <div class="wc-cd-sep">:</div>
+      <div class="wc-cd-unit"><span class="wc-cd-num" id="wc-h">00</span><div class="wc-cd-unit-label">Heures</div></div>
+      <div class="wc-cd-sep">:</div>
+      <div class="wc-cd-unit"><span class="wc-cd-num" id="wc-m">00</span><div class="wc-cd-unit-label">Min</div></div>
+      <div class="wc-cd-sep">:</div>
+      <div class="wc-cd-unit"><span class="wc-cd-num" id="wc-s">00</span><div class="wc-cd-unit-label">Sec</div></div>
+    </div>
+    <div class="wc-next-match-box">
+      <div class="wc-next-match-label-sm">⚽ Prochain match</div>
+      <div class="wc-next-match-name-big">🇺🇸 États-Unis vs 🇲🇽 Mexique</div>
+      <div class="wc-next-match-time-sm">11 Juin 2026 · 21h00 UTC · Groupe A</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="wc-tabs">
+    <button class="wc-tab-btn active" onclick="wcSwitchTab('groupes',this)">🌍 Groupes</button>
+    <button class="wc-tab-btn" onclick="wcSwitchTab('calendrier',this)">📅 Calendrier</button>
+    <button class="wc-tab-btn" onclick="wcSwitchTab('tableau',this)">🏆 Tableau Final</button>
+    <button class="wc-tab-btn" onclick="wcSwitchTab('offres',this)">📡 Offres IPTV</button>
+  </div>
+
+  <!-- PANEL : GROUPES -->
+  <div class="wc-tab-panel active" id="wc-panel-groupes">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;color:#fbbf24;">🌍 Phase de Groupes</div>
+      <div style="font-size:14px;color:var(--muted);margin-top:6px;">Les <strong style="color:#4ade80;">2 premiers</strong> de chaque groupe + les 8 meilleurs 3es se qualifient</div>
+    </div>
+    <div class="wc-groups-grid" id="wc-groups-grid"><!-- JS --></div>
+  </div>
+
+  <!-- PANEL : CALENDRIER -->
+  <div class="wc-tab-panel" id="wc-panel-calendrier">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;color:#fbbf24;">📅 Programme des Matchs</div>
+    </div>
+    <div class="wc-schedule" id="wc-schedule-list"><!-- JS --></div>
+  </div>
+
+  <!-- PANEL : TABLEAU FINAL -->
+  <div class="wc-tab-panel" id="wc-panel-tableau">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;color:#fbbf24;">🏆 Tableau Final</div>
+      <div style="font-size:14px;color:var(--muted);margin-top:6px;">1/8 de Finale → Quarts → Demi-Finales → Finale</div>
+    </div>
+    <div class="wc-bracket-scroll">
+      <div class="wc-bracket" id="wc-bracket"><!-- JS --></div>
+    </div>
+  </div>
+
+  <!-- PANEL : OFFRES -->
+  <div class="wc-tab-panel" id="wc-panel-offres">
+    <div class="wc-iptv-promo-box">
+      <div style="font-size:13px;font-weight:800;color:#f59e0b;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">🏆 OFFRE EXCLUSIVE COUPE DU MONDE 2026</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:2px;color:#fbbf24;margin-bottom:10px;">Ne ratez aucun match du Mondial !</div>
+      <p style="font-size:16px;color:#e2e8f0;margin-bottom:24px;line-height:1.7;">Accès illimité à tous les 104 matchs de la Coupe du Monde 2026 en HD,<br>sur tous vos appareils — TV, smartphone, PC.</p>
+      <div class="wc-offer-row">
+        <div class="wc-offer-card">
+          <div class="wc-offer-pct-badge">-20%</div>
+          <div class="wc-offer-plan">⚡ STARTER</div>
+          <div class="wc-offer-old">10€</div>
+          <div class="wc-offer-price"><sup style="font-size:22px;vertical-align:top;margin-top:8px;">€</sup>8</div>
+          <div class="wc-offer-sub">3 mois d'accès</div>
+        </div>
+        <div class="wc-offer-card best">
+          <div class="wc-offer-pct-badge">-20% 🔥</div>
+          <div class="wc-offer-plan">👑 À VIE</div>
+          <div class="wc-offer-old">35€</div>
+          <div class="wc-offer-price"><sup style="font-size:22px;vertical-align:top;margin-top:8px;">€</sup>28</div>
+          <div class="wc-offer-sub">Accès illimité — paiement unique</div>
+        </div>
+      </div>
+      <a href="https://discord.gg/ftzf" target="_blank"
+         style="display:inline-block;padding:16px 40px;background:linear-gradient(135deg,#f59e0b,#ffd700);color:black;font-size:17px;font-weight:800;border-radius:14px;text-decoration:none;transition:0.3s;"
+         onmouseover="this.style.transform='scale(1.07)'" onmouseout="this.style.transform=''">
+        🏆 Commander sur Discord
+      </a>
+    </div>
+    <div style="max-width:700px;margin:0 auto;padding:0 20px 40px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:#fbbf24;margin-bottom:16px;text-align:center;">✅ Inclus dans l'abonnement</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:14px;">
+        <div style="background:var(--dark2);border:1px solid rgba(245,158,11,0.2);border-radius:12px;padding:14px;">✅ Tous les 104 matchs CDM 2026</div>
+        <div style="background:var(--dark2);border:1px solid rgba(245,158,11,0.2);border-radius:12px;padding:14px;">✅ Qualité HD sans coupure</div>
+        <div style="background:var(--dark2);border:1px solid rgba(245,158,11,0.2);border-radius:12px;padding:14px;">✅ TV · Smartphone · PC · Tablette</div>
+        <div style="background:var(--dark2);border:1px solid rgba(245,158,11,0.2);border-radius:12px;padding:14px;">✅ Support Discord prioritaire</div>
+        <div style="background:var(--dark2);border:1px solid rgba(245,158,11,0.2);border-radius:12px;padding:14px;">✅ Activation en moins de 24h</div>
+        <div style="background:var(--dark2);border:1px solid rgba(245,158,11,0.2);border-radius:12px;padding:14px;">✅ Toutes les ligues incluses</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 2026 Football Zone France — Tous droits réservés</footer>
+</div><!-- fin #page-worldcup -->
+
+<!-- ════════════════════════════════════════════════════════
+     SCRIPTS PATCH CDM
+════════════════════════════════════════════════════════ -->
+<script>
+/* ── Données Groupes ── */
+const WC_GROUPS = {
+  'A':{ teams:[{f:'🇺🇸',n:'États-Unis'},{f:'🇲🇽',n:'Mexique'},{f:'🇺🇾',n:'Uruguay'},{f:'🇵🇦',n:'Panama'}] },
+  'B':{ teams:[{f:'🇦🇷',n:'Argentine'},{f:'🇨🇦',n:'Canada'},{f:'🇨🇱',n:'Chili'},{f:'🇵🇪',n:'Pérou'}] },
+  'C':{ teams:[{f:'🇫🇷',n:'France'},{f:'🇩🇿',n:'Algérie'},{f:'🇨🇭',n:'Suisse'},{f:'🇺🇦',n:'Ukraine'}] },
+  'D':{ teams:[{f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',n:'Angleterre'},{f:'🇳🇬',n:'Nigeria'},{f:'🇨🇿',n:'Tchéquie'},{f:'🇸🇰',n:'Slovaquie'}] },
+  'E':{ teams:[{f:'🇧🇷',n:'Brésil'},{f:'🇵🇹',n:'Portugal'},{f:'🇸🇳',n:'Sénégal'},{f:'🇷🇴',n:'Roumanie'}] },
+  'F':{ teams:[{f:'🇪🇸',n:'Espagne'},{f:'🇩🇪',n:'Allemagne'},{f:'🇨🇲',n:'Cameroun'},{f:'🇷🇸',n:'Serbie'}] },
+  'G':{ teams:[{f:'🇧🇪',n:'Belgique'},{f:'🇳🇱',n:'Pays-Bas'},{f:'🇲🇦',n:'Maroc'},{f:'🇦🇺',n:'Australie'}] },
+  'H':{ teams:[{f:'🇯🇵',n:'Japon'},{f:'🇰🇷',n:'Corée du Sud'},{f:'🇸🇦',n:'Arabie Saoudite'},{f:'🇮🇷',n:'Iran'}] },
+};
+
+/* Données Calendrier */
+const WC_SCHEDULE = [
+  { date:'11 Juin 2026', matches:[
+    { time:'21:00', a:'🇺🇸 États-Unis', b:'🇲🇽 Mexique', group:'Groupe A' },
+  ]},
+  { date:'12 Juin 2026', matches:[
+    { time:'18:00', a:'🇦🇷 Argentine', b:'🇨🇦 Canada', group:'Groupe B' },
+    { time:'21:00', a:'🇫🇷 France', b:'🇩🇿 Algérie', group:'Groupe C' },
+  ]},
+  { date:'13 Juin 2026', matches:[
+    { time:'18:00', a:'🏴󠁧󠁢󠁥󠁮󠁧󠁿 Angleterre', b:'🇳🇬 Nigeria', group:'Groupe D' },
+    { time:'21:00', a:'🇧🇷 Brésil', b:'🇵🇹 Portugal', group:'Groupe E' },
+  ]},
+  { date:'14 Juin 2026', matches:[
+    { time:'18:00', a:'🇪🇸 Espagne', b:'🇩🇪 Allemagne', group:'Groupe F' },
+    { time:'21:00', a:'🇧🇪 Belgique', b:'🇳🇱 Pays-Bas', group:'Groupe G' },
+  ]},
+  { date:'15 Juin 2026', matches:[
+    { time:'21:00', a:'🇯🇵 Japon', b:'🇰🇷 Corée du Sud', group:'Groupe H' },
+  ]},
+];
+
+/* Données Bracket */
+const WC_R16 = [
+  {t1:'1er Gr. A',t2:'2e Gr. B'},{t1:'1er Gr. C',t2:'2e Gr. D'},
+  {t1:'1er Gr. E',t2:'2e Gr. F'},{t1:'1er Gr. G',t2:'2e Gr. H'},
+  {t1:'1er Gr. B',t2:'2e Gr. A'},{t1:'1er Gr. D',t2:'2e Gr. C'},
+  {t1:'1er Gr. F',t2:'2e Gr. E'},{t1:'1er Gr. H',t2:'2e Gr. G'},
+];
+const WC_QF = [
+  {t1:'Vainq. M1',t2:'Vainq. M2'},{t1:'Vainq. M3',t2:'Vainq. M4'},
+  {t1:'Vainq. M5',t2:'Vainq. M6'},{t1:'Vainq. M7',t2:'Vainq. M8'},
+];
+const WC_SF = [{t1:'Vainq. QF1',t2:'Vainq. QF2'},{t1:'Vainq. QF3',t2:'Vainq. QF4'}];
+const WC_FINAL = [{t1:'Vainq. SF1',t2:'Vainq. SF2'}];
+
+/* ── Rendu Groupes ── */
+function renderWcGroups(){
+  const g = document.getElementById('wc-groups-grid'); if(!g) return;
+  g.innerHTML = Object.entries(WC_GROUPS).map(([letter,grp])=>
+    `<div class="wc-group-card">
+      <div class="wc-group-header"><div class="wc-group-name">Groupe ${letter}</div>
+        <div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:0.5px;">J &nbsp;G &nbsp;N &nbsp;P &nbsp;Pts</div>
+      </div>
+      <table class="wc-group-table">
+        <thead><tr><th>Équipe</th><th>J</th><th>G</th><th>N</th><th>P</th><th>Pts</th></tr></thead>
+        <tbody>${grp.teams.map((t,i)=>`
+          <tr class="${i<2?'qualified wc-team-row':'wc-team-row'}">
+            <td>${i<2?'<span class="wc-q-dot"></span>':'<span style="display:inline-block;width:13px;"></span>'}
+              <span class="wc-tname">${t.f} ${t.n}</span></td>
+            <td>0</td><td>0</td><td>0</td><td>0</td><td class="wc-pts">0</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`
+  ).join('');
+}
+
+/* ── Rendu Calendrier ── */
+function renderWcSchedule(){
+  const el = document.getElementById('wc-schedule-list'); if(!el) return;
+  el.innerHTML = WC_SCHEDULE.map(day=>`
+    <div style="margin-bottom:24px;">
+      <div class="wc-schedule-date-header">📅 ${day.date}</div>
+      ${day.matches.map(m=>`
+        <div class="wc-match-row">
+          <div class="wc-match-time">${m.time}</div>
+          <div class="wc-match-teams"><span>${m.a}</span><span class="wc-match-vs">vs</span><span>${m.b}</span></div>
+          <div class="wc-match-score tbd">À venir</div>
+          <div class="wc-match-group">${m.group}</div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+/* ── Rendu Bracket ── */
+function renderWcBracket(){
+  const el = document.getElementById('wc-bracket'); if(!el) return;
+  const rounds = [
+    {title:'1/8 de Finale', data:WC_R16},
+    {title:'Quarts de Finale', data:WC_QF},
+    {title:'Demi-Finales', data:WC_SF},
+    {title:'🏆 Finale', data:WC_FINAL},
+  ];
+  el.innerHTML = rounds.map(r=>`
+    <div class="bracket-round">
+      <div class="bracket-round-title">${r.title}</div>
+      <div class="bracket-matches">
+        ${r.data.map(m=>`
+          <div class="bracket-match">
+            <div class="bracket-team tbd"><span>${m.t1||'?'}</span>${m.s1?`<span class="bracket-score">${m.s1}</span>`:''}</div>
+            <div class="bracket-team tbd"><span>${m.t2||'?'}</span>${m.s2?`<span class="bracket-score">${m.s2}</span>`:''}</div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+/* ── Switch Tab ── */
+function wcSwitchTab(tab, btn){
+  document.querySelectorAll('.wc-tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.wc-tab-panel').forEach(p=>p.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const panel = document.getElementById('wc-panel-'+tab); if(panel) panel.classList.add('active');
+}
+
+/* ── Countdown Mondial ── */
+const WC_KICKOFF = new Date('2026-06-11T21:00:00Z').getTime();
+function tickWcCountdown(){
+  const diff = WC_KICKOFF - Date.now();
+  if(diff <= 0){ ['wc-d','wc-h','wc-m','wc-s'].forEach(id=>document.getElementById(id).textContent='00'); return; }
+  const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000),
+        m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+  document.getElementById('wc-d').textContent=String(d).padStart(2,'0');
+  document.getElementById('wc-h').textContent=String(h).padStart(2,'0');
+  document.getElementById('wc-m').textContent=String(m).padStart(2,'0');
+  document.getElementById('wc-s').textContent=String(s).padStart(2,'0');
+}
+setInterval(tickWcCountdown, 1000); tickWcCountdown();
+
+/* ── Override showPage pour inclure worldcup ── */
+const _origShowPage = window.showPage;
+window.showPage = function(name){
+  if(typeof _origShowPage === 'function') _origShowPage(name);
+  // Si la nav n'a pas été mise à jour, gérer worldcup manuellement
+  const wcPage = document.getElementById('page-worldcup');
+  if(name === 'worldcup'){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    if(wcPage) wcPage.classList.add('active');
+    const wcBtn = document.querySelector('.nav-tab.wc-tab'); if(wcBtn) wcBtn.classList.add('active');
+    renderWcGroups(); renderWcSchedule(); renderWcBracket();
+  }
+};
+
+/* ── Confetti ── */
+(function(){
+  const canvas = document.getElementById('fzf-confetti-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+  window.addEventListener('resize', resize); resize();
+  let particles=[], animId;
+  const COLORS=['#f59e0b','#ffd700','#dc2626','#22c55e','#2563eb','#a855f7','#f472b6','#fb923c'];
+  function mkParticle(){
+    return {
+      x:Math.random()*canvas.width, y:Math.random()*-200,
+      w:Math.random()*10+5, h:Math.random()*6+3,
+      r:Math.random()*360, vx:(Math.random()-0.5)*3,
+      vy:Math.random()*3+1.5, vr:(Math.random()-0.5)*8,
+      color:COLORS[Math.floor(Math.random()*COLORS.length)]
+    };
+  }
+  window.launchConfetti = function(){
+    if(animId) cancelAnimationFrame(animId);
+    particles = Array.from({length:180}, mkParticle);
+    function frame(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      particles.forEach(p=>{
+        p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
+        if(p.y>canvas.height+20) p.y=-20;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r*Math.PI/180);
+        ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+      });
+      animId=requestAnimationFrame(frame);
+    }
+    frame();
+    setTimeout(()=>{ cancelAnimationFrame(animId); ctx.clearRect(0,0,canvas.width,canvas.height); }, 5000);
+  };
+  // Lancement auto à l'ouverture
+  setTimeout(window.launchConfetti, 700);
+})();
+
+/* ── Preset chatbot CDM ── */
+const WC_PRESETS = [
+  { kw:['favori','gagner','champion','pronostic'],
+    r:`🏆 **Favoris CDM 2026**\n\n1. 🇫🇷 France\n2. 🇧🇷 Brésil\n3. 🇦🇷 Argentine\n4. 🇪🇸 Espagne\n5. 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Angleterre\n\n→ Suis tous les matchs sur FZF 📺` },
+  { kw:['groupe','tirage'],
+    r:`🌍 **Groupes CDM 2026 (sélection)**\n\n🔴 Groupe A : 🇺🇸 USA · 🇲🇽 Mexique · 🇺🇾 Uruguay\n🔴 Groupe C : 🇫🇷 France · 🇩🇿 Algérie · 🇨🇭 Suisse\n🔴 Groupe E : 🇧🇷 Brésil · 🇵🇹 Portugal · 🇸🇳 Sénégal\n\n→ Voir tous les groupes : onglet **Mondial 2026** 🏆` },
+  { kw:['ce soir','programme','match ce soir','aujourd'],
+    r:`📅 **Programme ce soir — CDM 2026**\n\nLes matchs sont sur l'onglet **📅 Calendrier** dans **Mondial 2026**.\n\nPour regarder en direct → **discord.gg/ftzf** ou onglet **Live** 📺` },
+  { kw:['résultat','score'],
+    r:`📊 Les résultats en temps réel sont dans l'onglet **🌍 Groupes** de la page **Mondial 2026**.\n\nTu peux aussi suivre le chat live lors des matchs ! 💬` },
+  { kw:['mondial','coupe du monde','cdm','2026','world cup'],
+    r:`🏆 **Coupe du Monde 2026**\n\nOrganisé aux 🇺🇸 USA · 🇨🇦 Canada · 🇲🇽 Mexique\nDébut : **11 Juin 2026** · 48 équipes · 104 matchs\n\n→ Suis tout sur FZF : onglet **Mondial 2026** 🏆` },
+  { kw:['offre','promo','réduction','discount'],
+    r:`🏆 **Promo Coupe du Monde — FZF IPTV**\n\n⚡ Starter : ~~10€~~ → **8€** (-20%)\n👑 À Vie : ~~35€~~ → **28€** (-20%)\n\n→ Commander : **discord.gg/ftzf** 💬` },
+];
+
+// Patch du chatbot pour ajouter presets CDM
+if(typeof checkPresetResponse === 'function'){
+  const _orig = checkPresetResponse;
+  window.checkPresetResponse = function(msg){
+    const clean = msg.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    for(const p of WC_PRESETS){
+      if(p.kw.some(k=>clean.includes(k.normalize('NFD').replace(/[\u0300-\u036f]/g,'')))) return p.r;
+    }
+    return _orig(msg);
+  };
+} else {
+  // Si le chatbot n'est pas encore défini, enregistrer pour après
+  window._wcPresets = WC_PRESETS;
+}
+
+// Patch système FZF_SYSTEM pour Claude API
+if(typeof FZF_SYSTEM !== 'undefined'){
+  window.FZF_SYSTEM = (window.FZF_SYSTEM||'') +
+    '\n\nCOUPE DU MONDE 2026 : Organisée aux USA/Canada/Mexique, début 11 Juin 2026. 48 équipes, 104 matchs. Promo FZF : Starter 8€ (-20%), À Vie 28€ (-20%). Favoris : France, Brésil, Argentine, Espagne. Réponds en français, sois enthousiaste sur le Mondial.';
+}
+</script>
+PATCH_EOF
+echo "Patch créé ✓ — $(wc -l < /mnt/user-data/outputs/worldcup-patch.html) lignes"
   
