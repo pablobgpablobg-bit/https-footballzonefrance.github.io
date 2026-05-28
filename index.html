@@ -1,3 +1,6 @@
+bash
+
+cat > /home/claude/index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="fr" data-theme="dark">
 <head>
@@ -17,23 +20,12 @@
       --dark:#020617; --dark2:#0f172a; --dark3:#1e293b;
       --text:#e2e8f0; --muted:#94a3b8; --border:rgba(255,255,255,0.07);
       --card-bg:#1e293b; --nav-bg:rgba(2,6,23,0.92);
-      /* Admin Panel New Variables */
-      --adm-bg:#07101f;
-      --adm-surface:#0d1b2e;
-      --adm-surface2:#112240;
-      --adm-accent:#3b82f6;
-      --adm-accent2:#6366f1;
-      --adm-border:rgba(59,130,246,0.12);
-      --adm-border2:rgba(255,255,255,0.06);
-      --adm-text:#e2e8f0;
-      --adm-muted:#64748b;
-      --adm-green:#10b981;
-      --adm-red:#ef4444;
-      --adm-yellow:#f59e0b;
-      --adm-purple:#8b5cf6;
-      --founder-color:#a855f7;
-      --founder-bg:rgba(168,85,247,0.08);
-      --founder-border:rgba(168,85,247,0.2);
+      --adm-bg:#07101f; --adm-surface:#0d1b2e; --adm-surface2:#112240;
+      --adm-accent:#3b82f6; --adm-accent2:#6366f1;
+      --adm-border:rgba(59,130,246,0.12); --adm-border2:rgba(255,255,255,0.06);
+      --adm-text:#e2e8f0; --adm-muted:#64748b;
+      --adm-green:#10b981; --adm-red:#ef4444; --adm-yellow:#f59e0b; --adm-purple:#8b5cf6;
+      --founder-color:#a855f7; --founder-bg:rgba(168,85,247,0.08); --founder-border:rgba(168,85,247,0.2);
     }
     [data-theme="light"] {
       --dark:#f1f5f9; --dark2:#ffffff; --dark3:#f8fafc;
@@ -42,7 +34,7 @@
     }
     body { font-family:'Barlow',sans-serif; background:var(--dark); color:var(--text); overflow-x:hidden; transition:background 0.3s,color 0.3s; }
 
-    /* ── NAV ── */
+    /* NAV */
     nav { position:fixed; top:0; left:0; right:0; z-index:100; background:var(--nav-bg); backdrop-filter:blur(12px); border-bottom:1px solid rgba(37,99,235,0.2); display:flex; align-items:center; justify-content:space-between; padding:0 32px; height:64px; }
     .nav-logo { display:flex; align-items:center; gap:12px; font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:1px; color:var(--text); text-decoration:none; cursor:pointer; }
     .nav-logo img { width:40px; height:40px; object-fit:contain; }
@@ -59,12 +51,12 @@
     .live-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--red); margin-right:6px; animation:pulse-dot 1.5s infinite; }
     @keyframes pulse-dot { 0%,100%{opacity:1}50%{opacity:.3} }
 
-    /* ── PAGES ── */
+    /* PAGES */
     .page { display:none; }
     .page.active { display:block; }
     #page-home { min-height:100vh; padding-top:64px; }
 
-    /* ── HOME ── */
+    /* HOME */
     .hero { position:relative; min-height:calc(100vh - 64px); display:flex; justify-content:center; align-items:center; text-align:center; padding:40px; background:url("banner.png") center center/cover no-repeat; }
     .hero::before { content:""; position:absolute; inset:0; background:rgba(0,0,0,0.72); backdrop-filter:blur(2px); }
     .hero-content { position:relative; z-index:2; max-width:900px; }
@@ -87,78 +79,30 @@
     footer { background:#000814; padding:30px; text-align:center; color:var(--muted); font-size:14px; }
     [data-theme="light"] footer { background:#0f172a; }
 
-    /* ── LIVE PAGE LAYOUT ── */
+    /* LIVE PAGE */
     #page-live { padding-top:64px; min-height:100vh; background:var(--dark); }
     .live-main-layout { display:flex; min-height:calc(100vh - 64px); }
 
-    /* ═══════════════════════════════════════════
-       NOUVEAU PANEL ADMIN — REDESIGN COMPLET
-    ═══════════════════════════════════════════ */
-    .admin-sidebar {
-      width:0; overflow:hidden;
-      background:var(--adm-bg);
-      border-right:1px solid var(--adm-border);
-      transition:width 0.35s cubic-bezier(0.4,0,0.2,1);
-      flex-shrink:0;
-      display:flex; flex-direction:column;
-    }
+    /* ADMIN SIDEBAR */
+    .admin-sidebar { width:0; overflow:hidden; background:var(--adm-bg); border-right:1px solid var(--adm-border); transition:width 0.35s cubic-bezier(0.4,0,0.2,1); flex-shrink:0; display:flex; flex-direction:column; }
     .admin-sidebar.open { width:420px; overflow-y:auto; overflow-x:hidden; }
     .admin-sidebar.founder-mode { border-right-color:var(--founder-border); }
     .admin-sidebar::-webkit-scrollbar { width:4px; }
     .admin-sidebar::-webkit-scrollbar-thumb { background:rgba(59,130,246,0.2); border-radius:4px; }
     .admin-sidebar::-webkit-scrollbar-track { background:transparent; }
-
-    /* Header Admin */
-    .adm-header {
-      padding:20px 24px;
-      background:linear-gradient(135deg, rgba(59,130,246,0.08) 0%, transparent 100%);
-      border-bottom:1px solid var(--adm-border);
-      display:flex; align-items:center; gap:14px;
-      position:sticky; top:0; z-index:10;
-      backdrop-filter:blur(20px);
-    }
-    .adm-header-icon {
-      width:44px; height:44px; border-radius:12px;
-      background:linear-gradient(135deg, var(--adm-accent), var(--adm-accent2));
-      display:flex; align-items:center; justify-content:center;
-      font-size:20px; flex-shrink:0;
-      box-shadow:0 4px 15px rgba(59,130,246,0.3);
-    }
+    .adm-header { padding:20px 24px; background:linear-gradient(135deg,rgba(59,130,246,0.08) 0%,transparent 100%); border-bottom:1px solid var(--adm-border); display:flex; align-items:center; gap:14px; position:sticky; top:0; z-index:10; backdrop-filter:blur(20px); }
+    .adm-header-icon { width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,var(--adm-accent),var(--adm-accent2)); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; box-shadow:0 4px 15px rgba(59,130,246,0.3); }
     .adm-header-icon.founder { background:linear-gradient(135deg,#7c3aed,#a855f7); box-shadow:0 4px 15px rgba(168,85,247,0.3); }
     .adm-header-info { flex:1; }
     .adm-header-title { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:2px; color:var(--adm-text); }
     .adm-header-subtitle { font-size:11px; color:var(--adm-muted); margin-top:1px; font-weight:600; letter-spacing:0.5px; }
-    .adm-status-dot {
-      width:34px; height:34px; border-radius:10px;
-      background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.25);
-      display:flex; align-items:center; justify-content:center;
-      font-size:14px; flex-shrink:0;
-    }
+    .adm-status-dot { width:34px; height:34px; border-radius:10px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.25); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
     .adm-status-dot::after { content:""; width:8px; height:8px; border-radius:50%; background:#10b981; animation:pulse-dot 2s infinite; display:block; }
     .adm-status-dot.founder::after { background:#a855f7; }
-
-    /* Navigation tabs */
-    .adm-nav {
-      display:flex; flex-direction:column; gap:2px;
-      padding:16px 12px;
-      border-bottom:1px solid var(--adm-border);
-    }
-    .adm-nav-item {
-      display:flex; align-items:center; gap:12px;
-      padding:10px 14px; border-radius:10px;
-      font-size:13px; font-weight:700; letter-spacing:0.3px;
-      cursor:pointer; border:none;
-      background:transparent; color:var(--adm-muted);
-      font-family:'Barlow',sans-serif;
-      transition:all 0.18s; text-align:left;
-      position:relative;
-    }
+    .adm-nav { display:flex; flex-direction:column; gap:2px; padding:16px 12px; border-bottom:1px solid var(--adm-border); }
+    .adm-nav-item { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:10px; font-size:13px; font-weight:700; letter-spacing:0.3px; cursor:pointer; border:none; background:transparent; color:var(--adm-muted); font-family:'Barlow',sans-serif; transition:all 0.18s; text-align:left; position:relative; }
     .adm-nav-item:hover { background:rgba(255,255,255,0.04); color:var(--adm-text); }
-    .adm-nav-item.active {
-      background:rgba(59,130,246,0.12);
-      color:#60a5fa;
-      border:1px solid rgba(59,130,246,0.2);
-    }
+    .adm-nav-item.active { background:rgba(59,130,246,0.12); color:#60a5fa; border:1px solid rgba(59,130,246,0.2); }
     .adm-nav-item.active.founder-tab { background:var(--founder-bg); color:#c084fc; border-color:var(--founder-border); }
     .adm-nav-item.active.staff-nav { background:rgba(16,185,129,0.1); color:#34d399; border-color:rgba(16,185,129,0.2); }
     .adm-nav-icon { font-size:16px; width:20px; text-align:center; flex-shrink:0; }
@@ -166,45 +110,22 @@
     .adm-nav-badge { font-size:10px; font-weight:800; padding:2px 7px; border-radius:20px; }
     .adm-nav-badge.live { background:rgba(239,68,68,0.2); color:#f87171; border:1px solid rgba(239,68,68,0.3); animation:pulse-dot 1.5s infinite; }
     .adm-nav-badge.new { background:rgba(59,130,246,0.2); color:#60a5fa; border:1px solid rgba(59,130,246,0.25); }
-
-    /* Panels */
     .adm-panel { display:none; flex-direction:column; gap:0; }
     .adm-panel.active { display:flex; }
-
-    /* Sections */
     .adm-section { padding:20px 20px; border-bottom:1px solid var(--adm-border2); }
     .adm-section:last-child { border-bottom:none; }
-    .adm-section-header {
-      display:flex; align-items:center; gap:8px;
-      margin-bottom:16px;
-    }
+    .adm-section-header { display:flex; align-items:center; gap:8px; margin-bottom:16px; }
     .adm-section-dot { width:3px; height:16px; border-radius:2px; background:var(--adm-accent); flex-shrink:0; }
     .adm-section-dot.green { background:var(--adm-green); }
     .adm-section-dot.purple { background:var(--adm-purple); }
     .adm-section-dot.red { background:var(--adm-red); }
     .adm-section-dot.yellow { background:var(--adm-yellow); }
     .adm-section-title { font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--adm-muted); }
-
-    /* Form elements */
     .adm-label { font-size:11px; font-weight:700; color:var(--adm-muted); letter-spacing:0.5px; margin-bottom:5px; display:block; }
-    .adm-input {
-      width:100%; padding:10px 13px;
-      border-radius:9px; border:1px solid rgba(255,255,255,0.08);
-      background:rgba(255,255,255,0.03);
-      color:var(--adm-text); font-size:13px; font-family:'Barlow',sans-serif;
-      outline:none; transition:border-color 0.2s, background 0.2s;
-      margin-bottom:10px;
-    }
+    .adm-input { width:100%; padding:10px 13px; border-radius:9px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); color:var(--adm-text); font-size:13px; font-family:'Barlow',sans-serif; outline:none; transition:border-color 0.2s,background 0.2s; margin-bottom:10px; }
     .adm-input:focus { border-color:rgba(59,130,246,0.5); background:rgba(59,130,246,0.04); }
     .adm-input::placeholder { color:rgba(148,163,184,0.4); }
-
-    /* Buttons */
-    .adm-btn {
-      padding:9px 16px; border-radius:9px; border:none;
-      font-size:12px; font-weight:700; cursor:pointer;
-      font-family:'Barlow',sans-serif; transition:0.2s;
-      display:inline-flex; align-items:center; gap:6px;
-    }
+    .adm-btn { padding:9px 16px; border-radius:9px; border:none; font-size:12px; font-weight:700; cursor:pointer; font-family:'Barlow',sans-serif; transition:0.2s; display:inline-flex; align-items:center; gap:6px; }
     .adm-btn-primary { background:var(--adm-accent); color:white; }
     .adm-btn-primary:hover { background:#1d4ed8; }
     .adm-btn-danger { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#f87171; }
@@ -219,14 +140,7 @@
     .adm-btn-full { width:100%; padding:11px; border-radius:9px; border:none; font-size:13px; font-weight:700; cursor:pointer; font-family:'Barlow',sans-serif; transition:0.2s; display:flex; align-items:center; justify-content:center; gap:7px; }
     .adm-btn-row { display:flex; gap:8px; }
     .adm-btn-row .adm-btn { flex:1; justify-content:center; }
-
-    /* Toggle */
-    .adm-toggle-row {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:10px 14px; border-radius:10px;
-      background:rgba(255,255,255,0.02); border:1px solid var(--adm-border2);
-      margin-bottom:8px; transition:background 0.2s;
-    }
+    .adm-toggle-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid var(--adm-border2); margin-bottom:8px; transition:background 0.2s; }
     .adm-toggle-row:hover { background:rgba(255,255,255,0.04); }
     .adm-toggle-info { flex:1; padding-right:16px; }
     .adm-toggle-label { font-size:13px; font-weight:700; color:var(--adm-text); }
@@ -237,45 +151,19 @@
     .toggle-slider::before { content:""; position:absolute; left:3px; top:2px; width:18px; height:18px; border-radius:50%; background:white; transition:0.3s; box-shadow:0 1px 4px rgba(0,0,0,0.4); }
     .toggle-switch input:checked + .toggle-slider { background:var(--adm-accent); border-color:#3b82f6; }
     .toggle-switch input:checked + .toggle-slider::before { transform:translateX(18px); }
-
-    /* Stream slots in admin */
-    .adm-stream-slot {
-      background:rgba(255,255,255,0.02);
-      border:1px solid var(--adm-border2);
-      border-radius:12px; padding:14px;
-      margin-bottom:10px;
-      transition:border-color 0.2s;
-    }
+    .adm-stream-slot { background:rgba(255,255,255,0.02); border:1px solid var(--adm-border2); border-radius:12px; padding:14px; margin-bottom:10px; transition:border-color 0.2s; }
     .adm-stream-slot.is-live { border-color:rgba(239,68,68,0.4); background:rgba(239,68,68,0.03); }
     .adm-stream-slot-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
-    .adm-stream-slot-num {
-      width:26px; height:26px; border-radius:7px;
-      background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.2);
-      display:flex; align-items:center; justify-content:center;
-      font-size:11px; font-weight:800; color:#60a5fa;
-      flex-shrink:0;
-    }
+    .adm-stream-slot-num { width:26px; height:26px; border-radius:7px; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.2); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#60a5fa; flex-shrink:0; }
     .adm-stream-slot-num.live { background:rgba(239,68,68,0.15); border-color:rgba(239,68,68,0.3); color:#f87171; animation:pulse-dot 1.5s infinite; }
     .adm-stream-slot-title { font-size:12px; font-weight:700; color:var(--adm-text); flex:1; }
     .adm-stream-slot-badge { font-size:9px; font-weight:800; padding:2px 8px; border-radius:20px; }
     .adm-stream-slot-badge.live { background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3); }
-
-    /* Stats grid */
     .adm-stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
-    .adm-stat-card {
-      background:rgba(255,255,255,0.02); border:1px solid var(--adm-border2);
-      border-radius:10px; padding:14px 12px; text-align:center;
-    }
+    .adm-stat-card { background:rgba(255,255,255,0.02); border:1px solid var(--adm-border2); border-radius:10px; padding:14px 12px; text-align:center; }
     .adm-stat-num { font-family:'Bebas Neue',sans-serif; font-size:34px; line-height:1; margin-bottom:2px; }
     .adm-stat-label { font-size:9px; font-weight:800; color:var(--adm-muted); letter-spacing:1.2px; text-transform:uppercase; }
-
-    /* Planning items */
-    .adm-plan-item {
-      display:flex; align-items:center; gap:10px;
-      padding:10px 12px; border-radius:10px;
-      background:rgba(255,255,255,0.02); border:1px solid var(--adm-border2);
-      margin-bottom:6px; transition:background 0.2s;
-    }
+    .adm-plan-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid var(--adm-border2); margin-bottom:6px; transition:background 0.2s; }
     .adm-plan-item:hover { background:rgba(255,255,255,0.04); }
     .adm-plan-dot { width:8px; height:8px; border-radius:50%; background:#5865F2; flex-shrink:0; }
     .adm-plan-dot.live { background:var(--adm-red); animation:pulse-dot 1.5s infinite; }
@@ -286,48 +174,19 @@
     .adm-plan-delete { background:none; border:none; color:rgba(148,163,184,0.3); cursor:pointer; font-size:13px; padding:4px 8px; border-radius:6px; transition:0.2s; flex-shrink:0; }
     .adm-plan-delete:hover { color:#f87171; background:rgba(239,68,68,0.1); }
     .private-badge { display:inline-block; background:rgba(168,85,247,0.12); border:1px solid rgba(168,85,247,0.3); color:#c084fc; font-size:9px; font-weight:800; padding:1px 7px; border-radius:20px; letter-spacing:0.5px; margin-left:4px; }
-
-    /* Chat messages admin */
-    .adm-chat-item {
-      background:rgba(239,68,68,0.04); border:1px solid rgba(239,68,68,0.12);
-      border-radius:9px; padding:9px 12px; margin-bottom:6px;
-      display:flex; align-items:center; justify-content:space-between;
-    }
+    .adm-chat-item { background:rgba(239,68,68,0.04); border:1px solid rgba(239,68,68,0.12); border-radius:9px; padding:9px 12px; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; }
     .adm-chat-user { font-size:13px; font-weight:700; color:#f87171; }
     .adm-chat-reason { font-size:11px; color:var(--adm-muted); margin-top:1px; }
     .adm-unban-btn { background:none; border:1px solid rgba(16,185,129,0.3); color:#34d399; font-size:11px; font-weight:700; padding:3px 10px; border-radius:7px; cursor:pointer; font-family:'Barlow',sans-serif; transition:0.2s; }
     .adm-unban-btn:hover { background:rgba(16,185,129,0.1); }
-
-    /* Staff list */
-    .adm-staff-item {
-      display:flex; align-items:center; gap:12px;
-      padding:10px 12px; border-radius:10px;
-      background:rgba(255,255,255,0.02); border:1px solid var(--adm-border2);
-      margin-bottom:6px;
-    }
-    .adm-staff-avatar {
-      width:34px; height:34px; border-radius:10px;
-      background:linear-gradient(135deg,#2563eb,#60a5fa);
-      display:flex; align-items:center; justify-content:center;
-      font-size:14px; font-weight:800; color:white; flex-shrink:0;
-    }
+    .adm-staff-item { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid var(--adm-border2); margin-bottom:6px; }
+    .adm-staff-avatar { width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#2563eb,#60a5fa); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; color:white; flex-shrink:0; }
     .adm-staff-avatar.founder { background:linear-gradient(135deg,#7c3aed,#a855f7); }
     .adm-staff-name { font-size:13px; font-weight:700; color:var(--adm-text); }
     .adm-staff-role { font-size:11px; color:#60a5fa; margin-top:1px; font-weight:600; }
     .adm-staff-online-dot { width:8px; height:8px; border-radius:50%; background:#10b981; animation:pulse-dot 2s infinite; margin-left:auto; flex-shrink:0; }
-
-    /* Staff Chat */
-    .adm-staff-chat {
-      height:340px; border-radius:12px; overflow:hidden;
-      border:1px solid rgba(16,185,129,0.15);
-      background:rgba(16,185,129,0.02);
-      display:flex; flex-direction:column;
-    }
-    .adm-staff-chat-header {
-      padding:10px 14px; background:rgba(16,185,129,0.08);
-      border-bottom:1px solid rgba(16,185,129,0.12);
-      display:flex; align-items:center; gap:8px;
-    }
+    .adm-staff-chat { height:340px; border-radius:12px; overflow:hidden; border:1px solid rgba(16,185,129,0.15); background:rgba(16,185,129,0.02); display:flex; flex-direction:column; }
+    .adm-staff-chat-header { padding:10px 14px; background:rgba(16,185,129,0.08); border-bottom:1px solid rgba(16,185,129,0.12); display:flex; align-items:center; gap:8px; }
     .adm-staff-chat-title { font-size:12px; font-weight:800; color:#34d399; letter-spacing:1px; text-transform:uppercase; flex:1; }
     .adm-staff-chat-badge { font-size:10px; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.25); color:#4ade80; padding:2px 8px; border-radius:20px; font-weight:700; }
     .adm-staff-chat-msgs { flex:1; overflow-y:auto; padding:10px 12px; display:flex; flex-direction:column; gap:6px; }
@@ -346,17 +205,8 @@
     .adm-staff-input { flex:1; padding:8px 11px; border-radius:8px; border:1px solid rgba(16,185,129,0.2); background:rgba(16,185,129,0.04); color:var(--adm-text); font-size:12px; font-family:'Barlow',sans-serif; outline:none; }
     .adm-staff-input:focus { border-color:#10b981; }
     .adm-staff-send { padding:8px 14px; border-radius:8px; border:none; background:linear-gradient(135deg,#10b981,#059669); color:white; font-size:12px; font-weight:700; cursor:pointer; font-family:'Barlow',sans-serif; }
-
-    /* Visitors */
-    .adm-visitors-panel {
-      border-radius:10px; overflow:hidden;
-      border:1px solid rgba(16,185,129,0.15);
-    }
-    .adm-visitors-header {
-      background:rgba(16,185,129,0.08); padding:10px 14px;
-      display:flex; align-items:center; justify-content:space-between;
-      border-bottom:1px solid rgba(16,185,129,0.12);
-    }
+    .adm-visitors-panel { border-radius:10px; overflow:hidden; border:1px solid rgba(16,185,129,0.15); }
+    .adm-visitors-header { background:rgba(16,185,129,0.08); padding:10px 14px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(16,185,129,0.12); }
     .adm-visitors-title { font-size:11px; font-weight:800; color:#34d399; letter-spacing:1px; text-transform:uppercase; display:flex; align-items:center; gap:6px; }
     .adm-visitors-count { font-family:'Bebas Neue',sans-serif; font-size:24px; color:#4ade80; }
     .adm-visitor-item { padding:8px 14px; border-bottom:1px solid rgba(16,185,129,0.06); display:flex; align-items:center; gap:8px; font-size:12px; }
@@ -364,48 +214,24 @@
     .adm-visitor-dot { width:6px; height:6px; border-radius:50%; background:#4ade80; animation:pulse-dot 2s infinite; flex-shrink:0; }
     .adm-visitor-page { flex:1; color:var(--adm-text); font-weight:600; }
     .adm-visitor-time { color:var(--adm-muted); font-size:11px; }
-
-    /* Notif log */
-    .adm-notif-item {
-      background:rgba(255,255,255,0.02); border:1px solid var(--adm-border2);
-      border-radius:9px; padding:10px 12px; margin-bottom:6px;
-    }
+    .adm-notif-item { background:rgba(255,255,255,0.02); border:1px solid var(--adm-border2); border-radius:9px; padding:10px 12px; margin-bottom:6px; }
     .adm-notif-title { font-size:12px; font-weight:700; color:var(--adm-text); }
     .adm-notif-body { font-size:11px; color:var(--adm-muted); margin-top:2px; }
     .adm-notif-meta { font-size:10px; color:var(--adm-accent); margin-top:4px; font-weight:700; }
-
-    /* Revoked */
-    .adm-revoked-item {
-      background:rgba(239,68,68,0.04); border:1px solid rgba(239,68,68,0.15);
-      border-radius:9px; padding:9px 12px; margin-bottom:6px;
-      display:flex; align-items:center; justify-content:space-between; gap:8px;
-    }
+    .adm-revoked-item { background:rgba(239,68,68,0.04); border:1px solid rgba(239,68,68,0.15); border-radius:9px; padding:9px 12px; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
     .adm-revoked-name { font-size:13px; font-weight:700; color:#f87171; }
     .adm-revoked-badge { font-size:9px; font-weight:800; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.25); color:#f87171; padding:2px 8px; border-radius:20px; }
     .adm-restore-btn { background:none; border:1px solid rgba(16,185,129,0.3); color:#4ade80; font-size:10px; font-weight:700; padding:3px 9px; border-radius:6px; cursor:pointer; font-family:'Barlow',sans-serif; }
-
-    /* Footer */
-    .adm-footer {
-      padding:14px 20px;
-      border-top:1px solid var(--adm-border);
-      display:flex; align-items:center; justify-content:space-between;
-      background:var(--adm-bg);
-      position:sticky; bottom:0; z-index:10;
-    }
+    .adm-footer { padding:14px 20px; border-top:1px solid var(--adm-border); display:flex; align-items:center; justify-content:space-between; background:var(--adm-bg); position:sticky; bottom:0; z-index:10; }
     .adm-logged-user { display:flex; align-items:center; gap:8px; }
-    .adm-logged-avatar {
-      width:28px; height:28px; border-radius:8px;
-      background:linear-gradient(135deg,#2563eb,#6366f1);
-      display:flex; align-items:center; justify-content:center;
-      font-size:12px; font-weight:800; color:white; flex-shrink:0;
-    }
+    .adm-logged-avatar { width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,#2563eb,#6366f1); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; color:white; flex-shrink:0; }
     .adm-logged-avatar.founder { background:linear-gradient(135deg,#7c3aed,#a855f7); }
     .adm-logged-name { font-size:12px; font-weight:700; color:#60a5fa; }
     .adm-logged-name.founder { color:#c084fc; }
     .adm-logged-role { font-size:10px; color:var(--adm-muted); display:flex; align-items:center; gap:4px; }
     .adm-logged-role::before { content:""; width:5px; height:5px; border-radius:50%; background:#10b981; animation:pulse-dot 2s infinite; display:inline-block; }
 
-    /* ── LIVE CONTENT AREA ── */
+    /* LIVE CONTENT */
     .live-content-area { flex:1; min-width:0; display:flex; flex-direction:column; }
     .live-topbar { background:var(--dark2); border-bottom:1px solid var(--border); padding:14px 28px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
     .live-topbar-title { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:2px; color:var(--text); display:flex; align-items:center; gap:12px; flex:1; }
@@ -417,16 +243,12 @@
     .btn-admin-toggle { padding:9px 18px; border-radius:9px; border:1px solid rgba(37,99,235,0.35); background:rgba(37,99,235,0.1); color:#60a5fa; font-size:13px; font-weight:700; cursor:pointer; font-family:'Barlow',sans-serif; display:flex; align-items:center; gap:6px; transition:0.2s; }
     .btn-admin-toggle.active { background:rgba(37,99,235,0.25); border-color:rgba(37,99,235,0.55); }
     .btn-admin-toggle.founder-active { background:rgba(168,85,247,0.2); border-color:rgba(168,85,247,0.5); color:#c084fc; }
-
-    /* Notifications */
     .notif-cta-bar { background:linear-gradient(135deg,rgba(37,99,235,0.1),rgba(168,85,247,0.06)); border-bottom:1px solid rgba(37,99,235,0.18); padding:10px 28px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
     .notif-cta-text { font-size:14px; font-weight:600; color:var(--text); flex:1; display:flex; align-items:center; gap:8px; }
     .btn-notif-enable { padding:8px 20px; border-radius:9px; border:none; background:linear-gradient(135deg,#2563eb,#3b82f6); color:white; font-size:13px; font-weight:700; cursor:pointer; font-family:'Barlow',sans-serif; }
     .btn-notif-dismiss { padding:8px 14px; border-radius:9px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:13px; cursor:pointer; font-family:'Barlow',sans-serif; }
     .notif-enabled-pill { display:flex; align-items:center; gap:7px; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); border-radius:20px; padding:7px 16px; font-size:13px; font-weight:700; color:#4ade80; }
     .notif-enabled-pill::before { content:""; width:7px; height:7px; border-radius:50%; background:#4ade80; animation:pulse-dot 2s infinite; }
-
-    /* Countdown */
     .countdown-banner { display:none; background:linear-gradient(135deg,#0f172a,#1e1b4b); border-bottom:1px solid rgba(99,102,241,0.35); padding:18px 28px; align-items:center; justify-content:center; gap:32px; flex-wrap:wrap; }
     .countdown-banner.visible { display:flex; }
     .countdown-match-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:2px; color:white; }
@@ -438,7 +260,7 @@
     .cd-sep { font-family:'Bebas Neue',sans-serif; font-size:40px; color:rgba(99,102,241,0.5); margin-top:-6px; }
     .countdown-ended { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:2px; color:#4ade80; animation:pulse-dot 1s infinite; }
 
-    /* Stream */
+    /* STREAM */
     .stream-container { padding:22px 28px; }
     .stream-mode-bar { display:flex; align-items:center; gap:10px; padding:0 0 14px 0; flex-wrap:wrap; }
     .stream-mode-btn { padding:7px 16px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:12px; font-weight:700; cursor:pointer; font-family:'Barlow',sans-serif; transition:0.2s; }
@@ -452,7 +274,44 @@
     .stream-slot iframe, .stream-slot video { width:100%; height:100%; border:none; }
     .stream-slot-label { position:absolute; top:8px; left:8px; background:rgba(0,0,0,0.7); color:white; font-size:11px; font-weight:700; padding:3px 8px; border-radius:6px; z-index:5; pointer-events:none; }
     .stream-slot-live { position:absolute; top:8px; right:8px; background:var(--red); color:white; font-size:10px; font-weight:800; padding:2px 8px; border-radius:6px; z-index:5; animation:pulse-dot 1.5s infinite; pointer-events:none; }
-    .stream-protect-overlay { position:absolute; inset:0; z-index:6; background:transparent; cursor:default; }
+
+    /* ============================================================
+       PROTECTION STREAM — OVERLAY + CONTROLES CUSTOM
+    ============================================================ */
+    .stream-protect-overlay {
+      position:absolute; inset:0; z-index:6;
+      background:transparent; cursor:default;
+      user-select:none; -webkit-user-select:none;
+    }
+    /* Barre de contrôles custom visible au survol */
+    .stream-controls-bar {
+      position:absolute; bottom:0; left:0; right:0; z-index:8;
+      background:linear-gradient(transparent, rgba(0,0,0,0.82));
+      padding:32px 14px 10px;
+      display:flex; align-items:center; gap:8px;
+      opacity:0; transition:opacity 0.25s;
+      pointer-events:none;
+    }
+    .stream-slot:hover .stream-controls-bar { opacity:1; pointer-events:all; }
+    .sctrl-btn {
+      width:36px; height:36px; border-radius:9px; border:none;
+      background:rgba(255,255,255,0.18); color:white;
+      font-size:17px; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:background 0.15s; flex-shrink:0;
+      backdrop-filter:blur(6px);
+    }
+    .sctrl-btn:hover { background:rgba(255,255,255,0.35); }
+    .sctrl-volume { width:72px; height:4px; accent-color:white; cursor:pointer; flex-shrink:0; }
+    .sctrl-spacer { flex:1; }
+    .sctrl-live-badge {
+      font-size:10px; font-weight:800; letter-spacing:1px;
+      background:rgba(220,38,38,0.85); color:white;
+      padding:3px 8px; border-radius:6px;
+      animation:pulse-dot 1.5s infinite;
+    }
+    /* ============================================================ */
+
     .stream-fullscreen-btn { position:absolute; bottom:10px; right:10px; z-index:10; width:36px; height:36px; border-radius:8px; background:rgba(0,0,0,0.65); border:1px solid rgba(255,255,255,0.2); color:white; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; backdrop-filter:blur(4px); opacity:0; }
     .stream-slot:hover .stream-fullscreen-btn { opacity:1; }
     .stream-fullscreen-btn:hover { background:rgba(37,99,235,0.7); }
@@ -466,7 +325,7 @@
     .live-layout { display:grid; grid-template-columns:1fr 340px; gap:18px; padding:0 28px 28px; align-items:start; }
     @media(max-width:1100px){ .live-layout { grid-template-columns:1fr; } .stream-grid.dual,.stream-grid.quad { grid-template-columns:1fr; } }
 
-    /* Chat live */
+    /* CHAT LIVE */
     .live-chat-panel { background:var(--dark2); border:1px solid var(--border); border-radius:16px; overflow:hidden; display:flex; flex-direction:column; height:520px; max-height:620px; position:relative; }
     .chat-panel-header { padding:12px 16px; background:rgba(37,99,235,0.1); border-bottom:1px solid rgba(37,99,235,0.18); display:flex; align-items:center; justify-content:space-between; }
     .chat-panel-title { font-family:'Bebas Neue',sans-serif; font-size:17px; letter-spacing:1.5px; color:var(--text); display:flex; align-items:center; gap:8px; }
@@ -501,7 +360,7 @@
     .pseudo-warning { font-size:11px; color:#fbbf24; display:none; margin-top:2px; }
     .pseudo-warning.show { display:block; }
 
-    /* Planning public */
+    /* PLANNING PUBLIC */
     .planning-public { background:var(--dark2); border-top:1px solid var(--border); padding:28px; }
     .planning-public h3 { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:2px; color:var(--text); margin-bottom:18px; display:flex; align-items:center; gap:10px; }
     .planning-public-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
@@ -521,7 +380,7 @@
     .planning-card-author.founder { color:#c084fc; }
     .planning-empty { color:var(--muted); font-size:14px; text-align:center; padding:24px; }
 
-    /* Toasts */
+    /* TOASTS */
     .ban-toast { position:fixed; top:80px; right:24px; background:rgba(220,38,38,0.9); backdrop-filter:blur(10px); color:white; padding:12px 20px; border-radius:12px; font-size:14px; font-weight:700; z-index:999; transform:translateX(150%); transition:transform 0.3s; border:1px solid rgba(255,255,255,0.1); }
     .ban-toast.show { transform:translateX(0); }
     .push-preview-toast { position:fixed; top:80px; left:50%; transform:translateX(-50%) translateY(-200px); background:var(--dark2); border:1px solid rgba(37,99,235,0.4); border-radius:14px; padding:14px 20px; z-index:9999; transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s; width:340px; max-width:calc(100vw - 40px); box-shadow:0 20px 60px rgba(0,0,0,0.5); display:flex; align-items:flex-start; gap:12px; opacity:0; pointer-events:none; }
@@ -538,7 +397,7 @@
     .firebase-badge { position:fixed; bottom:28px; left:28px; background:rgba(255,160,0,0.12); border:1px solid rgba(255,160,0,0.35); border-radius:20px; padding:6px 14px; font-size:11px; color:#fbbf24; font-weight:700; display:flex; align-items:center; gap:6px; z-index:50; }
     .firebase-badge::before { content:""; width:6px; height:6px; border-radius:50%; background:#fbbf24; animation:pulse-dot 2s infinite; }
 
-    /* ── IPTV ── */
+    /* IPTV */
     #page-iptv { padding-top:64px; min-height:100vh; background:var(--dark); }
     .iptv-header { background:linear-gradient(135deg,#0f2a0f,#0a1a0a); border-bottom:1px solid rgba(34,197,94,0.2); padding:60px 40px; text-align:center; }
     .iptv-header h2 { font-family:'Bebas Neue',sans-serif; font-size:58px; letter-spacing:3px; color:white; margin-bottom:14px; }
@@ -596,7 +455,7 @@
     .faq-item h4 { font-size:16px; font-weight:700; margin-bottom:8px; color:var(--text); }
     .faq-item p { font-size:14px; color:var(--muted); line-height:1.7; }
 
-    /* Chatbot */
+    /* CHATBOT */
     .chat-bubble-btn { position:fixed; bottom:28px; right:28px; width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,#4ade80,#22c55e); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:26px; box-shadow:0 4px 30px rgba(34,197,94,0.5); z-index:300; transition:0.3s; animation:chat-bounce 3s ease-in-out infinite; }
     .chat-bubble-btn.open { animation:none; background:linear-gradient(135deg,#f87171,#dc2626); }
     @keyframes chat-bounce { 0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)} }
@@ -631,7 +490,7 @@
     .chat-input:focus { border-color:#22c55e; }
     .chat-send-btn { width:38px; height:38px; border-radius:50%; border:none; background:linear-gradient(135deg,#4ade80,#22c55e); color:white; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 
-    /* Modals */
+    /* MODALS */
     .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(5px); z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
     .modal-overlay.open { opacity:1; pointer-events:all; }
     .modal { background:var(--dark2); border:1px solid rgba(37,99,235,0.3); border-radius:20px; padding:36px; max-width:420px; width:100%; }
@@ -728,12 +587,8 @@
 <div id="page-live" class="page">
   <div class="live-main-layout">
 
-    <!-- ══════════════════════════════════
-         NOUVEAU PANEL ADMIN REDESIGNÉ
-    ══════════════════════════════════ -->
+    <!-- ADMIN SIDEBAR -->
     <div class="admin-sidebar" id="admin-sidebar">
-
-      <!-- Header -->
       <div class="adm-header">
         <div class="adm-header-icon" id="adm-header-icon">⚙️</div>
         <div class="adm-header-info">
@@ -742,66 +597,46 @@
         </div>
         <div class="adm-status-dot" id="adm-status-dot"></div>
       </div>
-
-      <!-- Navigation verticale -->
       <div class="adm-nav">
         <button class="adm-nav-item active" onclick="switchAdminTab('stream')" id="tab-stream">
-          <span class="adm-nav-icon">📺</span>
-          <span class="adm-nav-label">Stream</span>
+          <span class="adm-nav-icon">📺</span><span class="adm-nav-label">Stream</span>
           <span class="adm-nav-badge live" id="stream-nav-badge" style="display:none;">LIVE</span>
         </button>
         <button class="adm-nav-item" onclick="switchAdminTab('planning')" id="tab-planning">
-          <span class="adm-nav-icon">📅</span>
-          <span class="adm-nav-label">Planning</span>
+          <span class="adm-nav-icon">📅</span><span class="adm-nav-label">Planning</span>
         </button>
         <button class="adm-nav-item" onclick="switchAdminTab('chat')" id="tab-chat">
-          <span class="adm-nav-icon">💬</span>
-          <span class="adm-nav-label">Chat & Modération</span>
+          <span class="adm-nav-icon">💬</span><span class="adm-nav-label">Chat & Modération</span>
         </button>
         <button class="adm-nav-item staff-nav" onclick="switchAdminTab('staff-chat')" id="tab-staff-chat">
-          <span class="adm-nav-icon">🔐</span>
-          <span class="adm-nav-label">Canal Staff</span>
+          <span class="adm-nav-icon">🔐</span><span class="adm-nav-label">Canal Staff</span>
         </button>
         <button class="adm-nav-item" onclick="switchAdminTab('notif')" id="tab-notif">
-          <span class="adm-nav-icon">🔔</span>
-          <span class="adm-nav-label">Notifications</span>
+          <span class="adm-nav-icon">🔔</span><span class="adm-nav-label">Notifications</span>
         </button>
         <button class="adm-nav-item" onclick="switchAdminTab('tools')" id="tab-tools">
-          <span class="adm-nav-icon">🛠️</span>
-          <span class="adm-nav-label">Outils & Stats</span>
+          <span class="adm-nav-icon">🛠️</span><span class="adm-nav-label">Outils & Stats</span>
         </button>
         <button class="adm-nav-item founder-tab" onclick="switchAdminTab('founder')" id="tab-founder" style="display:none;">
-          <span class="adm-nav-icon">👑</span>
-          <span class="adm-nav-label">Fondateur</span>
+          <span class="adm-nav-icon">👑</span><span class="adm-nav-label">Fondateur</span>
         </button>
       </div>
 
-      <!-- ── PANEL STREAM ── -->
+      <!-- PANEL STREAM -->
       <div class="adm-panel active" id="panel-stream">
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot"></div>
-            <div class="adm-section-title">Mode d'affichage</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot"></div><div class="adm-section-title">Mode d'affichage</div></div>
           <div style="display:flex;gap:6px;">
             <button class="adm-btn adm-btn-ghost" style="flex:1;justify-content:center;" onclick="setStreamMode('single')" id="mode-btn-single">1️⃣ Simple</button>
             <button class="adm-btn adm-btn-ghost" style="flex:1;justify-content:center;" onclick="setStreamMode('dual')" id="mode-btn-dual">2️⃣ Double</button>
             <button class="adm-btn adm-btn-ghost" style="flex:1;justify-content:center;" onclick="setStreamMode('quad')" id="mode-btn-quad">4️⃣ Quad</button>
           </div>
         </div>
-
         <div class="adm-section" id="stream-slots-admin"></div>
-
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot" style="background:#6366f1;"></div>
-            <div class="adm-section-title">Compte à rebours</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot" style="background:#6366f1;"></div><div class="adm-section-title">Compte à rebours</div></div>
           <div class="adm-toggle-row">
-            <div class="adm-toggle-info">
-              <div class="adm-toggle-label">Activer le countdown</div>
-              <div class="adm-toggle-desc">Timer avant le match</div>
-            </div>
+            <div class="adm-toggle-info"><div class="adm-toggle-label">Activer le countdown</div><div class="adm-toggle-desc">Timer avant le match</div></div>
             <label class="toggle-switch"><input type="checkbox" id="toggle-countdown" onchange="toggleCountdownAdmin(this.checked)"><span class="toggle-slider"></span></label>
           </div>
           <div id="countdown-config" style="display:none;padding-top:10px;">
@@ -812,12 +647,8 @@
             <button class="adm-btn-full adm-btn-purple" onclick="setCountdownTime()">⏱ Activer le compte à rebours</button>
           </div>
         </div>
-
         <div class="adm-section" id="stats-section" style="display:none;">
-          <div class="adm-section-header">
-            <div class="adm-section-dot green"></div>
-            <div class="adm-section-title">Statistiques Live</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot green"></div><div class="adm-section-title">Statistiques Live</div></div>
           <div class="adm-stats-grid">
             <div class="adm-stat-card"><div class="adm-stat-num" id="stat-current" style="color:#f87171;">0</div><div class="adm-stat-label">Visiteurs</div></div>
             <div class="adm-stat-card"><div class="adm-stat-num" id="stat-peak" style="color:#fbbf24;">0</div><div class="adm-stat-label">Pic max</div></div>
@@ -828,13 +659,10 @@
         </div>
       </div>
 
-      <!-- ── PANEL PLANNING ── -->
+      <!-- PANEL PLANNING -->
       <div class="adm-panel" id="panel-planning">
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot"></div>
-            <div class="adm-section-title">Ajouter un match</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot"></div><div class="adm-section-title">Ajouter un match</div></div>
           <label class="adm-label">Nom du match</label>
           <input type="text" class="adm-input" id="plan-match" placeholder="Ex : Nice vs Lens" />
           <label class="adm-label">Date & Heure</label>
@@ -847,32 +675,21 @@
           </div>
           <button class="adm-btn-full adm-btn-primary" onclick="addPlanningMatch()">➕ Ajouter au planning</button>
         </div>
-
         <div class="adm-section" id="private-planning-admin-section" style="display:none;">
-          <div class="adm-section-header">
-            <div class="adm-section-dot purple"></div>
-            <div class="adm-section-title">Planning Privé <span class="private-badge">🔒 STAFF</span></div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot purple"></div><div class="adm-section-title">Planning Privé <span class="private-badge">🔒 STAFF</span></div></div>
           <div style="font-size:11px;color:#c084fc;margin-bottom:10px;background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.15);border-radius:8px;padding:8px 12px;">Matchs visibles uniquement par le staff connecté.</div>
           <div id="admin-private-planning-list"><div style="font-size:12px;color:var(--adm-muted);text-align:center;padding:10px;">Aucun match privé.</div></div>
         </div>
-
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot"></div>
-            <div class="adm-section-title">Matchs planifiés</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot"></div><div class="adm-section-title">Matchs planifiés</div></div>
           <div id="admin-planning-list"><div style="font-size:12px;color:var(--adm-muted);text-align:center;padding:10px;">Aucun match planifié.</div></div>
         </div>
       </div>
 
-      <!-- ── PANEL CHAT & MODÉRATION ── -->
+      <!-- PANEL CHAT -->
       <div class="adm-panel" id="panel-chat">
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot"></div>
-            <div class="adm-section-title">Paramètres</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot"></div><div class="adm-section-title">Paramètres</div></div>
           <div class="adm-toggle-row">
             <div class="adm-toggle-info"><div class="adm-toggle-label">💬 Chat live</div><div class="adm-toggle-desc">Permettre aux visiteurs d'écrire</div></div>
             <label class="toggle-switch"><input type="checkbox" id="toggle-chat" onchange="toggleLiveChat(this.checked)"><span class="toggle-slider"></span></label>
@@ -882,45 +699,30 @@
             <label class="toggle-switch"><input type="checkbox" id="toggle-chatbot" onchange="toggleChatbot(this.checked)" checked><span class="toggle-slider"></span></label>
           </div>
         </div>
-
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot"></div>
-            <div class="adm-section-title">Répondre dans le chat</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot"></div><div class="adm-section-title">Répondre dans le chat</div></div>
           <input type="text" class="adm-input" id="admin-live-reply-input" placeholder="Message admin..." maxlength="200" onkeydown="if(event.key==='Enter')sendAdminLiveReply()" />
           <button class="adm-btn-full adm-btn-primary" onclick="sendAdminLiveReply()">📢 Envoyer comme Admin</button>
         </div>
-
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot yellow"></div>
-            <div class="adm-section-title">Annonce système</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot yellow"></div><div class="adm-section-title">Annonce système</div></div>
           <input type="text" class="adm-input" id="announce-input" placeholder="Message en bleu dans le chat..." />
           <div class="adm-btn-row">
             <button class="adm-btn adm-btn-ghost" onclick="sendAnnounce()">📢 Envoyer</button>
             <button class="adm-btn adm-btn-danger" onclick="clearLiveChat()">🗑 Vider le chat</button>
           </div>
         </div>
-
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot red"></div>
-            <div class="adm-section-title">Utilisateurs bannis</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot red"></div><div class="adm-section-title">Utilisateurs bannis</div></div>
           <div id="ban-list-admin"><div style="font-size:12px;color:var(--adm-muted);text-align:center;padding:10px;">Aucun banni.</div></div>
           <button class="adm-btn adm-btn-danger" style="width:100%;justify-content:center;margin-top:8px;" onclick="clearAllBans()">🗑 Supprimer tous les bans</button>
         </div>
       </div>
 
-      <!-- ── PANEL STAFF CHAT ── -->
+      <!-- PANEL STAFF CHAT -->
       <div class="adm-panel" id="panel-staff-chat">
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot green"></div>
-            <div class="adm-section-title">Canal Staff <span class="private-badge" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);color:#34d399;">🔐 PRIVÉ</span></div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot green"></div><div class="adm-section-title">Canal Staff <span class="private-badge" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);color:#34d399;">🔐 PRIVÉ</span></div></div>
           <div class="adm-staff-chat">
             <div class="adm-staff-chat-header">
               <span style="font-size:14px;">🔐</span>
@@ -937,21 +739,15 @@
           </div>
         </div>
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot green"></div>
-            <div class="adm-section-title">Staff connecté</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot green"></div><div class="adm-section-title">Staff connecté</div></div>
           <div id="staff-chat-members-list"><div style="font-size:12px;color:var(--adm-muted);text-align:center;padding:10px;">Chargement...</div></div>
         </div>
       </div>
 
-      <!-- ── PANEL NOTIFICATIONS ── -->
+      <!-- PANEL NOTIFICATIONS -->
       <div class="adm-panel" id="panel-notif">
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot"></div>
-            <div class="adm-section-title">Envoyer une notification</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot"></div><div class="adm-section-title">Envoyer une notification</div></div>
           <label class="adm-label">Titre</label>
           <input type="text" class="adm-input" id="notif-title-input" placeholder="Ex : 🔴 PSG vs Real — En direct !" maxlength="60" />
           <label class="adm-label">Message</label>
@@ -962,31 +758,22 @@
           </div>
         </div>
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot yellow"></div>
-            <div class="adm-section-title">Auto-notification</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot yellow"></div><div class="adm-section-title">Auto-notification</div></div>
           <div class="adm-toggle-row">
             <div class="adm-toggle-info"><div class="adm-toggle-label">🚀 Auto-notif au démarrage</div><div class="adm-toggle-desc">Notifie au lancement d'un stream</div></div>
             <label class="toggle-switch"><input type="checkbox" id="toggle-auto-notif" checked><span class="toggle-slider"></span></label>
           </div>
         </div>
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot"></div>
-            <div class="adm-section-title">Historique</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot"></div><div class="adm-section-title">Historique</div></div>
           <div id="notif-log-list" style="font-size:12px;color:var(--adm-muted);padding:6px 0;">Aucune notification envoyée.</div>
         </div>
       </div>
 
-      <!-- ── PANEL OUTILS & STATS ── -->
+      <!-- PANEL OUTILS -->
       <div class="adm-panel" id="panel-tools">
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot green"></div>
-            <div class="adm-section-title">Visiteurs en temps réel</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot green"></div><div class="adm-section-title">Visiteurs en temps réel</div></div>
           <div class="adm-visitors-panel">
             <div class="adm-visitors-header">
               <div class="adm-visitors-title">🟢 En ligne</div>
@@ -996,32 +783,22 @@
           </div>
         </div>
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot red"></div>
-            <div class="adm-section-title">Actions</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot red"></div><div class="adm-section-title">Actions</div></div>
           <div style="display:flex;flex-direction:column;gap:8px;">
             <button class="adm-btn adm-btn-ghost" style="justify-content:flex-start;" onclick="logoutAdmin()">🔒 Se déconnecter</button>
-            <button onclick="openFounderModal()" style="display:flex;align-items:center;gap:7px;width:100%;padding:10px 14px;border-radius:9px;border:none;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(168,85,247,0.1));border:1px solid rgba(168,85,247,0.25);color:#c084fc;font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;">👑 Accès Fondateur</button>
+            <button onclick="openFounderModal()" style="display:flex;align-items:center;gap:7px;width:100%;padding:10px 14px;border-radius:9px;border:1px solid rgba(168,85,247,0.25);background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(168,85,247,0.1));color:#c084fc;font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;">👑 Accès Fondateur</button>
           </div>
         </div>
       </div>
 
-      <!-- ── PANEL FONDATEUR ── -->
+      <!-- PANEL FONDATEUR -->
       <div class="adm-panel" id="panel-founder">
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot purple"></div>
-            <div class="adm-section-title">Staff connecté</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot purple"></div><div class="adm-section-title">Staff connecté</div></div>
           <div id="founder-staff-list"><div style="font-size:12px;color:var(--adm-muted);text-align:center;padding:10px;">Aucun staff connecté.</div></div>
         </div>
-
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot purple"></div>
-            <div class="adm-section-title">Planning Privé <span class="private-badge">🔒 ADMINS ONLY</span></div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot purple"></div><div class="adm-section-title">Planning Privé <span class="private-badge">🔒 ADMINS ONLY</span></div></div>
           <label class="adm-label">Nom du match</label>
           <input type="text" class="adm-input" style="border-color:rgba(168,85,247,0.2);" id="founder-plan-match" placeholder="Ex : PSG vs Arsenal" />
           <label class="adm-label">Date & Heure</label>
@@ -1030,32 +807,20 @@
           <input type="text" class="adm-input" style="border-color:rgba(168,85,247,0.2);" id="founder-plan-comp" placeholder="Ex : Ligue des Champions" />
           <button class="adm-btn-full adm-btn-founder" onclick="addFounderPlanning()">👑 Ajouter au planning privé</button>
         </div>
-
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot red"></div>
-            <div class="adm-section-title">Révoquer un Admin</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot red"></div><div class="adm-section-title">Révoquer un Admin</div></div>
           <label class="adm-label">Pseudo</label>
           <input type="text" class="adm-input" style="border-color:rgba(168,85,247,0.2);" id="revoke-admin-name" placeholder="Ex : AdminDupont" maxlength="30" />
           <label class="adm-label">Raison</label>
           <input type="text" class="adm-input" style="border-color:rgba(168,85,247,0.2);" id="revoke-reason" placeholder="Ex : Abus de pouvoir" maxlength="80" />
           <button class="adm-btn-full adm-btn-danger" onclick="revokeAdmin()">🚫 Révoquer</button>
         </div>
-
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot purple"></div>
-            <div class="adm-section-title">Admins révoqués</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot purple"></div><div class="adm-section-title">Admins révoqués</div></div>
           <div id="revoked-admins-list"><div style="font-size:12px;color:var(--adm-muted);text-align:center;padding:10px;">Aucune révocation.</div></div>
         </div>
-
         <div class="adm-section">
-          <div class="adm-section-header">
-            <div class="adm-section-dot green"></div>
-            <div class="adm-section-title">Visiteurs réels</div>
-          </div>
+          <div class="adm-section-header"><div class="adm-section-dot green"></div><div class="adm-section-title">Visiteurs réels</div></div>
           <div class="adm-visitors-panel">
             <div class="adm-visitors-header">
               <div class="adm-visitors-title">🟢 En ligne</div>
@@ -1064,7 +829,6 @@
             <div id="founder-visitors-list"><div style="padding:12px 14px;font-size:12px;color:var(--adm-muted);">Chargement...</div></div>
           </div>
         </div>
-
         <div class="adm-section">
           <button class="adm-btn adm-btn-ghost" style="width:100%;justify-content:center;border-color:rgba(168,85,247,0.2);color:#c084fc;" onclick="logoutFounder()">👑 Se déconnecter (Fondateur)</button>
         </div>
@@ -1635,8 +1399,6 @@ function openAdminSidebar(isFounder){
   sidebar.classList.add('open'); sidebar.classList.toggle('founder-mode',isFounder);
   const btn=document.getElementById('admin-toggle-btn');
   btn.classList.add('active'); btn.classList.toggle('founder-active',isFounder);
-
-  // Update header
   if(isFounder){
     btn.textContent='👑 Fondateur';
     document.getElementById('tab-founder').style.display='flex';
@@ -1654,7 +1416,6 @@ function openAdminSidebar(isFounder){
     document.getElementById('adm-footer-avatar').textContent=adminPseudo.charAt(0).toUpperCase();
     document.getElementById('adm-footer-name').textContent=adminPseudo;
   }
-
   document.getElementById('real-viewers-admin-pill').classList.add('visible');
   document.getElementById('private-planning-admin-section').style.display='block';
   document.getElementById('planning-private-section').style.display='block';
@@ -1717,27 +1478,133 @@ function restoreAdmin(name){ if(!founderLoggedIn) return; if(!confirm('Restaurer
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); }));
 
-/* STREAM PROTECTION */
-function updateStreamProtection(){
-  const isAdmin=adminLoggedIn||founderLoggedIn;
-  for(let i=0;i<4;i++){
-    const slot=document.getElementById('slot-'+i); if(!slot) continue;
-    const existingOverlay=slot.querySelector('.stream-protect-overlay');
-    if(existingOverlay&&isAdmin){ existingOverlay.remove(); }
-    else if(!existingOverlay&&!isAdmin){
-      const hasStream=activeStreams[i]&&activeStreams[i].active;
-      if(hasStream){ const overlay=document.createElement('div'); overlay.className='stream-protect-overlay'; overlay.addEventListener('dblclick',()=>enterFullscreen(i)); slot.appendChild(overlay); }
+/* ════════════════════════════════════════════════════════
+   PROTECTION STREAM — SYSTÈME COMPLET
+   Les visiteurs ne peuvent QUE : play/pause, volume, plein écran
+   Clic droit bloqué, navigation vers la source impossible
+════════════════════════════════════════════════════════ */
+
+// Bloque le clic droit sur tous les slots stream
+document.addEventListener('contextmenu', e => {
+  if (e.target.closest('.stream-slot')) e.preventDefault();
+});
+
+function updateStreamProtection() {
+  const isAdmin = adminLoggedIn || founderLoggedIn;
+  for (let i = 0; i < 4; i++) {
+    const slot = document.getElementById('slot-' + i);
+    if (!slot) continue;
+    // Nettoyage des anciens overlays et barres
+    slot.querySelectorAll('.stream-protect-overlay, .stream-controls-bar').forEach(el => el.remove());
+    const hasStream = activeStreams[i] && activeStreams[i].active;
+    if (!hasStream) continue;
+    if (isAdmin) continue; // L'admin garde un accès complet à l'iframe
+
+    // --- OVERLAY TRANSPARENT qui bloque tous les clics sur l'iframe ---
+    const overlay = document.createElement('div');
+    overlay.className = 'stream-protect-overlay';
+    // Bloque clic droit sur l'overlay aussi
+    overlay.addEventListener('contextmenu', e => e.preventDefault());
+    // Double clic = plein écran (UX naturelle)
+    overlay.addEventListener('dblclick', () => enterFullscreen(i));
+    slot.appendChild(overlay);
+
+    // --- BARRE DE CONTRÔLES CUSTOM ---
+    const bar = document.createElement('div');
+    bar.className = 'stream-controls-bar';
+
+    // Badge LIVE
+    const liveBadge = document.createElement('span');
+    liveBadge.className = 'sctrl-live-badge';
+    liveBadge.textContent = '🔴 LIVE';
+    bar.appendChild(liveBadge);
+
+    // Bouton Play/Pause
+    // Pour iframes cross-origin : on retire brièvement l'overlay, simule un clic au centre, remet l'overlay
+    const playBtn = document.createElement('button');
+    playBtn.className = 'sctrl-btn';
+    playBtn.innerHTML = '⏯';
+    playBtn.title = 'Play / Pause';
+    playBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const video = slot.querySelector('video');
+      if (video) {
+        // Flux HLS natif : contrôle direct
+        video.paused ? video.play() : video.pause();
+        playBtn.innerHTML = video.paused ? '▶' : '⏸';
+      } else {
+        // Iframe cross-origin : retrait temporaire overlay pour déclencher play natif
+        overlay.style.pointerEvents = 'none';
+        const iframe = slot.querySelector('iframe');
+        if (iframe) {
+          const rect = iframe.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          document.elementFromPoint(cx, cy)?.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: cx, clientY: cy }));
+        }
+        setTimeout(() => { overlay.style.pointerEvents = ''; }, 400);
+      }
+    });
+    bar.appendChild(playBtn);
+
+    // Contrôles volume (uniquement pour flux HLS <video>)
+    const video = slot.querySelector('video');
+    if (video) {
+      const volBtn = document.createElement('button');
+      volBtn.className = 'sctrl-btn';
+      volBtn.innerHTML = video.muted ? '🔇' : '🔊';
+      volBtn.title = 'Mute / Unmute';
+      volBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        video.muted = !video.muted;
+        volBtn.innerHTML = video.muted ? '🔇' : '🔊';
+        volSlider.value = video.muted ? 0 : video.volume;
+      });
+      bar.appendChild(volBtn);
+
+      const volSlider = document.createElement('input');
+      volSlider.type = 'range';
+      volSlider.min = 0; volSlider.max = 1; volSlider.step = 0.05;
+      volSlider.value = video.muted ? 0 : video.volume;
+      volSlider.className = 'sctrl-volume';
+      volSlider.addEventListener('click', e => e.stopPropagation());
+      volSlider.addEventListener('input', (e) => {
+        e.stopPropagation();
+        video.volume = parseFloat(volSlider.value);
+        video.muted = video.volume === 0;
+        volBtn.innerHTML = video.muted ? '🔇' : '🔊';
+      });
+      bar.appendChild(volSlider);
     }
+
+    // Spacer
+    const spacer = document.createElement('div');
+    spacer.className = 'sctrl-spacer';
+    bar.appendChild(spacer);
+
+    // Bouton Plein écran
+    const fsBtn = document.createElement('button');
+    fsBtn.className = 'sctrl-btn';
+    fsBtn.innerHTML = '⛶';
+    fsBtn.title = 'Plein écran';
+    fsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      enterFullscreen(i);
+    });
+    bar.appendChild(fsBtn);
+
+    slot.appendChild(bar);
   }
 }
 
 function enterFullscreen(slotIndex){
   const slot=document.getElementById('slot-'+slotIndex); if(!slot) return;
   if(document.fullscreenElement){ document.exitFullscreen().catch(()=>{}); }
-  else { (slot.requestFullscreen||slot.webkitRequestFullscreen||function(){}).call(slot); }
+  else { (slot.requestFullscreen||slot.webkitRequestFullscreen||slot.mozRequestFullScreen||function(){}).call(slot); }
 }
 
 function addFullscreenBtn(slotEl, index){
+  // Pour l'admin seulement, on garde l'ancien bouton flottant
   if(slotEl.querySelector('.stream-fullscreen-btn')) return;
   const btn=document.createElement('button');
   btn.className='stream-fullscreen-btn'; btn.title='Plein écran'; btn.innerHTML='⛶';
@@ -1808,50 +1675,95 @@ function stopSlot(i){
   DB.ref('stream').set({streams:activeStreams,mode:currentStreamMode}).then(()=>showToast('⏹ Stream arrêté'));
 }
 
-function applyStreamsState(streams,mode){
+function applyStreamsState(streams, mode){
   currentStreamMode=mode||currentStreamMode; activeStreams=streams||activeStreams;
   const slotCount={single:1,dual:2,quad:4}[currentStreamMode]||1;
   const grid=document.getElementById('stream-grid'); if(grid) grid.className='stream-grid '+currentStreamMode;
   let anyActive=false;
+
   for(let i=0;i<4;i++){
     const slot=document.getElementById('slot-'+i); if(!slot) continue;
     slot.style.display=i<slotCount?'block':'none';
     const s=activeStreams[i]||{};
+
     if(s.active&&s.url){
       anyActive=true;
-      const old=slot.querySelector('.active-player'); if(old) old.remove();
+
+      // Retire le placeholder si présent
       const ph=slot.querySelector('.no-stream-placeholder'); if(ph) ph.remove();
+
+      // Badge label
       let lb=slot.querySelector('.stream-slot-label');
       if(!lb){ lb=document.createElement('div'); lb.className='stream-slot-label'; slot.appendChild(lb); }
       lb.textContent='Écran '+(i+1)+(s.label?' · '+s.label:'');
-      let liveBadge=slot.querySelector('.stream-slot-live');
-      if(!liveBadge){ liveBadge=document.createElement('div'); liveBadge.className='stream-slot-live'; liveBadge.textContent='🔴 LIVE'; slot.appendChild(liveBadge); }
+
+      // Badge LIVE (pour admin uniquement, les visiteurs ont la barre custom)
+      if(adminLoggedIn||founderLoggedIn){
+        let liveBadge=slot.querySelector('.stream-slot-live');
+        if(!liveBadge){ liveBadge=document.createElement('div'); liveBadge.className='stream-slot-live'; liveBadge.textContent='🔴 LIVE'; slot.appendChild(liveBadge); }
+      }
+
+      // Vérifie si le player est déjà là avec la bonne URL
       const existingPlayer=slot.querySelector('.active-player');
-      if(existingPlayer&&existingPlayer.src===s.url) { addFullscreenBtn(slot,i); continue; }
+      if(existingPlayer && existingPlayer.src===s.url){
+        // Bonne URL déjà chargée, on met à jour la protection
+        if(adminLoggedIn||founderLoggedIn) addFullscreenBtn(slot,i);
+        updateStreamProtection();
+        continue;
+      }
       if(existingPlayer) existingPlayer.remove();
+
+      // Crée le player
       if(s.url.includes('.m3u8')){
-        const video=document.createElement('video'); video.className='active-player'; video.controls=true; video.autoplay=true; video.style.cssText='width:100%;height:100%;background:#000;'; slot.appendChild(video);
-        if(window.Hls&&Hls.isSupported()){ if(hlsInstances[i]) hlsInstances[i].destroy(); hlsInstances[i]=new Hls(); hlsInstances[i].loadSource(s.url); hlsInstances[i].attachMedia(video); }
-        else if(video.canPlayType('application/vnd.apple.mpegurl')) video.src=s.url;
+        const video=document.createElement('video');
+        video.className='active-player'; video.controls=false; video.autoplay=true;
+        video.style.cssText='width:100%;height:100%;background:#000;';
+        slot.appendChild(video);
+        if(window.Hls&&Hls.isSupported()){
+          if(hlsInstances[i]) hlsInstances[i].destroy();
+          hlsInstances[i]=new Hls(); hlsInstances[i].loadSource(s.url); hlsInstances[i].attachMedia(video);
+        } else if(video.canPlayType('application/vnd.apple.mpegurl')){
+          video.src=s.url;
+        }
       } else {
-        const iframe=document.createElement('iframe'); iframe.className='active-player'; iframe.src=s.url; iframe.allowFullscreen=true; iframe.allow='autoplay; fullscreen'; iframe.style.cssText='width:100%;height:100%;border:none;'; slot.appendChild(iframe);
+        const iframe=document.createElement('iframe');
+        iframe.className='active-player'; iframe.src=s.url;
+        iframe.allowFullscreen=true; iframe.allow='autoplay; fullscreen';
+        // Sandbox pour empêcher navigation mais autoriser autoplay
+        iframe.setAttribute('sandbox','allow-scripts allow-same-origin allow-presentation allow-popups');
+        iframe.style.cssText='width:100%;height:100%;border:none;';
+        slot.appendChild(iframe);
       }
-      addFullscreenBtn(slot,i);
-      if(!(adminLoggedIn||founderLoggedIn)){
-        if(!slot.querySelector('.stream-protect-overlay')){ const overlay=document.createElement('div'); overlay.className='stream-protect-overlay'; overlay.addEventListener('dblclick',()=>enterFullscreen(i)); slot.appendChild(overlay); }
-      }
+
+      // Admin : bouton plein écran natif
+      if(adminLoggedIn||founderLoggedIn) addFullscreenBtn(slot,i);
+
     } else {
+      // Slot inactif : nettoyage complet
       const old=slot.querySelector('.active-player'); if(old) old.remove();
       const lb=slot.querySelector('.stream-slot-label'); if(lb) lb.remove();
       const liv=slot.querySelector('.stream-slot-live'); if(liv) liv.remove();
-      const ovl=slot.querySelector('.stream-protect-overlay'); if(ovl) ovl.remove();
-      const fsBtn=slot.querySelector('.stream-fullscreen-btn'); if(fsBtn) fsBtn.remove();
-      if(!slot.querySelector('.no-stream-placeholder')){ const ph=document.createElement('div'); ph.className='no-stream-placeholder'; ph.innerHTML=`<div class="icon-tv">📺</div><h3>Écran ${i+1}</h3><p>Aucun stream actif.</p>`; slot.appendChild(ph); }
+      slot.querySelectorAll('.stream-protect-overlay,.stream-controls-bar,.stream-fullscreen-btn').forEach(el=>el.remove());
+      if(!slot.querySelector('.no-stream-placeholder')){
+        const ph=document.createElement('div'); ph.className='no-stream-placeholder';
+        ph.innerHTML=`<div class="icon-tv">📺</div><h3>Écran ${i+1}</h3><p>Aucun stream actif.</p>`;
+        slot.appendChild(ph);
+      }
     }
   }
+
+  // Met à jour la protection sur tous les slots actifs
+  updateStreamProtection();
+
   const badge=document.getElementById('live-status-badge'); const infoBar=document.getElementById('stream-info-bar');
-  if(anyActive){ badge.className='live-badge'; badge.textContent='🔴 EN DIRECT'; infoBar.style.display='flex'; const firstActive=activeStreams.find(s=>s.active); document.getElementById('match-label-display').textContent=firstActive?.label||'Match en direct'; }
-  else { badge.className='live-no-stream-badge'; badge.textContent='HORS LIGNE'; infoBar.style.display='none'; document.getElementById('stats-section').style.display='none'; }
+  if(anyActive){
+    badge.className='live-badge'; badge.textContent='🔴 EN DIRECT'; infoBar.style.display='flex';
+    const firstActive=activeStreams.find(s=>s.active);
+    document.getElementById('match-label-display').textContent=firstActive?.label||'Match en direct';
+  } else {
+    badge.className='live-no-stream-badge'; badge.textContent='HORS LIGNE'; infoBar.style.display='none';
+    document.getElementById('stats-section').style.display='none';
+  }
   document.getElementById('stream-mode-bar').style.display=anyActive&&slotCount>1?'flex':'none';
   ['single','dual','quad'].forEach(m=>{ const pb=document.getElementById('pub-mode-'+m); if(pb) pb.classList.toggle('active',m===currentStreamMode); });
   const navBadge=document.getElementById('stream-nav-badge'); if(navBadge) navBadge.style.display=anyActive?'':'none';
@@ -2146,3 +2058,5 @@ setInterval(()=>{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
 </body>
 </html>
+HTMLEOF
+echo "OK - $(wc -c < /home/claude/index.html) bytes"
