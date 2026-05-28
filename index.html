@@ -1972,3 +1972,230 @@ setInterval(()=>{ DB.ref('visitors').once('value').then(snap=>{ const d=snap.val
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
 </body>
 </html>
+bash
+
+cat << 'PYEOF' > /home/claude/patch.py
+src = open('/dev/stdin', 'r').read()
+
+patches = [
+    # 1. Add screenStreams variable after hlsInstances
+    (
+        "let streamStart=null, durInterval=null;\nlet pushTimer=null;",
+        "let streamStart=null, durInterval=null;\nlet pushTimer=null;\nlet screenStreams=[null,null,null,null];"
+    ),
+    # 2. Replace renderSlotsAdmin
+    (
+        """function renderSlotsAdmin(){
+  const c=document.getElementById('slots-admin'); if(!c) return;
+  const cnt=SLOT_COUNTS[streamMode]||1;
+  let html='<div class="adm-block-head"><div class="adm-block-line"></div><div class="adm-block-title">Sources des streams</div></div>';
+  for(let i=0;i<cnt;i++){
+    const s=streams[i]||{url:'',label:'',on:false};
+    html+=`<div class="stream-slot-adm${s.on?' active':''}">
+      <div class="slot-head">
+        <div class="slot-num${s.on?' live-num':''}">${i+1}</div>
+        <div class="slot-title">Écran ${i+1}</div>
+        ${s.on?'<span class="slot-badge">🔴 LIVE</span>':''}
+      </div>
+      <label class="adm-label">URL du flux ou lien embed</label>
+      <input type="text" class="adm-input" id="url-${i}" value="${s.url||''}" placeholder="https://... ou iframe src">
+      <label class="adm-label">Nom du match</label>
+      <input type="text" class="adm-input" id="lbl-${i}" value="${s.label||''}" placeholder="Ex: PSG vs Real Madrid">
+      <div class="btn-row">
+        <button class="btn btn-blue" style="flex:1;justify-content:center;" onclick="launchSlot(${i})">▶ Lancer</button>
+        <button class="btn btn-red" onclick="stopSlot(${i})">⏹</button>
+      </div>
+    </div>`;
+  }
+  c.innerHTML=html;
+}""",
+        r"""function renderSlotsAdmin(){
+  const c=document.getElementById('slots-admin'); if(!c) return;
+  const cnt=SLOT_COUNTS[streamMode]||1;
+  let html='<div class="adm-block-head"><div class="adm-block-line"></div><div class="adm-block-title">Partage d\'écran</div></div>';
+  for(let i=0;i<cnt;i++){
+    const s=streams[i]||{label:'',on:false};
+    const isSharing=!!screenStreams[i];
+    const stateClass=s.on?' active':'';
+    const numClass=s.on?' live-num':'';
+    const badge=s.on?'<span class="slot-badge">🔴 LIVE</span>':'';
+    const shareBtn=isSharing
+      ?`<button class="btn btn-blue" style="flex:1;justify-content:center;opacity:.6;" disabled>🖥 Partage actif</button>`
+      :`<button class="btn btn-blue" style="flex:1;justify-content:center;" id="share-btn-${i}" onclick="launchSlot(${i})">🖥 Partager l'écran ${i+1}</button>`;
+    const warn=s.on&&!isSharing?'<div style="font-size:10px;color:#fbbf24;margin-top:4px;">⚠️ Partage perdu – relancer</div>':'';
+    html+=`<div class="stream-slot-adm${stateClass}">
+      <div class="slot-head">
+        <div class="slot-num${numClass}">${i+1}</div>
+        <div class="slot-title">Écran ${i+1}</div>
+        ${badge}
+      </div>
+      <label class="adm-label">Nom du match</label>
+      <input type="text" class="adm-input" id="lbl-${i}" value="${s.label||''}" placeholder="Ex: PSG vs Real Madrid">
+      <div class="btn-row">
+        ${shareBtn}
+        <button class="btn btn-red" onclick="stopSlot(${i})">⏹</button>
+      </div>
+      ${warn}
+    </div>`;
+  }
+  c.innerHTML=html;
+}"""
+    ),
+    # 3. Replace launchSlot
+    (
+        """function launchSlot(i){
+  const url=document.getElementById('url-'+i)?.value.trim();
+  const label=document.getElementById('lbl-'+i)?.value.trim();
+  if(!url){ alert('Entre une URL pour l\\'écran '+(i+1)); return; }
+  streams[i]={url,label,on:true,startTime:Date.now()};
+  if(i===0&&!durInterval){ streamStart=Date.now(); durInterval=setInterval(updateDur,1000); }
+  DB.ref('stream').set({streams,mode:streamMode}).then(()=>showToast('🔴 Stream lancé !')).catch(e=>showToast('⚠️ '+e.message));
+  if(i===0&&document.getElementById('tog-auto-notif')?.checked){
+    const t=label?`🔴 ${label} — En direct !`:'🔴 Diffusion en cours !';
+    sendNotification(t,'Le match est en direct sur Football Zone France.');
+  }
+  document.getElementById('stats-block').style.display='block';
+  const b=document.getElementById('tab-stream-badge'); if(b) b.style.display='';
+}""",
+        r"""async function launchSlot(i){
+  if(!navigator.mediaDevices?.getDisplayMedia){ alert('Ton navigateur ne supporte pas le partage d\'écran.'); return; }
+  const label=document.getElementById('lbl-'+i)?.value.trim()||'';
+  const btn=document.getElementById('share-btn-'+i);
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Sélection...'; }
+  try{
+    const mediaStream=await navigator.mediaDevices.getDisplayMedia({
+      video:{cursor:'always',frameRate:30,width:{ideal:1920},height:{ideal:1080}},
+      audio:true
+    });
+    if(screenStreams[i]){ screenStreams[i].getTracks().forEach(t=>t.stop()); }
+    screenStreams[i]=mediaStream;
+    mediaStream.getVideoTracks()[0].addEventListener('ended',()=>stopSlot(i));
+    streams[i]={label,on:true,startTime:Date.now(),screenShare:true};
+    if(!durInterval){ streamStart=Date.now(); durInterval=setInterval(updateDur,1000); }
+    applyLocalStream(i,mediaStream);
+    DB.ref('stream/meta').set({streams:streams.map(s=>({label:s.label||'',on:!!s.on})),mode:streamMode});
+    showToast('🔴 Partage écran '+(i+1)+' lancé !');
+    if(document.getElementById('tog-auto-notif')?.checked&&streams.filter(s=>s.on).length===1){
+      const t=label?`🔴 ${label} — En direct !`:'🔴 Diffusion en cours !';
+      sendNotification(t,'Le match est en direct sur Football Zone France.');
+    }
+    document.getElementById('stats-block').style.display='block';
+    const b=document.getElementById('tab-stream-badge'); if(b) b.style.display='';
+    renderSlotsAdmin();
+  } catch(e){
+    if(e.name!=='NotAllowedError') showToast('⚠️ Erreur: '+e.message);
+    else showToast('ℹ️ Partage annulé');
+    if(btn){ btn.disabled=false; btn.textContent='🖥 Partager l\'écran '+(i+1); }
+  }
+}"""
+    ),
+    # 4. Replace stopSlot
+    (
+        "function stopSlot(i){ if(hlsInstances[i]){ hlsInstances[i].destroy(); hlsInstances[i]=null; } streams[i]={url:'',label:'',on:false}; DB.ref('stream').set({streams,mode:streamMode}).then(()=>showToast('⏹ Stream arrêté')); }",
+        r"""function stopSlot(i){
+  if(hlsInstances[i]){ hlsInstances[i].destroy(); hlsInstances[i]=null; }
+  if(screenStreams[i]){ screenStreams[i].getTracks().forEach(t=>t.stop()); screenStreams[i]=null; }
+  const slot=document.getElementById('slot-'+i);
+  const vid=slot?.querySelector('video.live-player'); if(vid){ vid.srcObject=null; vid.remove(); }
+  ['slot-label','slot-live-badge','fs-btn'].forEach(cls=>slot?.querySelectorAll('.'+cls).forEach(e=>e.remove()));
+  if(!slot?.querySelector('.slot-placeholder')){
+    const ph=document.createElement('div'); ph.className='slot-placeholder';
+    ph.innerHTML=`<div class="ph-icon">📺</div><h3>Écran ${i+1}</h3>`;
+    slot?.appendChild(ph);
+  }
+  streams[i]={label:'',on:false};
+  const anyOn=streams.some(s=>s.on);
+  if(!anyOn){ if(durInterval){ clearInterval(durInterval); durInterval=null; } streamStart=null; }
+  const lbEl=document.getElementById('live-badge'), siEl=document.getElementById('stream-info');
+  if(!anyOn){ if(lbEl){ lbEl.className='live-badge-off'; lbEl.textContent='HORS LIGNE'; } if(siEl) siEl.classList.remove('show'); document.getElementById('stats-block').style.display='none'; const b=document.getElementById('tab-stream-badge'); if(b) b.style.display='none'; }
+  DB.ref('stream/meta').set({streams:streams.map(s=>({label:s.label||'',on:!!s.on})),mode:streamMode});
+  renderSlotsAdmin();
+  updateProtect();
+  showToast('⏹ Écran '+(i+1)+' arrêté');
+}"""
+    ),
+    # 5. Add applyLocalStream function before applyStreams
+    (
+        "function applyStreams(){",
+        r"""function applyLocalStream(i,mediaStream){
+  const slot=document.getElementById('slot-'+i); if(!slot) return;
+  slot.querySelectorAll('.slot-placeholder,.live-player').forEach(el=>el.remove());
+  const vid=document.createElement('video');
+  vid.className='live-player'; vid.dataset.src='screenshare-'+i;
+  vid.autoplay=true; vid.playsInline=true; vid.muted=false;
+  vid.style.cssText='width:100%;height:100%;background:#000;position:absolute;inset:0;object-fit:contain;';
+  vid.srcObject=mediaStream;
+  slot.insertBefore(vid,slot.firstChild);
+  let lb=slot.querySelector('.slot-label');
+  if(!lb){ lb=document.createElement('div'); lb.className='slot-label'; slot.appendChild(lb); }
+  lb.textContent='Écran '+(i+1)+(streams[i].label?' · '+streams[i].label:'');
+  if(adminIn||founderIn){
+    let lbg=slot.querySelector('.slot-live-badge');
+    if(!lbg){ lbg=document.createElement('div'); lbg.className='slot-live-badge'; lbg.textContent='🔴 LIVE'; slot.appendChild(lbg); }
+    addFsBtn(slot,i);
+  }
+  const lbEl=document.getElementById('live-badge'), siEl=document.getElementById('stream-info');
+  if(lbEl){ lbEl.className='live-badge-on'; lbEl.textContent='🔴 EN DIRECT'; }
+  if(siEl) siEl.classList.add('show');
+  const f=streams.find(s=>s.on);
+  const mnd=document.getElementById('match-name-display');
+  if(mnd) mnd.textContent=f?.label||'Match en direct';
+  updateProtect();
+}
+
+function applyStreams(){"""
+    ),
+    # 6. Patch applyStreams to skip URL-based iframe/HLS logic for screen share slots
+    # Replace the player creation block inside applyStreams
+    (
+        """      // Player check
+      const existing=slot.querySelector('.live-player');
+      if(existing&&existing.dataset.src===s.url){ if(adminIn||founderIn) addFsBtn(slot,i); updateProtect(); continue; }
+      if(existing) existing.remove();
+      // Create player
+      if(s.url.includes('.m3u8')){
+        const vid=document.createElement('video'); vid.className='live-player'; vid.dataset.src=s.url; vid.controls=false; vid.autoplay=true; vid.style.cssText='width:100%;height:100%;background:#000;';
+        slot.appendChild(vid);
+        if(window.Hls&&Hls.isSupported()){ if(hlsInstances[i]) hlsInstances[i].destroy(); hlsInstances[i]=new Hls(); hlsInstances[i].loadSource(s.url); hlsInstances[i].attachMedia(vid); } else if(vid.canPlayType('application/vnd.apple.mpegurl')){ vid.src=s.url; }
+      } else {
+        const iframe=document.createElement('iframe'); iframe.className='live-player'; iframe.dataset.src=s.url; iframe.src=s.url; iframe.allowFullscreen=true; iframe.allow='autoplay; fullscreen';
+        iframe.setAttribute('sandbox','allow-scripts allow-same-origin allow-presentation allow-popups');
+        iframe.style.cssText='width:100%;height:100%;border:none;';
+        slot.appendChild(iframe);
+      }
+      if(adminIn||founderIn) addFsBtn(slot,i);""",
+        """      // Screen share: video element already handled by applyLocalStream
+      const existing=slot.querySelector('.live-player');
+      if(existing&&(existing.dataset.src==='screenshare-'+i||screenStreams[i])){ if(adminIn||founderIn) addFsBtn(slot,i); updateProtect(); continue; }
+      if(existing) existing.remove();
+      if(adminIn||founderIn) addFsBtn(slot,i);"""
+    ),
+    # 7. Fix Firebase listener for stream — now using stream/meta instead of stream
+    (
+        "DB.ref('stream').on('value',snap=>{ const d=snap.val(); if(!d) return; if(d.streams) streams=d.streams; if(d.mode) streamMode=d.mode; applyStreams(); if(adminIn) renderSlotsAdmin(); showSync(); });",
+        r"""DB.ref('stream/meta').on('value',snap=>{
+  const d=snap.val(); if(!d) return;
+  if(d.streams) d.streams.forEach((s,i)=>{ streams[i]={...(streams[i]||{}),label:s.label||'',on:!!s.on}; });
+  if(d.mode) streamMode=d.mode;
+  applyGrid(streamMode); renderModeButtons(streamMode);
+  const anyOn=streams.some(s=>s.on);
+  const lbEl=document.getElementById('live-badge'), siEl=document.getElementById('stream-info');
+  if(anyOn){ if(lbEl){lbEl.className='live-badge-on';lbEl.textContent='🔴 EN DIRECT';} if(siEl) siEl.classList.add('show'); const f=streams.find(s=>s.on); const mnd=document.getElementById('match-name-display'); if(mnd) mnd.textContent=f?.label||'Match en direct'; } else { if(lbEl){lbEl.className='live-badge-off';lbEl.textContent='HORS LIGNE';} if(siEl) siEl.classList.remove('show'); }
+  if(adminIn) renderSlotsAdmin(); showSync();
+});"""
+    ),
+]
+
+changed = 0
+for old, new in patches:
+    if old in src:
+        src = src.replace(old, new)
+        changed += 1
+    else:
+        print(f"MISS patch #{changed+1}: not found")
+        changed += 1
+
+open('/home/claude/index_final.html', 'w').write(src)
+print(f"Done. Applied patches. Output size: {len(src)}")
+PYEOF
+echo "patch script ready"
