@@ -1,3 +1,6 @@
+bash
+
+cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="fr" data-theme="dark">
 <head>
@@ -104,7 +107,7 @@
     .live-layout { display:flex; min-height:calc(100vh - var(--nav-h)); }
 
     .adm-sidebar { width:0; overflow:hidden; flex-shrink:0; background:var(--adm-bg); border-right:1px solid rgba(61,127,255,0.1); display:flex; flex-direction:column; transition:width 0.4s cubic-bezier(0.4,0,0.2,1); }
-    .adm-sidebar.open { width:400px; overflow-y:auto; overflow-x:hidden; }
+    .adm-sidebar.open { width:420px; overflow-y:auto; overflow-x:hidden; }
     .adm-sidebar.founder-open { border-right-color:rgba(157,78,221,0.25); }
 
     .adm-top { padding:20px 20px 16px; background:var(--adm-s1); border-bottom:1px solid var(--adm-b2); position:sticky; top:0; z-index:20; }
@@ -173,7 +176,17 @@
     .toggle input:checked + .toggle-slider { background:var(--adm-blue); border-color:var(--adm-blue); }
     .toggle input:checked + .toggle-slider::before { transform:translateX(18px); }
 
-    /* ── SCREEN SHARE SLOT ADMIN ── */
+    /* ═══ GUIDE PARTAGE ÉCRAN ═══ */
+    .share-guide { background:rgba(61,127,255,0.05); border:1px solid rgba(61,127,255,0.15); border-radius:12px; padding:14px; margin-bottom:12px; }
+    .share-guide-title { font-size:12px; font-weight:800; color:#7baeff; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+    .share-guide-steps { display:flex; flex-direction:column; gap:7px; }
+    .share-step { display:flex; align-items:flex-start; gap:9px; }
+    .share-step-num { width:20px; height:20px; border-radius:50%; background:rgba(61,127,255,0.2); border:1px solid rgba(61,127,255,0.35); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#7baeff; flex-shrink:0; margin-top:1px; }
+    .share-step-text { font-size:11px; color:var(--adm-muted2); line-height:1.5; }
+    .share-step-text strong { color:var(--adm-text); }
+    .share-tip { margin-top:10px; padding:8px 10px; background:rgba(245,166,35,0.08); border:1px solid rgba(245,166,35,0.2); border-radius:8px; font-size:10px; color:#f5a623; line-height:1.5; }
+
+    /* ═══ SLOT ADMIN WEBRTC ═══ */
     .stream-slot-adm { background:rgba(255,255,255,0.02); border:1px solid var(--adm-b2); border-radius:12px; padding:12px; margin-bottom:8px; transition:border-color 0.2s; }
     .stream-slot-adm.active { border-color:rgba(255,61,92,0.35); background:rgba(255,61,92,0.03); }
     .slot-head { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
@@ -181,10 +194,13 @@
     .slot-num.live-num { background:rgba(255,61,92,0.15); border-color:rgba(255,61,92,0.3); color:#ff6b82; animation:blink 1.4s infinite; }
     .slot-title { font-size:12px; font-weight:700; color:var(--adm-text); flex:1; }
     .slot-badge { font-size:9px; font-weight:800; padding:2px 7px; border-radius:20px; background:rgba(255,61,92,0.15); color:#ff6b82; border:1px solid rgba(255,61,92,0.3); }
+    .slot-viewers { font-size:10px; color:#00d68f; font-weight:700; }
 
-    /* Screen share info box */
-    .screenshare-info { background:rgba(61,127,255,0.06); border:1px solid rgba(61,127,255,0.15); border-radius:9px; padding:9px 12px; margin-bottom:8px; font-size:11px; color:var(--adm-muted2); line-height:1.6; }
-    .screenshare-info strong { color:#7baeff; }
+    /* WebRTC status */
+    .webrtc-status { display:flex; align-items:center; gap:6px; padding:6px 10px; border-radius:7px; background:rgba(0,214,143,0.06); border:1px solid rgba(0,214,143,0.15); margin-bottom:8px; font-size:11px; font-weight:700; color:#00d68f; }
+    .webrtc-status.warn { background:rgba(245,166,35,0.06); border-color:rgba(245,166,35,0.2); color:#f5a623; }
+    .webrtc-status.err { background:rgba(255,61,92,0.06); border-color:rgba(255,61,92,0.2); color:#ff6b82; }
+    .webrtc-dot { width:6px; height:6px; border-radius:50%; background:currentColor; animation:blink 1.4s infinite; }
 
     .adm-stats { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-bottom:8px; }
     .adm-stat { background:rgba(255,255,255,0.02); border:1px solid var(--adm-b2); border-radius:10px; padding:12px; text-align:center; }
@@ -319,15 +335,24 @@
     .slot-placeholder h3 { font-family:'Syne',sans-serif; font-size:16px; font-weight:800; opacity:.25; }
     .slot-placeholder p { font-size:12px; color:var(--muted); opacity:.6; text-align:center; max-width:200px; line-height:1.5; }
 
-    /* Visitor live placeholder */
+    /* ═══ VISITOR LIVE PLAYER ═══ */
+    .visitor-stream-wrap { position:absolute; inset:0; background:#000; display:flex; align-items:center; justify-content:center; }
+    .visitor-stream-wrap video { width:100%; height:100%; object-fit:contain; background:#000; }
+
+    /* Connexion en cours pour les visiteurs */
+    .slot-connecting { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:linear-gradient(135deg,#070b14,#0a1020); }
+    .conn-spinner { width:48px; height:48px; border:3px solid rgba(61,127,255,0.15); border-top-color:var(--blue); border-radius:50%; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    .conn-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:800; color:white; }
+    .conn-sub { font-size:11px; color:var(--muted2); }
+
+    /* Placeholder live (plus joli) */
     .slot-live-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:linear-gradient(135deg,#0a0f1a,#0d1520); }
     .slp-pulse { width:64px; height:64px; border-radius:50%; background:rgba(255,61,92,0.15); border:2px solid rgba(255,61,92,0.3); display:flex; align-items:center; justify-content:center; font-size:26px; animation:pulse-ring 1.8s infinite; }
     @keyframes pulse-ring { 0%,100%{box-shadow:0 0 0 0 rgba(255,61,92,0.3)} 50%{box-shadow:0 0 0 14px rgba(255,61,92,0)} }
     .slp-title { font-family:'Syne',sans-serif; font-size:15px; font-weight:800; color:white; }
     .slp-sub { font-size:12px; color:var(--muted2); }
     .slp-badge { background:rgba(255,61,92,0.15); border:1px solid rgba(255,61,92,0.3); color:#ff6b82; font-size:10px; font-weight:800; padding:3px 10px; border-radius:20px; animation:blink 1.4s infinite; }
-
-    .stream-protect { position:absolute; inset:0; z-index:6; background:transparent; cursor:default; user-select:none; -webkit-user-select:none; pointer-events:auto; }
 
     .stream-ctrl { position:absolute; bottom:0; left:0; right:0; z-index:8; background:linear-gradient(transparent,rgba(0,0,0,0.85)); padding:28px 12px 9px; display:flex; align-items:center; gap:7px; opacity:0; transition:opacity 0.2s; pointer-events:none; }
     .slot-wrap:hover .stream-ctrl { opacity:1; pointer-events:all; }
@@ -613,7 +638,7 @@
           <div class="adm-brand-icon" id="adm-brand-icon">⚙️</div>
           <div class="adm-brand-text">
             <div class="adm-brand-name" id="adm-brand-name">Panneau Admin</div>
-            <div class="adm-brand-sub" id="adm-brand-sub">Football Zone France v5.0</div>
+            <div class="adm-brand-sub" id="adm-brand-sub">Football Zone France v6.0</div>
           </div>
           <div class="adm-brand-status" id="adm-brand-status">ACTIF</div>
         </div>
@@ -628,23 +653,35 @@
         </div>
       </div>
 
-      <!-- PANEL STREAM (Screen Share) -->
+      <!-- PANEL STREAM -->
       <div class="adm-panel on" id="panel-stream">
         <div class="adm-block">
           <div class="adm-block-head"><div class="adm-block-line"></div><div class="adm-block-title">Mode d'affichage</div></div>
           <div class="btn-row">
-            <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="setMode('single')" id="mbtn-single">1️⃣ Simple</button>
-            <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="setMode('dual')" id="mbtn-dual">2️⃣ Double</button>
-            <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="setMode('tri')" id="mbtn-tri">3️⃣ Triple</button>
-            <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="setMode('quad')" id="mbtn-quad">4️⃣ Quad</button>
+            <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="setMode('single')" id="mbtn-single">1️⃣</button>
+            <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="setMode('dual')" id="mbtn-dual">2️⃣</button>
+            <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="setMode('tri')" id="mbtn-tri">3️⃣</button>
+            <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="setMode('quad')" id="mbtn-quad">4️⃣</button>
           </div>
         </div>
+
+        <!-- GUIDE -->
         <div class="adm-block">
-          <div class="screenshare-info">
-            🖥 <strong>Partage d'écran</strong> — Clique sur un bouton pour partager ton écran directement dans le slot. Le flux est local : seul toi le vois en temps réel. Les visiteurs voient un indicateur "En direct".
+          <div class="adm-block-head"><div class="adm-block-line" style="background:#818cf8;"></div><div class="adm-block-title">Guide — Partage d'écran</div></div>
+          <div class="share-guide">
+            <div class="share-guide-title">🖥 Comment partager ton écran</div>
+            <div class="share-guide-steps">
+              <div class="share-step"><div class="share-step-num">1</div><div class="share-step-text">Clique sur <strong>🖥 Lancer le partage</strong> ci-dessous</div></div>
+              <div class="share-step"><div class="share-step-num">2</div><div class="share-step-text">Une fenêtre s'ouvre : choisis <strong>Onglet</strong> (ex: YouTube), <strong>Fenêtre</strong> ou <strong>Écran entier</strong></div></div>
+              <div class="share-step"><div class="share-step-num">3</div><div class="share-step-text">Sélectionne ce que tu veux et clique <strong>Partager</strong></div></div>
+              <div class="share-step"><div class="share-step-num">4</div><div class="share-step-text">Les visiteurs voient ton écran <strong>en temps réel</strong> via WebRTC</div></div>
+            </div>
+            <div class="share-tip">💡 Pour partager YouTube avec le son : choisis <b>Onglet</b> et coche <b>"Partager l'audio de l'onglet"</b></div>
           </div>
           <div id="slots-admin"></div>
         </div>
+
+        <!-- COUNTDOWN -->
         <div class="adm-block">
           <div class="adm-block-head"><div class="adm-block-line" style="background:#6366f1;"></div><div class="adm-block-title">Compte à rebours</div></div>
           <div class="adm-toggle">
@@ -659,13 +696,15 @@
             <button class="btn btn-full btn-purple" onclick="setCountdown()">⏱ Activer</button>
           </div>
         </div>
+
+        <!-- STATS -->
         <div class="adm-block" id="stats-block" style="display:none;">
           <div class="adm-block-head"><div class="adm-block-line g"></div><div class="adm-block-title">Stats live</div></div>
           <div class="adm-stats">
             <div class="adm-stat"><div class="adm-stat-val" id="stat-cur" style="color:#ff6b82;">0</div><div class="adm-stat-name">Visiteurs</div></div>
             <div class="adm-stat"><div class="adm-stat-val" id="stat-peak" style="color:#fbbf24;">0</div><div class="adm-stat-name">Pic</div></div>
             <div class="adm-stat"><div class="adm-stat-val" id="stat-dur" style="color:#4ade80;font-size:20px;">00:00</div><div class="adm-stat-name">Durée</div></div>
-            <div class="adm-stat"><div class="adm-stat-val" id="stat-joins" style="color:#7baeff;">0</div><div class="adm-stat-name">Connexions</div></div>
+            <div class="adm-stat"><div class="adm-stat-val" id="stat-viewers" style="color:#7baeff;">0</div><div class="adm-stat-name">Viewers WebRTC</div></div>
           </div>
           <button class="btn btn-full btn-red" onclick="resetStats()">🔄 Réinitialiser</button>
         </div>
@@ -1111,7 +1150,9 @@
 </div>
 
 <script>
-/* ═══════════════════════ FIREBASE ═══════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   FIREBASE
+══════════════════════════════════════════════════════════ */
 const firebaseConfig = {
   apiKey:"AIzaSyClhfjRn6aNxiEEl7O8zVCeNV-xAiEKiKk",
   authDomain:"footballzone-france.firebaseapp.com",
@@ -1129,82 +1170,398 @@ DB.ref('.info/connected').on('value',s=>{
   else { b.style.cssText='background:rgba(255,61,92,0.1);border-color:rgba(255,61,92,0.3);color:#ff6b82;'; b.textContent='🔥 Reconnexion...'; }
 });
 
-/* ═══════════════════════ CONSTANTES ═══════════════════════ */
-const ADMIN_PW = "fzf2026";
+/* ══════════════════════════════════════════════════════════
+   CONSTANTES & ÉTAT
+══════════════════════════════════════════════════════════ */
+const ADMIN_PW   = "fzf2026";
 const FOUNDER_PW = "fzfFounder2026!";
+
+// WebRTC ICE servers (STUN gratuits + TURN gratuit via metered.ca)
+const ICE_SERVERS = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun.cloudflare.com:3478' }
+  ]
+};
+
 let adminIn=false, founderIn=false, sidebarOpen=false, adminName='';
 let chatEnabled=false, botEnabled=true, botOpen=false, botHistory=[];
 let bans={}, plans=[], revokedAdmins={}, notifLog=[];
 let pendingBanUser='', pendingBanEl=null, banReason='';
 let cdTarget=null, cdInterval=null;
-
-// ── Screen share state (replaces old URL-based streams) ──
-let streams=[{label:'',on:false},{label:'',on:false},{label:'',on:false},{label:'',on:false}];
-let screenStreams=[null,null,null,null]; // MediaStream objects, local only
 let streamMode='single';
 let streamStart=null, durInterval=null;
 let pushTimer=null;
 
-/* ═══════════════════════ SESSION ═══════════════════════ */
-let sid = sessionStorage.getItem('fzf_sid5') || ('s_'+Date.now()+'_'+Math.random().toString(36).substr(2,5));
-sessionStorage.setItem('fzf_sid5', sid);
+// streams[i] = { label, on }  — metadata seulement, stocké dans Firebase
+let streams = [{label:'',on:false},{label:'',on:false},{label:'',on:false},{label:'',on:false}];
+
+/* ══════════════════════════════════════════════════════════
+   WEBRTC — ÉTAT
+══════════════════════════════════════════════════════════ */
+// ADMIN SIDE
+let localStreams   = [null,null,null,null]; // MediaStream (getDisplayMedia)
+let adminPCs       = {};  // { slotIdx: { viewerSid: RTCPeerConnection } }
+
+// VISITOR SIDE
+let viewerPCs      = {};  // { slotIdx: RTCPeerConnection }
+
+// Signaling path: DB.ref('webrtc/slots/{i}/offers/{viewerSid}')  -> offer from viewer to admin
+//                 DB.ref('webrtc/slots/{i}/answers/{viewerSid}') -> answer from admin to viewer
+//                 DB.ref('webrtc/slots/{i}/ice_admin/{viewerSid}/{key}') -> admin ICE candidates
+//                 DB.ref('webrtc/slots/{i}/ice_viewer/{viewerSid}/{key}') -> viewer ICE candidates
+// Admin watches for new offers; visitor posts offer then watches for answer.
+
+/* ── SESSION ── */
+let sid = sessionStorage.getItem('fzf_sid6') || ('s_'+Date.now()+'_'+Math.random().toString(36).substr(2,6));
+sessionStorage.setItem('fzf_sid6', sid);
 const CITIES=['Paris','Lyon','Marseille','Toulouse','Bordeaux','Nantes','Lille','Nice','Rennes','Grenoble','Montpellier'];
 const myCity = CITIES[Math.floor(Math.random()*CITIES.length)];
-const myDev = /Mobi|Android/i.test(navigator.userAgent)?'📱':'💻';
+const myDev  = /Mobi|Android/i.test(navigator.userAgent)?'📱':'💻';
 
 function regVisitor(page){ const r=DB.ref('visitors/'+sid); r.set({page,ts:Date.now(),device:myDev,city:myCity}); r.onDisconnect().remove(); }
 setInterval(()=>regVisitor('Live'),30000);
+function saveSess(role,name){ localStorage.setItem('fzf_s6',JSON.stringify({role,name,ts:Date.now()})); }
+function loadSess(){ try{ const s=JSON.parse(localStorage.getItem('fzf_s6')); if(!s||Date.now()-s.ts>86400000){ localStorage.removeItem('fzf_s6'); return null; } return s; } catch(e){ return null; } }
+function clearSess(){ localStorage.removeItem('fzf_s6'); }
 
-function saveSess(role,name){ localStorage.setItem('fzf_s5',JSON.stringify({role,name,ts:Date.now()})); }
-function loadSess(){ try{ const s=JSON.parse(localStorage.getItem('fzf_s5')); if(!s||Date.now()-s.ts>86400000){ localStorage.removeItem('fzf_s5'); return null; } return s; } catch(e){ return null; } }
-function clearSess(){ localStorage.removeItem('fzf_s5'); }
+/* ══════════════════════════════════════════════════════════
+   WEBRTC — ADMIN (BROADCASTER)
+══════════════════════════════════════════════════════════ */
 
-/* ═══════════════════════ FIREBASE LISTENERS ═══════════════════════ */
+/** Called when admin starts sharing slot i — watch for viewer offer requests */
+function watchForViewers(slotIdx) {
+  DB.ref(`webrtc/slots/${slotIdx}/offers`).on('child_added', async snap => {
+    const viewerSid = snap.key;
+    const offer     = snap.val();
+    if (!offer || !localStreams[slotIdx]) return;
+    await createAdminPeerConnection(slotIdx, viewerSid, offer);
+  });
+}
+
+async function createAdminPeerConnection(slotIdx, viewerSid, offer) {
+  // Clean up any existing PC for this viewer
+  if (adminPCs[slotIdx] && adminPCs[slotIdx][viewerSid]) {
+    adminPCs[slotIdx][viewerSid].close();
+  }
+  if (!adminPCs[slotIdx]) adminPCs[slotIdx] = {};
+
+  const pc = new RTCPeerConnection(ICE_SERVERS);
+  adminPCs[slotIdx][viewerSid] = pc;
+
+  // Add local stream tracks
+  localStreams[slotIdx].getTracks().forEach(track => {
+    pc.addTrack(track, localStreams[slotIdx]);
+  });
+
+  // ICE candidates → Firebase
+  const iceRef = DB.ref(`webrtc/slots/${slotIdx}/ice_admin/${viewerSid}`);
+  pc.onicecandidate = e => {
+    if (e.candidate) iceRef.push(e.candidate.toJSON());
+  };
+
+  pc.onconnectionstatechange = () => {
+    updateViewerCount();
+    renderSlotsAdmin();
+    if (pc.connectionState === 'failed' || pc.connectionState === 'closed' || pc.connectionState === 'disconnected') {
+      // Cleanup after short delay to allow reconnect
+      setTimeout(() => {
+        if (adminPCs[slotIdx]) delete adminPCs[slotIdx][viewerSid];
+        DB.ref(`webrtc/slots/${slotIdx}/offers/${viewerSid}`).remove();
+        DB.ref(`webrtc/slots/${slotIdx}/answers/${viewerSid}`).remove();
+        DB.ref(`webrtc/slots/${slotIdx}/ice_admin/${viewerSid}`).remove();
+        DB.ref(`webrtc/slots/${slotIdx}/ice_viewer/${viewerSid}`).remove();
+      }, 3000);
+    }
+  };
+
+  // Listen for viewer ICE candidates
+  DB.ref(`webrtc/slots/${slotIdx}/ice_viewer/${viewerSid}`).on('child_added', snap => {
+    if (snap.val()) pc.addIceCandidate(new RTCIceCandidate(snap.val())).catch(()=>{});
+  });
+
+  // Set remote description (viewer offer) and create answer
+  await pc.setRemoteDescription(new RTCSessionDescription(offer));
+  const answer = await pc.createAnswer();
+  await pc.setLocalDescription(answer);
+
+  // Push answer to Firebase
+  await DB.ref(`webrtc/slots/${slotIdx}/answers/${viewerSid}`).set({
+    type: answer.type,
+    sdp: answer.sdp
+  });
+}
+
+function updateViewerCount() {
+  let total = 0;
+  Object.values(adminPCs).forEach(viewers => {
+    Object.values(viewers).forEach(pc => {
+      if (pc.connectionState === 'connected') total++;
+    });
+  });
+  const el = document.getElementById('stat-viewers');
+  if (el) el.textContent = total;
+}
+
+/** Stop slot i — close all viewer PCs, clean Firebase */
+function stopSlotWebRTC(slotIdx) {
+  // Close local stream
+  if (localStreams[slotIdx]) {
+    localStreams[slotIdx].getTracks().forEach(t => t.stop());
+    localStreams[slotIdx] = null;
+  }
+  // Close all viewer PCs for this slot
+  if (adminPCs[slotIdx]) {
+    Object.values(adminPCs[slotIdx]).forEach(pc => pc.close());
+    adminPCs[slotIdx] = {};
+  }
+  // Stop watching for new offers
+  DB.ref(`webrtc/slots/${slotIdx}/offers`).off();
+  // Clean all signaling data for this slot
+  DB.ref(`webrtc/slots/${slotIdx}`).remove();
+
+  // Update metadata
+  streams[slotIdx] = { label: streams[slotIdx]?.label||'', on: false };
+  DB.ref('stream/meta').set({ streams: streams.map(s=>({label:s.label||'',on:!!s.on})), mode: streamMode });
+
+  // Update UI
+  const slot = document.getElementById('slot-'+slotIdx);
+  if (slot) {
+    slot.querySelectorAll('video,.slot-label,.slot-live-badge,.fs-btn,.stream-ctrl').forEach(e=>e.remove());
+    if (!slot.querySelector('.slot-placeholder')) {
+      const ph = document.createElement('div'); ph.className='slot-placeholder';
+      ph.innerHTML=`<div class="ph-icon">📺</div><h3>Écran ${slotIdx+1}</h3>`;
+      slot.appendChild(ph);
+    }
+  }
+  const anyOn = streams.some(s=>s.on);
+  if (!anyOn) {
+    if (durInterval) { clearInterval(durInterval); durInterval=null; }
+    streamStart=null;
+    const lbEl=document.getElementById('live-badge'),siEl=document.getElementById('stream-info');
+    if(lbEl){ lbEl.className='live-badge-off'; lbEl.textContent='HORS LIGNE'; }
+    if(siEl) siEl.classList.remove('show');
+    document.getElementById('stats-block').style.display='none';
+    const b=document.getElementById('tab-stream-badge'); if(b) b.style.display='none';
+  }
+  renderSlotsAdmin();
+  showToast('⏹ Écran '+(slotIdx+1)+' arrêté');
+}
+
+/* ══════════════════════════════════════════════════════════
+   WEBRTC — VISITOR (VIEWER)
+══════════════════════════════════════════════════════════ */
+
+/** Called when Firebase signals that slot i is live */
+async function connectToSlot(slotIdx) {
+  // Don't connect if already connected
+  if (viewerPCs[slotIdx] && 
+      (viewerPCs[slotIdx].connectionState === 'connected' ||
+       viewerPCs[slotIdx].connectionState === 'connecting')) return;
+
+  // Clean up existing PC
+  if (viewerPCs[slotIdx]) {
+    viewerPCs[slotIdx].close();
+    delete viewerPCs[slotIdx];
+  }
+
+  const slot = document.getElementById('slot-'+slotIdx);
+  if (!slot) return;
+
+  // Show connecting UI
+  showConnectingUI(slotIdx);
+
+  const pc = new RTCPeerConnection(ICE_SERVERS);
+  viewerPCs[slotIdx] = pc;
+
+  // When we get a remote track (admin's screen), show it
+  pc.ontrack = e => {
+    showRemoteStream(slotIdx, e.streams[0]);
+  };
+
+  pc.onconnectionstatechange = () => {
+    if (pc.connectionState === 'failed' || pc.connectionState === 'disconnected') {
+      showLivePlaceholder(slotIdx, streams[slotIdx]?.label || 'Match en direct');
+      // Retry after 3s
+      setTimeout(() => {
+        if (streams[slotIdx]?.on) connectToSlot(slotIdx);
+      }, 3000);
+    }
+    if (pc.connectionState === 'connected') {
+      // Hide connecting UI — stream visible
+    }
+  };
+
+  // ICE candidates → Firebase
+  const myIceRef = DB.ref(`webrtc/slots/${slotIdx}/ice_viewer/${sid}`);
+  pc.onicecandidate = e => {
+    if (e.candidate) myIceRef.push(e.candidate.toJSON());
+  };
+
+  // Create offer
+  const offer = await pc.createOffer({ offerToReceiveVideo: true, offerToReceiveAudio: true });
+  await pc.setLocalDescription(offer);
+
+  // Push offer to Firebase for admin
+  await DB.ref(`webrtc/slots/${slotIdx}/offers/${sid}`).set({
+    type: offer.type,
+    sdp: offer.sdp
+  });
+
+  // Wait for admin's answer
+  DB.ref(`webrtc/slots/${slotIdx}/answers/${sid}`).on('value', async snap => {
+    const answer = snap.val();
+    if (!answer || pc.remoteDescription) return;
+    try {
+      await pc.setRemoteDescription(new RTCSessionDescription(answer));
+    } catch(e) {}
+  });
+
+  // Listen for admin ICE candidates
+  DB.ref(`webrtc/slots/${slotIdx}/ice_admin/${sid}`).on('child_added', snap => {
+    if (snap.val()) pc.addIceCandidate(new RTCIceCandidate(snap.val())).catch(()=>{});
+  });
+
+  // Cleanup on disconnect
+  window.addEventListener('beforeunload', () => cleanupViewerSlot(slotIdx));
+}
+
+function cleanupViewerSlot(slotIdx) {
+  if (viewerPCs[slotIdx]) {
+    viewerPCs[slotIdx].close();
+    delete viewerPCs[slotIdx];
+  }
+  DB.ref(`webrtc/slots/${slotIdx}/offers/${sid}`).remove();
+  DB.ref(`webrtc/slots/${slotIdx}/answers/${sid}`).remove();
+  DB.ref(`webrtc/slots/${slotIdx}/ice_viewer/${sid}`).remove();
+  DB.ref(`webrtc/slots/${slotIdx}/ice_admin/${sid}`).off();
+  DB.ref(`webrtc/slots/${slotIdx}/answers/${sid}`).off();
+}
+
+function disconnectFromSlot(slotIdx) {
+  cleanupViewerSlot(slotIdx);
+  const slot = document.getElementById('slot-'+slotIdx);
+  if (slot) {
+    slot.querySelectorAll('video,.slot-connecting,.slot-label,.slot-live-badge,.fs-btn').forEach(e=>e.remove());
+    if (!slot.querySelector('.slot-placeholder')) {
+      const ph=document.createElement('div'); ph.className='slot-placeholder';
+      ph.innerHTML=`<div class="ph-icon">📺</div><h3>Écran ${slotIdx+1}</h3>`;
+      slot.appendChild(ph);
+    }
+  }
+}
+
+function showConnectingUI(slotIdx) {
+  const slot = document.getElementById('slot-'+slotIdx); if(!slot) return;
+  slot.querySelectorAll('.slot-placeholder,.slot-live-placeholder,.slot-connecting').forEach(e=>e.remove());
+  const div = document.createElement('div'); div.className='slot-connecting';
+  div.innerHTML=`<div class="conn-spinner"></div><div class="conn-title">Connexion en cours...</div><div class="conn-sub">Chargement du stream</div>`;
+  slot.appendChild(div);
+}
+
+function showRemoteStream(slotIdx, mediaStream) {
+  const slot = document.getElementById('slot-'+slotIdx); if(!slot) return;
+  slot.querySelectorAll('.slot-placeholder,.slot-live-placeholder,.slot-connecting,video').forEach(e=>e.remove());
+
+  const vid = document.createElement('video');
+  vid.autoplay = true;
+  vid.playsInline = true;
+  vid.style.cssText = 'width:100%;height:100%;position:absolute;inset:0;object-fit:contain;background:#000;';
+  vid.srcObject = mediaStream;
+  slot.insertBefore(vid, slot.firstChild);
+
+  // Label
+  let lb = slot.querySelector('.slot-label');
+  if (!lb) { lb=document.createElement('div'); lb.className='slot-label'; slot.appendChild(lb); }
+  lb.textContent = 'Écran '+(slotIdx+1)+(streams[slotIdx]?.label?' · '+streams[slotIdx].label:'');
+
+  // Live badge
+  let lbg = slot.querySelector('.slot-live-badge');
+  if (!lbg) { lbg=document.createElement('div'); lbg.className='slot-live-badge'; lbg.textContent='🔴 LIVE'; slot.appendChild(lbg); }
+
+  // Volume control overlay
+  const ctrl = document.createElement('div'); ctrl.className='stream-ctrl';
+  ctrl.innerHTML=`<button class="ctrl-btn" onclick="toggleMute(this,${slotIdx})">🔊</button><input type="range" class="ctrl-vol" min="0" max="1" step="0.05" value="1" oninput="setVol(this,${slotIdx})"><div class="ctrl-spacer"></div><span class="ctrl-live">🔴 LIVE</span>`;
+  slot.appendChild(ctrl);
+
+  // Fullscreen button
+  addFsBtn(slot, slotIdx);
+  slot.classList.add('live-slot');
+}
+
+function showLivePlaceholder(slotIdx, label) {
+  const slot = document.getElementById('slot-'+slotIdx); if(!slot) return;
+  slot.querySelectorAll('.slot-placeholder,.slot-connecting,video,.slot-live-badge,.slot-label,.fs-btn,.stream-ctrl').forEach(e=>e.remove());
+  const ph = document.createElement('div'); ph.className='slot-live-placeholder';
+  ph.innerHTML=`<div class="slp-pulse">🔴</div><div class="slp-title">${label||'Match en direct'}</div><div class="slp-badge">🔴 EN DIRECT</div><div class="slp-sub" style="font-size:11px;color:var(--muted2);">Connexion WebRTC...</div>`;
+  slot.appendChild(ph);
+}
+
+/* ══════════════════════════════════════════════════════════
+   FIREBASE LISTENERS
+══════════════════════════════════════════════════════════ */
 DB.ref('visitors').on('value',snap=>{
   const data=snap.val()||{}, now=Date.now();
   const active=Object.entries(data).filter(([,v])=>now-v.ts<180000);
   const cnt=active.length;
-  ['viewer-count','adm-visitor-count','founder-visitor-count'].forEach(id=>{ const e=document.getElementById(id); if(e) e.textContent=cnt; });
+  ['viewer-count','adm-visitor-count','founder-visitor-count'].forEach(id=>{
+    const e=document.getElementById(id); if(e) e.textContent=cnt;
+  });
   const co=document.getElementById('chat-online'); if(co) co.textContent=cnt+' en ligne';
   ['adm-visitors-list','founder-visitors-list'].forEach(cid=>{
     const el=document.getElementById(cid); if(!el) return;
     if(!active.length){ el.innerHTML='<div style="padding:10px 13px;font-size:11px;color:var(--adm-muted2);">Aucun visiteur.</div>'; return; }
     el.innerHTML=active.map(([id2,v])=>{
-      const ago=Math.floor((now-v.ts)/1000), s2=ago<60?ago+'s':Math.floor(ago/60)+'min';
+      const ago=Math.floor((now-v.ts)/1000),s2=ago<60?ago+'s':Math.floor(ago/60)+'min';
       return `<div class="visitor-row"><span class="visitor-dot"></span><span style="font-size:13px;">${v.device}</span><span style="flex:1;color:var(--adm-text);font-weight:600;font-size:12px;">${v.city||'?'} — ${v.page}${id2===sid?' <b>(toi)</b>':''}</span><span style="font-size:10px;color:var(--adm-muted2);">${s2}</span></div>`;
     }).join('');
   });
-  let pk=parseInt(localStorage.getItem('fzf_pk5')||'0'); if(cnt>pk){ pk=cnt; localStorage.setItem('fzf_pk5',pk); }
+  let pk=parseInt(localStorage.getItem('fzf_pk6')||'0');
+  if(cnt>pk){ pk=cnt; localStorage.setItem('fzf_pk6',pk); }
   const sc=document.getElementById('stat-cur'); if(sc) sc.textContent=cnt;
   const sp=document.getElementById('stat-peak'); if(sp) sp.textContent=pk;
   showSync();
 });
 
-/* Stream metadata listener — only metadata (label + on) stored in Firebase, no actual stream data */
-DB.ref('stream/meta').on('value',snap=>{
-  const d=snap.val(); if(!d) return;
-  if(d.streams) d.streams.forEach((s,i)=>{
-    if(!streams[i]) streams[i]={};
-    streams[i].label=s.label||'';
-    streams[i].on=!!s.on;
-  });
-  if(d.mode) streamMode=d.mode;
-  applyGrid(streamMode); renderModeButtons(streamMode);
-  const anyOn=streams.some(s=>s.on);
+/* Stream metadata listener — trigged for ALL users */
+DB.ref('stream/meta').on('value', snap => {
+  const d = snap.val(); if(!d) return;
+  if (d.streams) {
+    d.streams.forEach((s,i) => {
+      const wasOn = streams[i]?.on;
+      streams[i] = { label: s.label||'', on: !!s.on };
+
+      if (!adminIn && !founderIn) {
+        if (s.on && !wasOn) {
+          // Slot just went live → connect viewer WebRTC
+          connectToSlot(i);
+        } else if (!s.on && wasOn) {
+          // Slot stopped → disconnect
+          disconnectFromSlot(i);
+        }
+      }
+    });
+  }
+  if (d.mode) {
+    streamMode = d.mode;
+    applyGrid(streamMode);
+    renderModeButtons(streamMode);
+  }
+
+  const anyOn = streams.some(s=>s.on);
   const lbEl=document.getElementById('live-badge'), siEl=document.getElementById('stream-info');
-  if(anyOn){
+  if (anyOn) {
     if(lbEl){ lbEl.className='live-badge-on'; lbEl.textContent='🔴 EN DIRECT'; }
     if(siEl) siEl.classList.add('show');
     const f=streams.find(s=>s.on);
     const mnd=document.getElementById('match-name-display'); if(mnd) mnd.textContent=(f&&f.label)||'Match en direct';
-    // For visitors (non-admin): show live placeholder in slots
-    if(!adminIn&&!founderIn) renderVisitorSlots();
+    document.getElementById('viewers-pill').classList.add('show');
   } else {
     if(lbEl){ lbEl.className='live-badge-off'; lbEl.textContent='HORS LIGNE'; }
     if(siEl) siEl.classList.remove('show');
-    if(!adminIn&&!founderIn) clearVisitorSlots();
   }
-  if(adminIn||founderIn) renderSlotsAdmin();
+  if (adminIn||founderIn) renderSlotsAdmin();
   showSync();
 });
 
@@ -1222,48 +1579,15 @@ function regStaff(name,role){ const r=DB.ref('staff_online/'+sid); r.set({name,r
 function unregStaff(){ DB.ref('staff_online/'+sid).remove(); }
 function showSync(){ const e=document.getElementById('sync-ind'); e.classList.add('show'); setTimeout(()=>e.classList.remove('show'),2000); }
 
-/* ═══════════════════════ VISITOR SLOT DISPLAY ═══════════════════════ */
-// Visitors see a "Live in progress" animated placeholder — the actual screen share is local to the admin
-function renderVisitorSlots(){
-  const cnt=({single:1,dual:2,tri:3,quad:4})[streamMode]||1;
-  for(let i=0;i<4;i++){
-    const slot=document.getElementById('slot-'+i); if(!slot) continue;
-    if(i>=cnt||!streams[i]||!streams[i].on){
-      if(!slot.querySelector('.slot-placeholder')&&!slot.querySelector('.live-player')){
-        const ph=document.createElement('div'); ph.className='slot-placeholder';
-        ph.innerHTML=`<div class="ph-icon">📺</div><h3>Écran ${i+1}</h3>`; slot.appendChild(ph);
-      }
-      continue;
-    }
-    slot.querySelectorAll('.slot-placeholder,.slot-live-placeholder').forEach(e=>e.remove());
-    if(!slot.querySelector('.slot-live-placeholder')){
-      const ph=document.createElement('div'); ph.className='slot-live-placeholder';
-      const lbl=streams[i].label||'Match en direct';
-      ph.innerHTML=`<div class="slp-pulse">🔴</div><div class="slp-title">${lbl}</div><div class="slp-badge">🔴 EN DIRECT</div><div class="slp-sub">Rejoins le Discord pour plus d'infos</div>`;
-      slot.appendChild(ph);
-    }
-    // Add label
-    let lb=slot.querySelector('.slot-label'); if(!lb){ lb=document.createElement('div'); lb.className='slot-label'; slot.appendChild(lb); }
-    lb.textContent='Écran '+(i+1)+(streams[i].label?' · '+streams[i].label:'');
-  }
-}
-function clearVisitorSlots(){
-  for(let i=0;i<4;i++){
-    const slot=document.getElementById('slot-'+i); if(!slot) continue;
-    slot.querySelectorAll('.slot-live-placeholder,.slot-label,.slot-live-badge').forEach(e=>e.remove());
-    if(!slot.querySelector('.slot-placeholder')){
-      const ph=document.createElement('div'); ph.className='slot-placeholder';
-      ph.innerHTML=`<div class="ph-icon">📺</div><h3>${i===0?'Aucun match':'Écran '+(i+1)}</h3>${i===0?'<p>Le prochain stream sera annoncé sur Discord.</p>':''}`;
-      slot.appendChild(ph);
-    }
-  }
-}
+/* ══════════════════════════════════════════════════════════
+   THEME
+══════════════════════════════════════════════════════════ */
+function toggleTheme(){ const h=document.documentElement; const d=h.getAttribute('data-theme')==='dark'; h.setAttribute('data-theme',d?'light':'dark'); document.getElementById('theme-btn').textContent=d?'☀️':'🌙'; localStorage.setItem('fzf-theme6',d?'light':'dark'); }
+const th=localStorage.getItem('fzf-theme6'); if(th){ document.documentElement.setAttribute('data-theme',th); document.getElementById('theme-btn').textContent=th==='light'?'☀️':'🌙'; }
 
-/* ═══════════════════════ THEME ═══════════════════════ */
-function toggleTheme(){ const h=document.documentElement; const d=h.getAttribute('data-theme')==='dark'; h.setAttribute('data-theme',d?'light':'dark'); document.getElementById('theme-btn').textContent=d?'☀️':'🌙'; localStorage.setItem('fzf-theme5',d?'light':'dark'); }
-const th=localStorage.getItem('fzf-theme5'); if(th){ document.documentElement.setAttribute('data-theme',th); document.getElementById('theme-btn').textContent=th==='light'?'☀️':'🌙'; }
-
-/* ═══════════════════════ NAVIGATION ═══════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════════════════ */
 function goPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
@@ -1280,7 +1604,9 @@ function switchTab(tab){
   });
 }
 
-/* ═══════════════════════ ADMIN LOGIN ═══════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   ADMIN LOGIN
+══════════════════════════════════════════════════════════ */
 function toggleAdminSidebar(){
   if(!adminIn&&!founderIn){
     const s=loadSess();
@@ -1354,37 +1680,28 @@ function openSidebar(isFounder){
   document.getElementById('viewers-pill').classList.add('show');
   document.getElementById('priv-planning-block').style.display='block';
   document.getElementById('priv-planning-section').style.display='block';
-  renderSlotsAdmin(); renderBans(); renderPlanning();
-  // Remove visitor placeholders and show admin view
-  renderAdminSlots();
-}
-
-function renderAdminSlots(){
-  // Clear visitor placeholders
-  for(let i=0;i<4;i++){
-    const slot=document.getElementById('slot-'+i); if(!slot) continue;
-    slot.querySelectorAll('.slot-live-placeholder').forEach(e=>e.remove());
-    // If slot has active screen share, restore the video
-    if(screenStreams[i]&&streams[i]&&streams[i].on){
-      if(!slot.querySelector('video.live-player')) applyLocalStream(i,screenStreams[i]);
-    }
-  }
+  renderSlotsAdmin();
+  renderBans();
+  renderPlanning();
+  // If streams are already live, set up admin PCs for existing viewers
+  streams.forEach((s,i) => { if(s.on) watchForViewers(i); });
 }
 
 function logoutAdmin(){
-  unregStaff(); clearSess(); adminIn=false; if(!founderIn){
-    sidebarOpen=false;
-    document.getElementById('adm-sidebar').classList.remove('open');
-    const btn=document.getElementById('admin-btn'); btn.classList.remove('active','founder-active'); btn.textContent='🔒 Admin';
-    document.getElementById('viewers-pill').classList.remove('show');
-    document.getElementById('priv-planning-block').style.display='none';
-    document.getElementById('priv-planning-section').style.display='none';
-  }
+  // Stop all shares
+  for(let i=0;i<4;i++){ if(localStreams[i]) stopSlotWebRTC(i); }
+  unregStaff(); clearSess(); adminIn=false; founderIn=false;
+  sidebarOpen=false;
+  document.getElementById('adm-sidebar').classList.remove('open','founder-open');
+  const btn=document.getElementById('admin-btn'); btn.classList.remove('active','founder-active'); btn.textContent='🔒 Admin';
+  document.getElementById('viewers-pill').classList.remove('show');
+  document.getElementById('priv-planning-block').style.display='none';
+  document.getElementById('priv-planning-section').style.display='none';
 }
+
 function logoutFounder(){
   if(!confirm('Se déconnecter du mode Fondateur ?')) return;
-  // Stop all screen shares before logout
-  screenStreams.forEach((s,i)=>{ if(s){ s.getTracks().forEach(t=>t.stop()); screenStreams[i]=null; } });
+  for(let i=0;i<4;i++){ if(localStreams[i]) stopSlotWebRTC(i); }
   unregStaff(); clearSess(); founderIn=false; adminIn=false; sidebarOpen=false;
   document.getElementById('adm-sidebar').classList.remove('open','founder-open');
   const btn=document.getElementById('admin-btn'); btn.classList.remove('active','founder-active'); btn.textContent='🔒 Admin';
@@ -1455,146 +1772,136 @@ function sendStaff(){
 closeModal = id => document.getElementById(id).classList.remove('open');
 document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); }));
 
-/* ═══════════════════════ SCREEN SHARE ═══════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   ADMIN SCREEN SHARE — LAUNCH SLOT
+══════════════════════════════════════════════════════════ */
 document.addEventListener('contextmenu',e=>{ if(e.target.closest('.slot-wrap')) e.preventDefault(); });
 
-/* Render admin sidebar slots */
 function renderSlotsAdmin(){
   const c=document.getElementById('slots-admin'); if(!c) return;
   const cnt=({single:1,dual:2,tri:3,quad:4})[streamMode]||1;
   let html='';
   for(let i=0;i<cnt;i++){
     const s=streams[i]||{label:'',on:false};
-    const isSharing=!!screenStreams[i];
+    const isSharing=!!localStreams[i];
+    const viewerCnt=adminPCs[i]?Object.values(adminPCs[i]).filter(p=>p.connectionState==='connected').length:0;
+
+    let statusHtml='';
+    if(isSharing){
+      statusHtml=`<div class="webrtc-status"><span class="webrtc-dot"></span>Stream actif — ${viewerCnt} viewer${viewerCnt>1?'s':''}</div>`;
+    }
+
     const shareBtn=isSharing
-      ?`<button class="btn btn-blue" style="flex:1;justify-content:center;opacity:.65;cursor:default;" disabled>🖥 Partage actif</button>`
-      :`<button class="btn btn-blue" style="flex:1;justify-content:center;" id="share-btn-${i}" onclick="launchSlot(${i})">🖥 Partager l'écran</button>`;
-    const warn=s.on&&!isSharing?'<div style="font-size:10px;color:#fbbf24;margin-top:6px;">⚠️ Partage interrompu — relancer</div>':'';
+      ?`<button class="btn btn-blue" style="flex:1;justify-content:center;opacity:.6;cursor:default;" disabled>🔴 En cours</button>`
+      :`<button class="btn btn-blue" style="flex:1;justify-content:center;" id="share-btn-${i}" onclick="launchSlot(${i})">🖥 Lancer le partage</button>`;
+
     html+=`<div class="stream-slot-adm${s.on?' active':''}" style="margin-bottom:10px;">
       <div class="slot-head">
         <div class="slot-num${s.on?' live-num':''}">${i+1}</div>
         <div class="slot-title">Écran ${i+1}</div>
-        ${s.on?'<span class="slot-badge">🔴 LIVE</span>':''}
+        ${s.on?`<span class="slot-badge">🔴 LIVE</span>`:'' }
+        ${isSharing&&viewerCnt>0?`<span class="slot-viewers">👁 ${viewerCnt}</span>`:''}
       </div>
+      ${statusHtml}
       <label class="adm-label">Nom du match</label>
       <input type="text" class="adm-input" id="lbl-${i}" value="${s.label||''}" placeholder="Ex: PSG vs Real Madrid">
       <div class="btn-row">
         ${shareBtn}
-        <button class="btn btn-red" onclick="stopSlot(${i})">⏹</button>
+        <button class="btn btn-red" onclick="stopSlotWebRTC(${i})">⏹</button>
       </div>
-      ${warn}
     </div>`;
   }
   c.innerHTML=html;
 }
 
-/* Launch screen share for slot i */
-async function launchSlot(i){
+async function launchSlot(slotIdx){
   if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia){
     alert('Ton navigateur ne supporte pas le partage d\'écran.\nUtilise Chrome, Edge ou Firefox récent.');
     return;
   }
-  const label=(document.getElementById('lbl-'+i)&&document.getElementById('lbl-'+i).value.trim())||'';
-  const btn=document.getElementById('share-btn-'+i);
-  if(btn){ btn.disabled=true; btn.textContent='⏳ Sélection en cours...'; }
-  try{
-    const mediaStream=await navigator.mediaDevices.getDisplayMedia({
-      video:{cursor:'always',frameRate:30,width:{ideal:1920},height:{ideal:1080}},
+  const label = (document.getElementById('lbl-'+slotIdx)?.value||'').trim();
+  const btn = document.getElementById('share-btn-'+slotIdx);
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Sélection...'; }
+  try {
+    const mediaStream = await navigator.mediaDevices.getDisplayMedia({
+      video:{ cursor:'always', frameRate:30, width:{ideal:1920}, height:{ideal:1080} },
       audio:true
     });
-    // Stop previous share for this slot if any
-    if(screenStreams[i]){ screenStreams[i].getTracks().forEach(t=>t.stop()); }
-    screenStreams[i]=mediaStream;
-    // Auto-stop handler (user clicks "Stop sharing" in browser UI)
-    mediaStream.getVideoTracks()[0].addEventListener('ended',()=>stopSlot(i));
-    streams[i]={label,on:true,startTime:Date.now()};
+
+    // Stop previous if any
+    if(localStreams[slotIdx]){ localStreams[slotIdx].getTracks().forEach(t=>t.stop()); }
+    localStreams[slotIdx] = mediaStream;
+
+    // Auto-stop when user clicks "Stop sharing" in browser
+    mediaStream.getVideoTracks()[0].addEventListener('ended', ()=>stopSlotWebRTC(slotIdx));
+
+    // Update metadata in Firebase
+    streams[slotIdx] = { label, on: true };
+    DB.ref('stream/meta').set({ streams: streams.map(s=>({label:s.label||'',on:!!s.on})), mode: streamMode });
+
+    // Show local preview for admin
+    showAdminLocalPreview(slotIdx, mediaStream, label);
+
+    // Start watching for viewer connections
+    watchForViewers(slotIdx);
+
+    // Stats & UI
     if(!durInterval){ streamStart=Date.now(); durInterval=setInterval(updateDur,1000); }
-    applyLocalStream(i,mediaStream);
-    // Push only metadata to Firebase (actual stream is local, not relayed)
-    DB.ref('stream/meta').set({streams:streams.map(s=>({label:s.label||'',on:!!s.on})),mode:streamMode});
-    showToast('🔴 Écran '+(i+1)+' partagé !');
-    if(document.getElementById('tog-auto-notif')&&document.getElementById('tog-auto-notif').checked&&streams.filter(s=>s.on).length===1){
-      const t=label?('🔴 '+label+' — En direct !'):'🔴 Diffusion en cours !';
-      sendNotification(t,'Le match est en direct sur Football Zone France.');
-    }
     document.getElementById('stats-block').style.display='block';
     const b=document.getElementById('tab-stream-badge'); if(b) b.style.display='';
     renderSlotsAdmin();
-  } catch(e){
+
+    // Auto-notification
+    if(document.getElementById('tog-auto-notif')?.checked && streams.filter(s=>s.on).length===1){
+      const t=label?('🔴 '+label+' — En direct !'):'🔴 Diffusion en cours !';
+      sendNotification(t,'Le match est en direct sur Football Zone France.');
+    }
+    showToast('🔴 Écran '+(slotIdx+1)+' partagé !');
+  } catch(e) {
     if(e.name==='NotAllowedError') showToast('ℹ️ Partage annulé');
-    else showToast('⚠️ Erreur: '+e.message);
-    if(btn){ btn.disabled=false; btn.textContent='🖥 Partager l\'écran'; }
+    else { console.error(e); showToast('⚠️ Erreur: '+e.message); }
+    if(btn){ btn.disabled=false; btn.textContent='🖥 Lancer le partage'; }
   }
 }
 
-/* Apply local MediaStream to the slot video element */
-function applyLocalStream(i,mediaStream){
-  const slot=document.getElementById('slot-'+i); if(!slot) return;
-  slot.querySelectorAll('.slot-placeholder,.slot-live-placeholder,.live-player').forEach(el=>el.remove());
-  const vid=document.createElement('video');
-  vid.className='live-player'; vid.dataset.src='screenshare-'+i;
-  vid.autoplay=true; vid.playsInline=true; vid.muted=false;
-  vid.style.cssText='width:100%;height:100%;background:#000;position:absolute;inset:0;object-fit:contain;';
-  vid.srcObject=mediaStream;
-  slot.insertBefore(vid,slot.firstChild);
-  // Label
-  let lb=slot.querySelector('.slot-label');
-  if(!lb){ lb=document.createElement('div'); lb.className='slot-label'; slot.appendChild(lb); }
-  lb.textContent='Écran '+(i+1)+(streams[i]&&streams[i].label?' · '+streams[i].label:'');
-  // Live badge
-  let lbg=slot.querySelector('.slot-live-badge');
-  if(!lbg){ lbg=document.createElement('div'); lbg.className='slot-live-badge'; lbg.textContent='🔴 LIVE'; slot.appendChild(lbg); }
-  addFsBtn(slot,i);
+/** Show admin's own screen in the slot (local preview, no WebRTC needed) */
+function showAdminLocalPreview(slotIdx, mediaStream, label){
+  const slot = document.getElementById('slot-'+slotIdx); if(!slot) return;
+  slot.querySelectorAll('.slot-placeholder,.slot-live-placeholder,.slot-connecting,video,.slot-label,.slot-live-badge,.fs-btn,.stream-ctrl').forEach(e=>e.remove());
+
+  const vid = document.createElement('video');
+  vid.autoplay = true;
+  vid.playsInline = true;
+  vid.muted = true; // admin sees local preview muted to avoid echo
+  vid.style.cssText = 'width:100%;height:100%;position:absolute;inset:0;object-fit:contain;background:#000;';
+  vid.srcObject = mediaStream;
+  slot.insertBefore(vid, slot.firstChild);
+
+  let lb = document.createElement('div'); lb.className='slot-label';
+  lb.textContent = 'Écran '+(slotIdx+1)+' (LOCAL)'+(label?' · '+label:'');
+  slot.appendChild(lb);
+
+  let lbg = document.createElement('div'); lbg.className='slot-live-badge'; lbg.textContent='🔴 LIVE';
+  slot.appendChild(lbg);
+
+  addFsBtn(slot, slotIdx);
+  slot.classList.add('live-slot');
+
   // Update topbar
   const lbEl=document.getElementById('live-badge'), siEl=document.getElementById('stream-info');
   if(lbEl){ lbEl.className='live-badge-on'; lbEl.textContent='🔴 EN DIRECT'; }
   if(siEl) siEl.classList.add('show');
-  const f=streams.find(s=>s.on);
   const mnd=document.getElementById('match-name-display');
-  if(mnd) mnd.textContent=(f&&f.label)||'Match en direct';
+  if(mnd) mnd.textContent=label||'Match en direct';
 }
 
-/* Stop screen share for slot i */
-function stopSlot(i){
-  if(screenStreams[i]){ screenStreams[i].getTracks().forEach(t=>t.stop()); screenStreams[i]=null; }
-  const slot=document.getElementById('slot-'+i);
-  if(slot){
-    const vid=slot.querySelector('video.live-player'); if(vid){ vid.srcObject=null; vid.remove(); }
-    ['slot-label','slot-live-badge','fs-btn','stream-protect','stream-ctrl','slot-live-placeholder'].forEach(cls=>{
-      slot.querySelectorAll('.'+cls).forEach(e=>e.remove());
-    });
-    if(!slot.querySelector('.slot-placeholder')){
-      const ph=document.createElement('div'); ph.className='slot-placeholder';
-      ph.innerHTML='<div class="ph-icon">📺</div><h3>Écran '+(i+1)+'</h3>'; slot.appendChild(ph);
-    }
-  }
-  streams[i]={label:streams[i]&&streams[i].label||'',on:false};
-  const anyOn=streams.some(s=>s.on);
-  if(!anyOn){ if(durInterval){ clearInterval(durInterval); durInterval=null; } streamStart=null; }
-  DB.ref('stream/meta').set({streams:streams.map(s=>({label:s.label||'',on:!!s.on})),mode:streamMode});
-  const lbEl=document.getElementById('live-badge'), siEl=document.getElementById('stream-info');
-  if(!anyOn){
-    if(lbEl){ lbEl.className='live-badge-off'; lbEl.textContent='HORS LIGNE'; }
-    if(siEl) siEl.classList.remove('show');
-    document.getElementById('stats-block').style.display='none';
-    const b=document.getElementById('tab-stream-badge'); if(b) b.style.display='none';
-  }
-  renderSlotsAdmin();
-  showToast('⏹ Écran '+(i+1)+' arrêté');
-}
-
-function addFsBtn(slotEl,i){
-  if(slotEl.querySelector('.fs-btn')) return;
-  const btn=document.createElement('button'); btn.className='fs-btn'; btn.innerHTML='⛶'; btn.title='Plein écran';
-  btn.addEventListener('click',e=>{ e.stopPropagation(); enterFS(i); }); slotEl.appendChild(btn);
-}
-function enterFS(i){ const s=document.getElementById('slot-'+i); if(!s) return; document.fullscreenElement?document.exitFullscreen():s.requestFullscreen&&s.requestFullscreen(); }
-
-/* ═══════════════════════ GRID / MODE ═══════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   GRID / MODE
+══════════════════════════════════════════════════════════ */
 const SLOT_COUNTS={single:1,dual:2,tri:3,quad:4};
 function setMode(mode){
   streamMode=mode;
-  DB.ref('stream/meta').set({streams:streams.map(s=>({label:s.label||'',on:!!s.on})),mode});
+  DB.ref('stream/meta').set({ streams: streams.map(s=>({label:s.label||'',on:!!s.on})), mode });
   renderModeButtons(mode); applyGrid(mode); renderSlotsAdmin();
 }
 function renderModeButtons(mode){
@@ -1611,13 +1918,29 @@ function applyGrid(mode){
   const bar=document.getElementById('pub-mode-bar'); if(bar) bar.classList.toggle('show',cnt>1);
 }
 
-/* ═══════════════════════ COUNTDOWN ═══════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   VIDEO CONTROLS
+══════════════════════════════════════════════════════════ */
+function addFsBtn(slotEl, i){
+  if(slotEl.querySelector('.fs-btn')) return;
+  const btn=document.createElement('button'); btn.className='fs-btn'; btn.innerHTML='⛶'; btn.title='Plein écran';
+  btn.addEventListener('click',e=>{ e.stopPropagation(); enterFS(i); }); slotEl.appendChild(btn);
+}
+function enterFS(i){ const s=document.getElementById('slot-'+i); if(!s) return; document.fullscreenElement?document.exitFullscreen():s.requestFullscreen&&s.requestFullscreen(); }
+function toggleMute(btn, slotIdx){ const v=document.getElementById('slot-'+slotIdx)?.querySelector('video'); if(!v) return; v.muted=!v.muted; btn.textContent=v.muted?'🔇':'🔊'; }
+function setVol(range, slotIdx){ const v=document.getElementById('slot-'+slotIdx)?.querySelector('video'); if(!v) return; v.volume=parseFloat(range.value); v.muted=parseFloat(range.value)===0; }
+
+/* ══════════════════════════════════════════════════════════
+   COUNTDOWN
+══════════════════════════════════════════════════════════ */
 function toggleCountdownAdmin(on){ document.getElementById('cd-admin-config').style.display=on?'block':'none'; if(!on){ document.getElementById('cd-banner').classList.remove('show'); if(cdInterval){ clearInterval(cdInterval); cdInterval=null; } DB.ref('countdown').set({active:false}); } }
 function setCountdown(){ const dt=document.getElementById('cd-datetime').value, name=document.getElementById('cd-match-name').value.trim(); if(!dt){ alert('Sélectionne une date.'); return; } DB.ref('countdown').set({target:new Date(dt).getTime(),matchName:name,active:true}); showToast('⏱ Countdown activé !'); }
 function applyCountdown(s){ if(!s||!s.active) return; cdTarget=s.target; if(s.matchName) document.getElementById('cd-banner').querySelector('.cd-match').textContent=s.matchName; document.getElementById('cd-banner').classList.add('show'); if(cdInterval) clearInterval(cdInterval); cdInterval=setInterval(updateCD,1000); updateCD(); }
 function updateCD(){ if(!cdTarget) return; const diff=cdTarget-Date.now(); if(diff<=0){ document.getElementById('cd-units').style.display='none'; document.getElementById('cd-go').style.display='block'; clearInterval(cdInterval); return; } document.getElementById('cd-units').style.display='flex'; document.getElementById('cd-go').style.display='none'; const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),sec=Math.floor((diff%60000)/1000); document.getElementById('cd-d').textContent=String(d).padStart(2,'0'); document.getElementById('cd-h').textContent=String(h).padStart(2,'0'); document.getElementById('cd-m').textContent=String(m).padStart(2,'0'); document.getElementById('cd-s').textContent=String(sec).padStart(2,'0'); }
 
-/* ═══════════════════════ PLANNING ═══════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   PLANNING
+══════════════════════════════════════════════════════════ */
 function addMatch(){ const match=document.getElementById('plan-match').value.trim(), date=document.getElementById('plan-date').value, comp=document.getElementById('plan-comp').value.trim(), discord=document.getElementById('plan-discord').checked; if(!match||!date){ alert('Remplis le nom et la date.'); return; } const nm={id:Date.now(),match,date,comp,discord,author:adminName,isFounder:founderIn,privateAdmin:false}; DB.ref('planning/'+nm.id).set(nm); document.getElementById('plan-match').value=''; document.getElementById('plan-date').value=''; document.getElementById('plan-comp').value=''; showToast('✅ Match ajouté !'); }
 function removeMatch(id){ DB.ref('planning/'+id).remove(); }
 function addFounderPlan(){ if(!founderIn) return; const match=document.getElementById('f-plan-match').value.trim(), date=document.getElementById('f-plan-date').value, comp=document.getElementById('f-plan-comp').value.trim(); if(!match||!date){ alert('Remplis nom et date.'); return; } const nm={id:Date.now(),match,date,comp,discord:true,author:adminName,isFounder:true,privateAdmin:true}; DB.ref('planning/'+nm.id).set(nm); document.getElementById('f-plan-match').value=''; document.getElementById('f-plan-date').value=''; document.getElementById('f-plan-comp').value=''; showToast('✅ Match privé ajouté !'); }
@@ -1637,7 +1960,9 @@ function renderPlanning(){
   if(prvg){ if(!priv.length) prvg.innerHTML='<div class="empty-planning">Aucun match privé.</div>'; else prvg.innerHTML=priv.map(m=>`<div class="plan-card-pub is-priv"><div class="plan-card-top"><div class="plan-card-dot priv"></div><div class="plan-card-match">${m.match} <span class="priv-badge">🔒</span></div></div><div class="plan-card-date">${fmt(m.date)}</div>${m.comp?`<div style="font-size:10px;color:var(--muted);margin-top:2px;">${m.comp}</div>`:''}<div class="plan-card-footer"><div class="plan-card-author founder">👑 ${m.author||'Fondateur'}</div></div></div>`).join(''); }
 }
 
-/* ═══════════════════════ CHAT ═══════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   CHAT
+══════════════════════════════════════════════════════════ */
 function toggleChat(on){ DB.ref('chat_toggle').set({enabled:on}); applyChat(on); }
 function applyChat(on,silent=false){ chatEnabled=on; const lock=document.getElementById('chat-lock'), inp=document.getElementById('chat-inputs'); if(on){ lock.style.display='none'; inp.style.display='flex'; } else { lock.style.display='flex'; inp.style.display='none'; } }
 const CHAT_COLORS=['#7baeff','#f87171','#4ade80','#fbbf24','#a78bfa','#fb923c','#34d399','#f472b6'];
@@ -1663,7 +1988,9 @@ function renderBans(){ const el=document.getElementById('ban-list-admin'), keys=
 function unban(u){ DB.ref('bans/'+u.replace(/[.#$/\[\]]/g,'_')).remove(); }
 function clearBans(){ if(!confirm('Supprimer tous les bans ?')) return; DB.ref('bans').remove(); }
 
-/* ═══════════════════════ NOTIFS ═══════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   NOTIFICATIONS
+══════════════════════════════════════════════════════════ */
 function requestNotif(){ if(!('Notification' in window)){ alert('Ton navigateur ne supporte pas les notifications push.'); return; } Notification.requestPermission().then(p=>{ if(p==='granted'){ document.getElementById('notif-bar').style.display='none'; document.getElementById('notif-on-bar').style.display='block'; new Notification('🎉 Notifications FZF activées !',{body:'Tu seras alerté dès qu\'un match commence.',icon:'logo.png',tag:'fzf-welcome'}); } }); }
 function dismissNotifBar(){ document.getElementById('notif-bar').style.display='none'; localStorage.setItem('fzf-notif-dis','1'); }
 window.addEventListener('load',()=>{ if(typeof Notification!=='undefined'){ if(Notification.permission==='granted'){ document.getElementById('notif-bar').style.display='none'; document.getElementById('notif-on-bar').style.display='block'; } else if(localStorage.getItem('fzf-notif-dis')||Notification.permission==='denied') document.getElementById('notif-bar').style.display='none'; } });
@@ -1676,12 +2003,16 @@ function renderNotifLog(){ const el=document.getElementById('notif-log'); if(!el
 function showPushToast(title,body){ if(pushTimer){ clearTimeout(pushTimer); pushTimer=null; } document.getElementById('push-title').textContent=title; document.getElementById('push-body').textContent=body; const t=document.getElementById('push-toast'); t.classList.remove('show'); void t.offsetWidth; t.classList.add('show'); pushTimer=setTimeout(dismissPush,6000); }
 function dismissPush(){ if(pushTimer){ clearTimeout(pushTimer); pushTimer=null; } document.getElementById('push-toast').classList.remove('show'); }
 
-/* ═══════════════════════ STATS ═══════════════════════ */
-function updateDur(){ if(!streamStart) return; const e=Math.floor((Date.now()-streamStart)/1000); const el=document.getElementById('stat-dur'); if(el) el.textContent=Math.floor(e/60).toString().padStart(2,'0')+':'+(e%60).toString().padStart(2,'0'); }
-function resetStats(){ streamStart=Date.now(); localStorage.setItem('fzf_pk5','0'); }
+/* ══════════════════════════════════════════════════════════
+   STATS
+══════════════════════════════════════════════════════════ */
+function updateDur(){ if(!streamStart) return; const e=Math.floor((Date.now()-streamStart)/1000); const el=document.getElementById('stat-dur'); if(el) el.textContent=Math.floor(e/60).toString().padStart(2,'0')+':'+(e%60).toString().padStart(2,'0'); setInterval(updateViewerCount,5000); }
+function resetStats(){ streamStart=Date.now(); localStorage.setItem('fzf_pk6','0'); }
 function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
 
-/* ═══════════════════════ CHATBOT IA ═══════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   CHATBOT IA
+══════════════════════════════════════════════════════════ */
 const PRESETS=[
   {kw:['paypal','paiement','payer'],r:'💳 **Paiement**\n\nNous acceptons uniquement **PayPal**.\n\nContacte un admin → discord.gg/ftzf'},
   {kw:['prix','coût','combien','tarif'],r:'💶 **Tarifs FZF IPTV**\n\n⚡ **Starter — 10€** (3 mois)\n👑 **À Vie — 35€** (unique)\n\n→ discord.gg/ftzf'},
@@ -1703,16 +2034,39 @@ async function processBot(msg){ addUserMsg(msg); document.getElementById('quick-
 function sendBot(){ const inp=document.getElementById('bot-input'), msg=inp.value.trim(); if(!msg) return; inp.value=''; processBot(msg); }
 function quickAsk(q){ processBot(q); }
 
-/* ═══════════════════════ REVIEWS ═══════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   REVIEWS
+══════════════════════════════════════════════════════════ */
 let rating=0;
 function setRating(n){ rating=n; for(let i=1;i<=5;i++) document.getElementById('s'+i).classList.toggle('on',i<=n); }
 function submitReview(){ const name=document.getElementById('rev-prenom').value.trim(), text=document.getElementById('rev-text').value.trim(), plan=document.getElementById('rev-plan').value; if(!name) return alert('Entre ton prénom.'); if(!text) return alert('Écris ton avis.'); if(!rating) return alert('Donne une note.'); const stars='⭐'.repeat(rating); const cols=['linear-gradient(135deg,#2563eb,#60a5fa)','linear-gradient(135deg,#dc2626,#f87171)','linear-gradient(135deg,#22c55e,#4ade80)','linear-gradient(135deg,#f59e0b,#fbbf24)','linear-gradient(135deg,#8b5cf6,#a78bfa)']; const c=cols[Math.floor(Math.random()*cols.length)]; const card=document.createElement('div'); card.className='review-card'; card.style.animation='fadeUp 0.4s ease'; card.innerHTML=`<div class="review-stars">${stars}</div><p class="review-text">"${text}"</p><div class="review-author"><div class="review-av" style="background:${c};">${name.charAt(0).toUpperCase()}</div><div><div class="review-name">${name}</div><div class="review-plan">${plan}</div></div></div>`; document.getElementById('reviews-grid').insertBefore(card,document.getElementById('reviews-grid').firstChild); const f=document.getElementById('review-form'); f.querySelectorAll('h4,p,.star-rating-label,.stars,.form-row,.form-group,.btn-review').forEach(el=>el.style.display='none'); document.getElementById('review-ok').style.display='block'; setTimeout(()=>{ document.getElementById('review-ok').style.display='none'; f.querySelectorAll('h4,p,.star-rating-label,.stars,.form-row,.form-group,.btn-review').forEach(el=>el.style.display=''); document.getElementById('rev-prenom').value=''; document.getElementById('rev-text').value=''; rating=0; for(let i=1;i<=5;i++) document.getElementById('s'+i).classList.remove('on'); },3500); }
 
-/* ═══════════════════════ INIT ═══════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════════ */
 const sess = loadSess();
 if(sess){ adminName=sess.name||'Admin'; if(sess.role==='founder'){ adminIn=true; founderIn=true; openSidebar(true); regStaff(adminName,'👑 Fondateur'); } else { adminIn=true; openSidebar(false); regStaff(adminName,'Administrateur'); } }
 regVisitor('Live');
+
+// Cleanup old visitor sessions
 setInterval(()=>{ DB.ref('visitors').once('value').then(snap=>{ const d=snap.val(); if(!d) return; const now=Date.now(); Object.entries(d).forEach(([k,v])=>{ if(now-v.ts>180000) DB.ref('visitors/'+k).remove(); }); }); },60000);
+
+// Cleanup WebRTC on page close
+window.addEventListener('beforeunload', ()=>{
+  for(let i=0;i<4;i++){
+    if(!adminIn) cleanupViewerSlot(i);
+    else if(localStreams[i]) {
+      localStreams[i].getTracks().forEach(t=>t.stop());
+      DB.ref(`webrtc/slots/${i}`).remove();
+    }
+  }
+});
+
+// Periodic viewer count update
+setInterval(updateViewerCount, 5000);
 </script>
 </body>
 </html>
+HTMLEOF
+echo "File size: $(wc -c < /mnt/user-data/outputs/index.html) bytes"
+echo "Done!"
