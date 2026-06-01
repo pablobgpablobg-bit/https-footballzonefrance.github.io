@@ -1,1 +1,1977 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="google-site-verification" content="LQNBCmy6sLIhjQ2XNOvS-Y-lPFi6T8kcSNCckYEZ_tA" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Zone France</title>
+  <link rel="icon" href="logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
+    :root {
+      --bg:#07090f; --bg2:#0d1117; --bg3:#161b25;
+      --surface:#1a2030; --surface2:#222840;
+      --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.1);
+      --text:#f0f4ff; --muted:#6b7799; --muted2:#8898bb;
+      --blue:#3d7fff; --blue2:#5c95ff; --red:#ff3d5c; --red2:#ff6b82;
+      --green:#00d68f; --green2:#00ffaa; --purple:#9d4edd; --purple2:#c084fc;
+      --gold:#f5a623; --gold2:#ffcc55;
+      --nav-h:64px;
+      --adm-bg:#060a12; --adm-s1:#0c1220; --adm-s2:#111928; --adm-s3:#1a2438;
+      --adm-blue:#3d7fff; --adm-green:#00d68f; --adm-red:#ff3d5c;
+      --adm-purple:#9d4edd; --adm-gold:#f5a623;
+      --adm-text:#e8eeff; --adm-muted:#4a5878; --adm-muted2:#7a8caa;
+      --adm-b:rgba(61,127,255,0.12); --adm-b2:rgba(255,255,255,0.05);
+    }
+    [data-theme="light"] {
+      --bg:#f0f4ff; --bg2:#ffffff; --bg3:#f8faff;
+      --surface:#ffffff; --surface2:#f0f4ff;
+      --border:rgba(0,0,0,0.06); --border2:rgba(0,0,0,0.1);
+      --text:#0d1730; --muted:#7a8cb0; --muted2:#5a6a90;
+      --nav-bg:rgba(240,244,255,0.95);
+    }
+
+    body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:rgba(61,127,255,0.2); border-radius:4px; }
+
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:200;
+      height:var(--nav-h);
+      background:rgba(7,9,15,0.88);
+      backdrop-filter:blur(20px) saturate(180%);
+      border-bottom:1px solid rgba(61,127,255,0.15);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 28px;
+    }
+    .nav-logo { display:flex; align-items:center; gap:10px; font-family:'Syne',sans-serif; font-size:18px; font-weight:800; letter-spacing:0.5px; color:var(--text); text-decoration:none; cursor:pointer; }
+    .nav-logo img { width:36px; height:36px; object-fit:contain; }
+    .nav-logo-accent { color:var(--blue); }
+    .nav-tabs { display:flex; gap:2px; background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:12px; padding:4px; }
+    .nav-tab { padding:7px 20px; border-radius:9px; font-size:13px; font-weight:600; font-family:'DM Sans',sans-serif; cursor:pointer; border:none; background:transparent; color:var(--muted2); transition:all 0.2s; letter-spacing:0.2px; }
+    .nav-tab:hover { color:var(--text); background:rgba(255,255,255,0.06); }
+    .nav-tab.active { background:var(--surface2); color:var(--text); box-shadow:0 1px 8px rgba(0,0,0,0.3); }
+    .nav-tab.live-tab.active { color:var(--red2); }
+    .nav-tab.iptv-tab.active { color:var(--green); }
+    .nav-right { display:flex; align-items:center; gap:8px; }
+    .theme-btn { width:38px; height:38px; border-radius:10px; border:1px solid var(--border2); background:rgba(255,255,255,0.05); color:var(--text); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .nav-discord { display:inline-flex; align-items:center; gap:7px; padding:8px 18px; border-radius:10px; font-size:13px; font-weight:700; text-decoration:none; color:white; background:#5865F2; border:1px solid rgba(88,101,242,0.3); box-shadow:0 0 20px rgba(88,101,242,0.3); transition:0.2s; }
+    .nav-discord:hover { background:#4752c4; box-shadow:0 0 30px rgba(88,101,242,0.5); }
+    .live-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--red); margin-right:5px; animation:blink 1.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:.2} }
+
+    .page { display:none; }
+    .page.active { display:block; }
+    #page-home { min-height:100vh; padding-top:var(--nav-h); }
+
+    .hero { position:relative; min-height:calc(100vh - var(--nav-h)); display:flex; align-items:center; justify-content:center; background:url("banner.png") center/cover no-repeat; overflow:hidden; }
+    .hero::before { content:""; position:absolute; inset:0; background:linear-gradient(135deg, rgba(7,9,15,0.9) 0%, rgba(13,17,40,0.75) 100%); }
+    .hero-grid-overlay { position:absolute; inset:0; background-image:linear-gradient(rgba(61,127,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(61,127,255,0.03) 1px, transparent 1px); background-size:60px 60px; }
+    .hero-content { position:relative; z-index:2; text-align:center; max-width:800px; padding:40px; }
+    .hero-logo { width:100px; margin-bottom:24px; filter:drop-shadow(0 0 40px rgba(61,127,255,0.6)); animation:float 5s ease-in-out infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    h1 { font-family:'Syne',sans-serif; font-size:72px; font-weight:800; line-height:1; margin-bottom:20px; letter-spacing:-1px; }
+    .h1-line1 { color:white; }
+    .h1-line2 { background:linear-gradient(90deg,var(--blue),var(--red)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .hero-sub { font-size:17px; color:var(--muted2); line-height:1.8; margin-bottom:36px; max-width:560px; margin-left:auto; margin-right:auto; }
+    .btn-hero { display:inline-flex; align-items:center; gap:8px; padding:14px 36px; border-radius:14px; font-size:16px; font-weight:700; background:linear-gradient(135deg,var(--blue),var(--red)); color:white; text-decoration:none; border:none; cursor:pointer; box-shadow:0 0 40px rgba(61,127,255,0.4); transition:0.3s; font-family:'DM Sans',sans-serif; }
+    .btn-hero:hover { transform:translateY(-3px); box-shadow:0 0 60px rgba(255,61,92,0.5); }
+    .hero-stats { display:flex; gap:32px; justify-content:center; margin-top:48px; }
+    .hero-stat { text-align:center; }
+    .hero-stat-num { font-family:'Syne',sans-serif; font-size:32px; font-weight:800; color:white; }
+    .hero-stat-label { font-size:12px; color:var(--muted); font-weight:500; letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
+    .section { padding:90px 20px; background:var(--bg2); }
+    .section-title { font-family:'Syne',sans-serif; font-size:42px; font-weight:800; text-align:center; margin-bottom:54px; }
+    .cards { display:flex; justify-content:center; flex-wrap:wrap; gap:20px; max-width:1000px; margin:0 auto; }
+    .card { background:var(--surface); width:290px; padding:28px; border-radius:18px; border:1px solid var(--border); transition:0.3s; position:relative; overflow:hidden; }
+    .card::before { content:""; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--blue),var(--purple)); opacity:0; transition:0.3s; }
+    .card:hover { transform:translateY(-6px); border-color:var(--border2); }
+    .card:hover::before { opacity:1; }
+    .card-icon { font-size:36px; margin-bottom:14px; display:block; }
+    .card h3 { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; margin-bottom:10px; }
+    .card p { font-size:14px; color:var(--muted2); line-height:1.7; }
+    .discord-section { padding:90px 20px; text-align:center; background:linear-gradient(135deg,var(--bg) 0%,rgba(61,127,255,0.05) 100%); }
+    .discord-section h2 { font-family:'Syne',sans-serif; font-size:44px; font-weight:800; margin-bottom:16px; }
+    .discord-section p { color:var(--muted2); font-size:17px; max-width:560px; margin:0 auto 36px; line-height:1.8; }
+    footer { background:var(--adm-bg); padding:28px; text-align:center; color:var(--muted); font-size:13px; border-top:1px solid var(--border); }
+
+    #page-live { padding-top:var(--nav-h); min-height:100vh; background:var(--bg); }
+    .live-layout { display:flex; min-height:calc(100vh - var(--nav-h)); }
+
+    .adm-sidebar { width:0; overflow:hidden; flex-shrink:0; background:var(--adm-bg); border-right:1px solid rgba(61,127,255,0.1); display:flex; flex-direction:column; transition:width 0.4s cubic-bezier(0.4,0,0.2,1); }
+    .adm-sidebar.open { width:420px; overflow-y:auto; overflow-x:hidden; }
+    .adm-sidebar.founder-open { border-right-color:rgba(157,78,221,0.25); }
+
+    .adm-top { padding:20px 20px 16px; background:var(--adm-s1); border-bottom:1px solid var(--adm-b2); position:sticky; top:0; z-index:20; }
+    .adm-brand { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+    .adm-brand-icon { width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,var(--adm-blue),#6366f1); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 4px 16px rgba(61,127,255,0.35); }
+    .adm-brand-icon.founder-icon { background:linear-gradient(135deg,#7c3aed,#a855f7); box-shadow:0 4px 16px rgba(157,78,221,0.4); }
+    .adm-brand-text { flex:1; }
+    .adm-brand-name { font-family:'Syne',sans-serif; font-size:15px; font-weight:800; color:var(--adm-text); letter-spacing:0.3px; }
+    .adm-brand-sub { font-size:11px; color:var(--adm-muted2); margin-top:1px; font-weight:500; }
+    .adm-brand-status { display:flex; align-items:center; gap:5px; font-size:10px; color:var(--adm-green); font-weight:700; letter-spacing:0.5px; }
+    .adm-brand-status::before { content:""; width:6px; height:6px; border-radius:50%; background:var(--adm-green); animation:blink 2s infinite; }
+
+    .adm-nav-tabs { display:flex; flex-direction:column; gap:1px; }
+    .adm-tab { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; border:none; background:transparent; color:var(--adm-muted2); font-family:'DM Sans',sans-serif; transition:all 0.15s; text-align:left; position:relative; }
+    .adm-tab:hover { background:rgba(255,255,255,0.04); color:var(--adm-text); }
+    .adm-tab.on { background:rgba(61,127,255,0.1); border:1px solid rgba(61,127,255,0.18); color:#7baeff; }
+    .adm-tab.on.green-tab { background:rgba(0,214,143,0.08); border-color:rgba(0,214,143,0.18); color:#00d68f; }
+    .adm-tab.on.founder-tab { background:rgba(157,78,221,0.1); border-color:rgba(157,78,221,0.22); color:#c084fc; }
+    .adm-tab-icon { font-size:15px; width:18px; text-align:center; flex-shrink:0; }
+    .adm-tab-label { flex:1; }
+    .adm-tab-pill { font-size:9px; font-weight:800; padding:2px 7px; border-radius:20px; letter-spacing:0.4px; }
+    .adm-tab-pill.live { background:rgba(255,61,92,0.18); color:var(--red2); border:1px solid rgba(255,61,92,0.25); animation:blink 1.4s infinite; }
+    .adm-tab-pill.new { background:rgba(61,127,255,0.18); color:var(--blue2); border:1px solid rgba(61,127,255,0.25); }
+
+    .adm-panel { display:none; flex-direction:column; }
+    .adm-panel.on { display:flex; }
+    .adm-block { padding:16px 20px; border-bottom:1px solid var(--adm-b2); }
+    .adm-block:last-child { border-bottom:none; }
+    .adm-block-head { display:flex; align-items:center; gap:8px; margin-bottom:14px; }
+    .adm-block-line { width:3px; height:14px; border-radius:2px; background:var(--adm-blue); flex-shrink:0; }
+    .adm-block-line.g { background:var(--adm-green); }
+    .adm-block-line.r { background:var(--adm-red); }
+    .adm-block-line.p { background:var(--adm-purple); }
+    .adm-block-line.y { background:var(--adm-gold); }
+    .adm-block-title { font-size:10px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--adm-muted2); }
+
+    .adm-label { font-size:11px; font-weight:700; color:var(--adm-muted2); letter-spacing:0.5px; margin-bottom:5px; display:block; }
+    .adm-input { width:100%; padding:9px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.07); background:rgba(255,255,255,0.03); color:var(--adm-text); font-size:13px; font-family:'DM Sans',sans-serif; outline:none; transition:all 0.2s; margin-bottom:8px; }
+    .adm-input:focus { border-color:rgba(61,127,255,0.45); background:rgba(61,127,255,0.05); }
+    .adm-input::placeholder { color:rgba(148,163,184,0.3); }
+
+    .btn { padding:9px 15px; border-radius:8px; border:none; font-size:12px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; transition:0.2s; display:inline-flex; align-items:center; gap:5px; letter-spacing:0.2px; }
+    .btn-blue { background:var(--adm-blue); color:white; box-shadow:0 2px 10px rgba(61,127,255,0.3); }
+    .btn-blue:hover { background:#2d6fe8; }
+    .btn-red { background:rgba(255,61,92,0.1); border:1px solid rgba(255,61,92,0.25); color:#ff6b82; }
+    .btn-red:hover { background:rgba(255,61,92,0.18); }
+    .btn-green { background:rgba(0,214,143,0.1); border:1px solid rgba(0,214,143,0.25); color:#00d68f; }
+    .btn-green:hover { background:rgba(0,214,143,0.18); }
+    .btn-ghost { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); color:var(--adm-text); }
+    .btn-ghost:hover { background:rgba(255,255,255,0.08); }
+    .btn-purple { background:rgba(157,78,221,0.12); border:1px solid rgba(157,78,221,0.25); color:#c084fc; }
+    .btn-purple:hover { background:rgba(157,78,221,0.2); }
+    .btn-founder { background:linear-gradient(135deg,#7c3aed,#a855f7); color:white; box-shadow:0 2px 12px rgba(157,78,221,0.35); }
+    .btn-founder:hover { transform:translateY(-1px); box-shadow:0 4px 18px rgba(157,78,221,0.5); }
+    .btn-full { width:100%; padding:10px; border-radius:9px; justify-content:center; font-size:13px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:7px; border:none; transition:0.2s; }
+    .btn-row { display:flex; gap:7px; }
+    .btn-row .btn { flex:1; justify-content:center; }
+
+    .adm-toggle { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid var(--adm-b2); margin-bottom:7px; }
+    .adm-toggle-info .adm-toggle-name { font-size:13px; font-weight:600; color:var(--adm-text); }
+    .adm-toggle-info .adm-toggle-desc { font-size:11px; color:var(--adm-muted2); margin-top:1px; }
+    .toggle { position:relative; width:40px; height:22px; flex-shrink:0; }
+    .toggle input { display:none; }
+    .toggle-slider { position:absolute; inset:0; background:rgba(255,255,255,0.08); border-radius:11px; cursor:pointer; transition:0.3s; border:1px solid rgba(255,255,255,0.06); }
+    .toggle-slider::before { content:""; position:absolute; left:3px; top:2px; width:16px; height:16px; border-radius:50%; background:white; transition:0.3s; box-shadow:0 1px 4px rgba(0,0,0,0.3); }
+    .toggle input:checked + .toggle-slider { background:var(--adm-blue); border-color:var(--adm-blue); }
+    .toggle input:checked + .toggle-slider::before { transform:translateX(18px); }
+
+    .share-guide { background:rgba(61,127,255,0.05); border:1px solid rgba(61,127,255,0.15); border-radius:12px; padding:14px; margin-bottom:12px; }
+    .share-guide-title { font-size:12px; font-weight:800; color:#7baeff; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+    .share-guide-steps { display:flex; flex-direction:column; gap:7px; }
+    .share-step { display:flex; align-items:flex-start; gap:9px; }
+    .share-step-num { width:20px; height:20px; border-radius:50%; background:rgba(61,127,255,0.2); border:1px solid rgba(61,127,255,0.35); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#7baeff; flex-shrink:0; margin-top:1px; }
+    .share-step-text { font-size:11px; color:var(--adm-muted2); line-height:1.5; }
+    .share-step-text strong { color:var(--adm-text); }
+    .share-tip { margin-top:10px; padding:8px 10px; background:rgba(245,166,35,0.08); border:1px solid rgba(245,166,35,0.2); border-radius:8px; font-size:10px; color:#f5a623; line-height:1.5; }
+
+    .stream-slot-adm { background:rgba(255,255,255,0.02); border:1px solid var(--adm-b2); border-radius:12px; padding:12px; margin-bottom:8px; transition:border-color 0.2s; }
+    .stream-slot-adm.active { border-color:rgba(255,61,92,0.35); background:rgba(255,61,92,0.03); }
+    .slot-head { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+    .slot-num { width:24px; height:24px; border-radius:7px; background:rgba(61,127,255,0.12); border:1px solid rgba(61,127,255,0.2); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#7baeff; flex-shrink:0; }
+    .slot-num.live-num { background:rgba(255,61,92,0.15); border-color:rgba(255,61,92,0.3); color:#ff6b82; animation:blink 1.4s infinite; }
+    .slot-title { font-size:12px; font-weight:700; color:var(--adm-text); flex:1; }
+    .slot-badge { font-size:9px; font-weight:800; padding:2px 7px; border-radius:20px; background:rgba(255,61,92,0.15); color:#ff6b82; border:1px solid rgba(255,61,92,0.3); }
+    .slot-viewers { font-size:10px; color:#00d68f; font-weight:700; }
+
+    .webrtc-status { display:flex; align-items:center; gap:6px; padding:6px 10px; border-radius:7px; background:rgba(0,214,143,0.06); border:1px solid rgba(0,214,143,0.15); margin-bottom:8px; font-size:11px; font-weight:700; color:#00d68f; }
+    .webrtc-status.warn { background:rgba(245,166,35,0.06); border-color:rgba(245,166,35,0.2); color:#f5a623; }
+    .webrtc-status.err { background:rgba(255,61,92,0.06); border-color:rgba(255,61,92,0.2); color:#ff6b82; }
+    .webrtc-dot { width:6px; height:6px; border-radius:50%; background:currentColor; animation:blink 1.4s infinite; }
+
+    .adm-stats { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-bottom:8px; }
+    .adm-stat { background:rgba(255,255,255,0.02); border:1px solid var(--adm-b2); border-radius:10px; padding:12px; text-align:center; }
+    .adm-stat-val { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; line-height:1; margin-bottom:2px; }
+    .adm-stat-name { font-size:9px; font-weight:700; color:var(--adm-muted2); letter-spacing:1.2px; text-transform:uppercase; }
+
+    .plan-item { display:flex; align-items:center; gap:9px; padding:9px 11px; border-radius:9px; background:rgba(255,255,255,0.02); border:1px solid var(--adm-b2); margin-bottom:5px; }
+    .plan-dot { width:7px; height:7px; border-radius:50%; background:var(--adm-blue); flex-shrink:0; }
+    .plan-dot.live { background:var(--adm-red); animation:blink 1.4s infinite; }
+    .plan-dot.priv { background:var(--adm-purple); }
+    .plan-info { flex:1; min-width:0; }
+    .plan-match { font-size:12px; font-weight:700; color:var(--adm-text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .plan-date { font-size:10px; color:var(--adm-muted2); margin-top:1px; }
+    .plan-del { background:none; border:none; color:rgba(148,163,184,0.25); cursor:pointer; font-size:12px; padding:3px 6px; border-radius:5px; }
+    .plan-del:hover { color:#ff6b82; background:rgba(255,61,92,0.1); }
+    .priv-badge { display:inline-flex; align-items:center; background:rgba(157,78,221,0.1); border:1px solid rgba(157,78,221,0.25); color:#c084fc; font-size:9px; font-weight:800; padding:1px 6px; border-radius:20px; margin-left:4px; }
+
+    .ban-item { background:rgba(255,61,92,0.04); border:1px solid rgba(255,61,92,0.1); border-radius:8px; padding:8px 11px; margin-bottom:5px; display:flex; align-items:center; justify-content:space-between; }
+    .ban-user { font-size:12px; font-weight:700; color:#ff6b82; }
+    .ban-reason { font-size:10px; color:var(--adm-muted2); }
+    .unban-btn { background:none; border:1px solid rgba(0,214,143,0.25); color:#00d68f; font-size:10px; font-weight:700; padding:3px 9px; border-radius:6px; cursor:pointer; }
+    .unban-btn:hover { background:rgba(0,214,143,0.1); }
+
+    .staff-chat-box { height:320px; border-radius:11px; overflow:hidden; border:1px solid rgba(0,214,143,0.12); background:rgba(0,214,143,0.02); display:flex; flex-direction:column; }
+    .staff-chat-head { padding:9px 13px; background:rgba(0,214,143,0.08); border-bottom:1px solid rgba(0,214,143,0.1); display:flex; align-items:center; gap:8px; }
+    .staff-chat-title { font-size:11px; font-weight:800; color:#00d68f; letter-spacing:1px; text-transform:uppercase; flex:1; }
+    .staff-chat-msgs { flex:1; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:5px; }
+    .staff-msg { display:flex; flex-direction:column; gap:1px; }
+    .staff-msg-head { display:flex; align-items:center; gap:5px; }
+    .staff-msg-av { width:18px; height:18px; border-radius:5px; background:linear-gradient(135deg,#00d68f,#00b377); display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:800; color:white; }
+    .staff-msg-av.f { background:linear-gradient(135deg,#7c3aed,#a855f7); }
+    .staff-msg-name { font-size:10px; font-weight:700; color:#00d68f; }
+    .staff-msg-name.f { color:#c084fc; }
+    .staff-msg-time { font-size:9px; color:var(--adm-muted); margin-left:auto; }
+    .staff-msg-text { font-size:12px; color:var(--adm-text); padding-left:23px; line-height:1.5; word-break:break-word; }
+    .staff-msg.sys .staff-msg-text { color:#3a4f6a; font-style:italic; padding-left:0; font-size:11px; }
+    .staff-chat-input-row { padding:7px 9px; border-top:1px solid rgba(0,214,143,0.08); display:flex; gap:6px; background:rgba(0,0,0,0.2); }
+    .staff-input { flex:1; padding:7px 10px; border-radius:7px; border:1px solid rgba(0,214,143,0.15); background:rgba(0,214,143,0.03); color:var(--adm-text); font-size:12px; font-family:'DM Sans',sans-serif; outline:none; }
+    .staff-input:focus { border-color:#00d68f; }
+    .staff-send { padding:7px 13px; border-radius:7px; border:none; background:linear-gradient(135deg,#00d68f,#00b377); color:#000; font-size:12px; font-weight:800; cursor:pointer; }
+
+    .visitors-box { border-radius:10px; overflow:hidden; border:1px solid rgba(0,214,143,0.12); }
+    .visitors-head { background:rgba(0,214,143,0.06); padding:9px 13px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(0,214,143,0.1); }
+    .visitors-title { font-size:10px; font-weight:800; color:#00d68f; letter-spacing:1.2px; text-transform:uppercase; }
+    .visitors-count { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:#00ffaa; }
+    .visitor-row { padding:7px 13px; border-bottom:1px solid rgba(0,214,143,0.05); display:flex; align-items:center; gap:7px; font-size:12px; }
+    .visitor-row:last-child { border-bottom:none; }
+    .visitor-dot { width:5px; height:5px; border-radius:50%; background:#00d68f; animation:blink 2s infinite; }
+
+    .staff-member { display:flex; align-items:center; gap:10px; padding:9px 11px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid var(--adm-b2); margin-bottom:5px; }
+    .staff-av { width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg,#3d7fff,#6366f1); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:white; }
+    .staff-av.f { background:linear-gradient(135deg,#7c3aed,#a855f7); }
+    .staff-name { font-size:13px; font-weight:700; color:var(--adm-text); }
+    .staff-role { font-size:10px; color:var(--adm-blue); margin-top:1px; font-weight:600; }
+    .staff-online { width:7px; height:7px; border-radius:50%; background:#00d68f; animation:blink 2s infinite; margin-left:auto; }
+
+    .notif-entry { background:rgba(255,255,255,0.02); border:1px solid var(--adm-b2); border-radius:8px; padding:9px 11px; margin-bottom:5px; }
+    .notif-entry-title { font-size:12px; font-weight:700; color:var(--adm-text); }
+    .notif-entry-body { font-size:11px; color:var(--adm-muted2); margin-top:2px; }
+    .notif-entry-meta { font-size:10px; color:var(--adm-blue); margin-top:4px; font-weight:700; }
+
+    .revoked-item { background:rgba(255,61,92,0.04); border:1px solid rgba(255,61,92,0.12); border-radius:8px; padding:9px 11px; margin-bottom:5px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .revoked-name { font-size:12px; font-weight:700; color:#ff6b82; }
+    .restore-btn { background:none; border:1px solid rgba(0,214,143,0.25); color:#00d68f; font-size:10px; font-weight:700; padding:3px 9px; border-radius:6px; cursor:pointer; }
+
+    .cd-config { padding-top:8px; }
+
+    .adm-foot { padding:13px 18px; border-top:1px solid var(--adm-b2); display:flex; align-items:center; justify-content:space-between; background:var(--adm-s1); position:sticky; bottom:0; z-index:10; }
+    .adm-foot-user { display:flex; align-items:center; gap:9px; }
+    .adm-foot-av { width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,#3d7fff,#6366f1); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; color:white; }
+    .adm-foot-av.f { background:linear-gradient(135deg,#7c3aed,#a855f7); }
+    .adm-foot-name { font-size:12px; font-weight:700; color:#7baeff; }
+    .adm-foot-name.f { color:#c084fc; }
+    .adm-foot-role { font-size:10px; color:var(--adm-muted2); display:flex; align-items:center; gap:4px; }
+    .adm-foot-role::before { content:""; width:5px; height:5px; border-radius:50%; background:#00d68f; animation:blink 2s infinite; display:inline-block; }
+
+    .live-content { flex:1; min-width:0; display:flex; flex-direction:column; }
+
+    .live-topbar { background:var(--bg2); border-bottom:1px solid var(--border); padding:12px 24px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+    .live-topbar-left { display:flex; align-items:center; gap:10px; flex:1; }
+    .live-title { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; letter-spacing:0.3px; }
+    .live-badge-on { background:rgba(255,61,92,0.15); border:1px solid rgba(255,61,92,0.3); color:var(--red2); font-size:11px; font-weight:800; padding:3px 10px; border-radius:6px; letter-spacing:0.5px; animation:blink 1.4s infinite; }
+    .live-badge-off { background:var(--surface); border:1px solid var(--border); color:var(--muted); font-size:11px; font-weight:600; padding:3px 10px; border-radius:6px; }
+    .viewers-pill { display:none; align-items:center; gap:6px; background:rgba(0,214,143,0.08); border:1px solid rgba(0,214,143,0.2); border-radius:20px; padding:5px 13px; font-size:12px; font-weight:700; color:var(--green); }
+    .viewers-pill.show { display:flex; }
+    .viewers-dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:blink 1.4s infinite; }
+    .btn-admin { padding:8px 16px; border-radius:9px; border:1px solid rgba(61,127,255,0.25); background:rgba(61,127,255,0.08); color:#7baeff; font-size:12px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:5px; transition:0.2s; }
+    .btn-admin.active { background:rgba(61,127,255,0.18); border-color:rgba(61,127,255,0.45); }
+    .btn-admin.founder-active { background:rgba(157,78,221,0.15); border-color:rgba(157,78,221,0.4); color:#c084fc; }
+
+    .notif-bar { background:linear-gradient(90deg,rgba(61,127,255,0.07),rgba(157,78,221,0.04)); border-bottom:1px solid rgba(61,127,255,0.12); padding:10px 24px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+    .notif-bar-text { font-size:13px; font-weight:600; flex:1; display:flex; align-items:center; gap:7px; }
+    .btn-notif { padding:7px 18px; border-radius:8px; border:none; background:linear-gradient(135deg,var(--blue),#3b82f6); color:white; font-size:12px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+    .btn-notif-later { padding:7px 12px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:12px; cursor:pointer; font-family:'DM Sans',sans-serif; }
+    .notif-on-pill { display:flex; align-items:center; gap:6px; background:rgba(0,214,143,0.08); border:1px solid rgba(0,214,143,0.2); border-radius:20px; padding:6px 14px; font-size:12px; font-weight:700; color:var(--green); }
+    .notif-on-pill::before { content:""; width:6px; height:6px; border-radius:50%; background:var(--green); animation:blink 2s infinite; }
+
+    .countdown-banner { display:none; background:linear-gradient(135deg,#080b1a,#10144a); border-bottom:1px solid rgba(99,102,241,0.3); padding:16px 24px; align-items:center; justify-content:center; gap:28px; flex-wrap:wrap; }
+    .countdown-banner.show { display:flex; }
+    .cd-match { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:white; }
+    .cd-label-top { font-size:10px; color:#818cf8; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:5px; }
+    .cd-units { display:flex; align-items:center; gap:8px; }
+    .cd-unit { text-align:center; }
+    .cd-num-box { font-family:'Syne',sans-serif; font-size:38px; font-weight:800; line-height:1; color:white; background:rgba(99,102,241,0.15); border:1px solid rgba(99,102,241,0.4); border-radius:9px; min-width:58px; padding:4px 8px; display:block; }
+    .cd-unit-label { font-size:9px; font-weight:700; color:#818cf8; letter-spacing:1px; text-transform:uppercase; margin-top:3px; }
+    .cd-colon { font-family:'Syne',sans-serif; font-size:34px; color:rgba(99,102,241,0.45); margin-top:-4px; }
+    .cd-go { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; color:#4ade80; animation:blink 1s infinite; }
+
+    .stream-area { padding:18px 22px; }
+    .stream-mode-bar { display:none; align-items:center; gap:8px; margin-bottom:12px; background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:6px 8px; }
+    .stream-mode-bar.show { display:flex; }
+    .stream-mode-bar-label { font-size:11px; font-weight:700; color:var(--muted); margin-right:2px; }
+    .mode-btn { padding:6px 14px; border-radius:8px; border:1px solid transparent; background:transparent; color:var(--muted); font-size:12px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; transition:0.2s; }
+    .mode-btn.on { background:rgba(61,127,255,0.15); border-color:rgba(61,127,255,0.35); color:#7baeff; }
+
+    .stream-grid { display:grid; gap:10px; width:100%; }
+    .grid-1 { grid-template-columns:1fr; }
+    .grid-2 { grid-template-columns:1fr 1fr; }
+    .grid-3 { grid-template-columns:2fr 1fr; grid-template-rows:1fr 1fr; }
+    .grid-3 .slot-wrap:first-child { grid-row:span 2; }
+    .grid-4 { grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; }
+
+    .slot-wrap { position:relative; background:#000; border-radius:12px; overflow:hidden; border:1px solid var(--border); aspect-ratio:16/9; transition:border-color 0.2s; }
+    .slot-wrap.live-slot { border-color:rgba(61,127,255,0.4); }
+    .slot-wrap iframe, .slot-wrap video { width:100%; height:100%; border:none; position:absolute; inset:0; }
+
+    .slot-label { position:absolute; top:8px; left:8px; z-index:10; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); color:white; font-size:10px; font-weight:700; padding:3px 8px; border-radius:5px; pointer-events:none; }
+    .slot-live-badge { position:absolute; top:8px; right:8px; z-index:10; background:rgba(255,61,92,0.85); color:white; font-size:9px; font-weight:800; padding:2px 8px; border-radius:5px; animation:blink 1.4s infinite; pointer-events:none; }
+
+    .slot-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; background:var(--bg2); }
+    .slot-placeholder .ph-icon { font-size:36px; opacity:.12; }
+    .slot-placeholder h3 { font-family:'Syne',sans-serif; font-size:16px; font-weight:800; opacity:.25; }
+    .slot-placeholder p { font-size:12px; color:var(--muted); opacity:.6; text-align:center; max-width:200px; line-height:1.5; }
+
+    .visitor-stream-wrap { position:absolute; inset:0; background:#000; display:flex; align-items:center; justify-content:center; }
+    .visitor-stream-wrap video { width:100%; height:100%; object-fit:contain; background:#000; }
+
+    .slot-connecting { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:linear-gradient(135deg,#070b14,#0a1020); }
+    .conn-spinner { width:48px; height:48px; border:3px solid rgba(61,127,255,0.15); border-top-color:var(--blue); border-radius:50%; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    .conn-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:800; color:white; }
+    .conn-sub { font-size:11px; color:var(--muted2); }
+
+    .slot-live-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:linear-gradient(135deg,#0a0f1a,#0d1520); }
+    .slp-pulse { width:64px; height:64px; border-radius:50%; background:rgba(255,61,92,0.15); border:2px solid rgba(255,61,92,0.3); display:flex; align-items:center; justify-content:center; font-size:26px; animation:pulse-ring 1.8s infinite; }
+    @keyframes pulse-ring { 0%,100%{box-shadow:0 0 0 0 rgba(255,61,92,0.3)} 50%{box-shadow:0 0 0 14px rgba(255,61,92,0)} }
+    .slp-title { font-family:'Syne',sans-serif; font-size:15px; font-weight:800; color:white; }
+    .slp-sub { font-size:12px; color:var(--muted2); }
+    .slp-badge { background:rgba(255,61,92,0.15); border:1px solid rgba(255,61,92,0.3); color:#ff6b82; font-size:10px; font-weight:800; padding:3px 10px; border-radius:20px; animation:blink 1.4s infinite; }
+
+    .stream-ctrl { position:absolute; bottom:0; left:0; right:0; z-index:8; background:linear-gradient(transparent,rgba(0,0,0,0.85)); padding:28px 12px 9px; display:flex; align-items:center; gap:7px; opacity:0; transition:opacity 0.2s; pointer-events:none; }
+    .slot-wrap:hover .stream-ctrl { opacity:1; pointer-events:all; }
+    .ctrl-btn { width:33px; height:33px; border-radius:8px; border:none; background:rgba(255,255,255,0.15); color:white; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(6px); transition:0.15s; }
+    .ctrl-btn:hover { background:rgba(255,255,255,0.3); }
+    .ctrl-vol { width:64px; height:3px; accent-color:white; cursor:pointer; }
+    .ctrl-spacer { flex:1; }
+    .ctrl-live { font-size:9px; font-weight:800; letter-spacing:0.5px; background:rgba(255,61,92,0.8); color:white; padding:2px 8px; border-radius:5px; animation:blink 1.4s infinite; }
+
+    .fs-btn { position:absolute; bottom:9px; right:9px; z-index:9; width:33px; height:33px; border-radius:8px; background:rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.18); color:white; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:0.2s; backdrop-filter:blur(4px); }
+    .slot-wrap:hover .fs-btn { opacity:1; }
+    .fs-btn:hover { background:rgba(61,127,255,0.7); }
+
+    .stream-info { display:none; align-items:center; gap:12px; margin-top:12px; padding:11px 16px; background:var(--bg2); border-radius:11px; border:1px solid var(--border); flex-wrap:wrap; }
+    .stream-info.show { display:flex; }
+    .stream-match-name { font-size:14px; font-weight:700; flex:1; }
+
+    .bottom-layout { display:grid; grid-template-columns:1fr 320px; gap:16px; padding:0 22px 22px; }
+    @media(max-width:1100px){ .bottom-layout { grid-template-columns:1fr; } .grid-2,.grid-3,.grid-4 { grid-template-columns:1fr; } .grid-3 .slot-wrap:first-child { grid-row:auto; } }
+
+    .live-chat { background:var(--bg2); border:1px solid var(--border); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; height:480px; position:relative; }
+    .chat-head { padding:11px 15px; background:rgba(61,127,255,0.06); border-bottom:1px solid rgba(61,127,255,0.12); display:flex; align-items:center; justify-content:space-between; }
+    .chat-head-title { font-family:'Syne',sans-serif; font-size:15px; font-weight:800; display:flex; align-items:center; gap:7px; }
+    .chat-online { font-size:10px; color:var(--green); font-weight:700; background:rgba(0,214,143,0.1); border:1px solid rgba(0,214,143,0.2); padding:2px 8px; border-radius:20px; }
+    .chat-msgs { flex:1; overflow-y:auto; padding:11px 13px; display:flex; flex-direction:column; gap:5px; }
+    .msg-wrap { display:flex; flex-direction:column; gap:2px; animation:fadeUp 0.2s ease; }
+    @keyframes fadeUp { from{transform:translateY(5px);opacity:0}to{transform:translateY(0);opacity:1} }
+    .msg-head { display:flex; align-items:center; gap:5px; }
+    .msg-av { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; color:white; flex-shrink:0; }
+    .msg-user-name { font-size:11px; font-weight:700; }
+    .msg-time { font-size:9px; color:var(--muted); margin-left:auto; }
+    .msg-text { font-size:12px; color:var(--text); line-height:1.5; padding-left:25px; word-break:break-word; }
+    .msg-wrap.sys .msg-text { color:#6366f1; font-style:italic; padding-left:0; font-size:11px; }
+    .msg-wrap.adm .msg-text { color:#fbbf24; padding-left:25px; }
+    .msg-wrap.adm .msg-user-name { color:#fbbf24 !important; }
+    .msg-admin-act { padding-left:25px; margin-top:2px; display:none; }
+    .msg-wrap:hover .msg-admin-act { display:flex; gap:5px; }
+    .ban-btn { font-size:10px; padding:2px 7px; border-radius:4px; border:1px solid rgba(220,38,38,0.35); background:transparent; color:#f87171; cursor:pointer; font-family:'DM Sans',sans-serif; }
+    .del-btn { font-size:10px; padding:2px 7px; border-radius:4px; border:1px solid rgba(255,255,255,0.1); background:transparent; color:var(--muted); cursor:pointer; font-family:'DM Sans',sans-serif; }
+    .chat-input-area { padding:9px 11px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:6px; }
+    .chat-name-row { display:flex; gap:6px; }
+    .chat-nick { width:100px; padding:7px 10px; border-radius:8px; border:1px solid var(--border); background:var(--bg3); color:var(--text); font-size:12px; font-family:'DM Sans',sans-serif; outline:none; }
+    .chat-nick:focus { border-color:var(--blue); }
+    .chat-msg-in { flex:1; padding:7px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:12px; font-family:'DM Sans',sans-serif; outline:none; }
+    .chat-msg-in:focus { border-color:var(--blue); }
+    .chat-send { width:100%; padding:8px; border-radius:8px; border:none; background:var(--blue); color:white; font-size:12px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+    .chat-lock { position:absolute; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; z-index:10; border-radius:14px; }
+    .chat-lock .lock-ico { font-size:32px; opacity:.45; }
+    .chat-lock p { font-size:13px; color:var(--muted); text-align:center; max-width:200px; line-height:1.6; }
+    .pseudo-warn { font-size:10px; color:#f59e0b; display:none; margin-top:1px; }
+    .pseudo-warn.show { display:block; }
+
+    .planning-section { background:var(--bg2); border-top:1px solid var(--border); padding:22px; }
+    .planning-section h3 { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+    .planning-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; }
+    .plan-card-pub { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 16px; transition:0.2s; }
+    .plan-card-pub:hover { border-color:rgba(61,127,255,0.25); transform:translateY(-2px); }
+    .plan-card-pub.is-live { border-color:rgba(255,61,92,0.4); background:rgba(255,61,92,0.04); }
+    .plan-card-pub.is-priv { border-color:rgba(157,78,221,0.35); background:rgba(157,78,221,0.04); }
+    .plan-card-top { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+    .plan-card-dot { width:8px; height:8px; border-radius:50%; background:#5865F2; flex-shrink:0; }
+    .plan-card-dot.live { background:var(--red); animation:blink 1.4s infinite; }
+    .plan-card-dot.priv { background:var(--purple); }
+    .plan-card-match { font-size:14px; font-weight:700; }
+    .plan-card-date { font-size:11px; color:var(--muted); }
+    .plan-card-footer { display:flex; align-items:center; justify-content:space-between; margin-top:8px; flex-wrap:wrap; gap:6px; }
+    .plan-card-author { font-size:10px; color:var(--muted); }
+    .plan-card-author.founder { color:#c084fc; }
+    .dc-link { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; color:#818cf8; background:rgba(88,101,242,0.12); border:1px solid rgba(88,101,242,0.25); padding:3px 9px; border-radius:7px; text-decoration:none; }
+    .empty-planning { color:var(--muted); font-size:13px; text-align:center; padding:20px; }
+
+    .toast { position:fixed; top:78px; right:22px; background:rgba(13,17,40,0.95); backdrop-filter:blur(10px); color:white; padding:11px 18px; border-radius:10px; font-size:13px; font-weight:700; z-index:9999; transform:translateX(160%); transition:transform 0.3s; border:1px solid rgba(255,255,255,0.08); box-shadow:0 8px 32px rgba(0,0,0,0.4); }
+    .toast.show { transform:translateX(0); }
+    .push-toast { position:fixed; top:78px; left:50%; transform:translateX(-50%) translateY(-220px); background:var(--bg2); border:1px solid rgba(61,127,255,0.35); border-radius:14px; padding:13px 18px; z-index:9999; transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s; width:330px; max-width:calc(100vw - 40px); box-shadow:0 16px 48px rgba(0,0,0,0.5); display:flex; align-items:flex-start; gap:11px; opacity:0; pointer-events:none; }
+    .push-toast.show { transform:translateX(-50%) translateY(0); opacity:1; pointer-events:all; }
+    .push-toast-icon { font-size:26px; flex-shrink:0; }
+    .push-toast-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:2px; }
+    .push-toast-body { font-size:11px; color:var(--muted2); line-height:1.5; }
+    .push-toast-src { font-size:9px; color:rgba(61,127,255,0.7); font-weight:700; margin-top:3px; letter-spacing:0.5px; text-transform:uppercase; }
+    .push-close { background:none; border:none; color:var(--muted); cursor:pointer; font-size:15px; flex-shrink:0; }
+
+    .sync-ind { position:fixed; bottom:90px; left:18px; background:rgba(0,214,143,0.08); border:1px solid rgba(0,214,143,0.25); border-radius:20px; padding:5px 11px; font-size:10px; color:var(--green); font-weight:700; display:flex; align-items:center; gap:5px; z-index:50; opacity:0; transition:opacity 0.5s; pointer-events:none; }
+    .sync-ind.show { opacity:1; }
+    .sync-dot { width:5px; height:5px; border-radius:50%; background:var(--green); animation:blink 1s infinite; }
+    .fb-badge { position:fixed; bottom:24px; left:24px; background:rgba(255,160,0,0.1); border:1px solid rgba(255,160,0,0.3); border-radius:20px; padding:5px 13px; font-size:10px; color:#fbbf24; font-weight:700; display:flex; align-items:center; gap:5px; z-index:50; }
+    .fb-badge::before { content:""; width:5px; height:5px; border-radius:50%; background:#fbbf24; animation:blink 2s infinite; }
+
+    #page-iptv { padding-top:var(--nav-h); min-height:100vh; background:var(--bg); }
+    .iptv-hero { background:linear-gradient(135deg,#040b12,#0a1a0a); border-bottom:1px solid rgba(0,214,143,0.15); padding:60px 40px; text-align:center; }
+    .iptv-tag { display:inline-block; background:rgba(0,214,143,0.1); border:1px solid rgba(0,214,143,0.3); color:var(--green); font-size:12px; font-weight:700; padding:4px 15px; border-radius:20px; margin-bottom:18px; letter-spacing:0.5px; }
+    .iptv-hero h2 { font-family:'Syne',sans-serif; font-size:50px; font-weight:800; margin-bottom:12px; }
+    .iptv-hero p { font-size:16px; color:var(--muted2); max-width:540px; margin:0 auto; line-height:1.7; }
+    .iptv-plans { padding:65px 20px; display:flex; justify-content:center; flex-wrap:wrap; gap:28px; }
+    .plan-card { background:var(--bg2); border:1px solid var(--border); border-radius:22px; padding:36px 32px; width:320px; text-align:center; position:relative; overflow:hidden; transition:0.3s; }
+    .plan-card::after { content:""; position:absolute; top:0; left:0; right:0; height:3px; }
+    .plan-card.starter::after { background:linear-gradient(90deg,var(--blue),#60a5fa); }
+    .plan-card.lifetime::after { background:linear-gradient(90deg,var(--gold),var(--red)); }
+    .plan-card:hover { transform:translateY(-8px); border-color:rgba(61,127,255,0.3); }
+    .plan-best { position:absolute; top:18px; right:18px; background:linear-gradient(135deg,var(--gold),var(--red)); color:white; font-size:10px; font-weight:800; padding:3px 11px; border-radius:20px; letter-spacing:0.5px; }
+    .plan-icon { font-size:46px; margin-bottom:14px; display:block; }
+    .plan-name { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; margin-bottom:4px; }
+    .plan-duration { font-size:13px; color:var(--muted2); font-weight:600; margin-bottom:22px; }
+    .plan-price { font-family:'Syne',sans-serif; font-size:64px; font-weight:800; line-height:1; margin-bottom:5px; }
+    .plan-card.starter .plan-price { color:var(--blue2); }
+    .plan-card.lifetime .plan-price { color:var(--gold2); }
+    .plan-price sup { font-size:28px; vertical-align:top; margin-top:12px; display:inline-block; }
+    .plan-note { font-size:12px; color:var(--muted); margin-bottom:26px; }
+    .plan-features { list-style:none; margin-bottom:28px; text-align:left; }
+    .plan-features li { padding:8px 0; border-bottom:1px solid var(--border); font-size:14px; display:flex; align-items:center; gap:9px; }
+    .plan-features li:last-child { border-bottom:none; }
+    .feat-ok { color:var(--green); font-size:15px; flex-shrink:0; }
+    .btn-buy { display:block; width:100%; padding:14px; border-radius:12px; border:none; font-size:15px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; text-decoration:none; text-align:center; color:white; transition:0.2s; }
+    .btn-buy.starter { background:linear-gradient(135deg,var(--blue),#3b82f6); box-shadow:0 4px 20px rgba(61,127,255,0.3); }
+    .btn-buy.lifetime { background:linear-gradient(135deg,var(--gold),var(--red)); box-shadow:0 4px 20px rgba(245,166,35,0.3); }
+    .btn-buy:hover { transform:translateY(-2px); }
+    .reviews-sec { padding:65px 20px; background:var(--bg2); }
+    .reviews-sec h3 { font-family:'Syne',sans-serif; font-size:38px; font-weight:800; text-align:center; margin-bottom:10px; }
+    .reviews-sub { text-align:center; color:var(--muted2); font-size:15px; margin-bottom:44px; }
+    .reviews-grid { display:flex; flex-wrap:wrap; gap:18px; justify-content:center; max-width:1050px; margin:0 auto 44px; }
+    .review-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:22px; width:280px; transition:0.2s; }
+    .review-card:hover { transform:translateY(-3px); border-color:rgba(61,127,255,0.25); }
+    .review-stars { font-size:16px; margin-bottom:8px; }
+    .review-text { font-size:14px; color:var(--text); line-height:1.65; margin-bottom:14px; font-style:italic; }
+    .review-author { display:flex; align-items:center; gap:10px; }
+    .review-av { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--red)); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:white; }
+    .review-name { font-size:13px; font-weight:700; }
+    .review-plan { font-size:11px; color:var(--muted2); }
+    .review-form { max-width:600px; margin:0 auto; background:var(--surface); border:1px solid rgba(61,127,255,0.18); border-radius:18px; padding:28px 32px; }
+    .form-row { display:flex; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
+    .form-group { display:flex; flex-direction:column; gap:5px; flex:1; min-width:180px; }
+    .form-group label { font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.8px; text-transform:uppercase; }
+    .form-group input,.form-group textarea,.form-group select { padding:10px 14px; border-radius:9px; border:1px solid var(--border); background:var(--bg3); color:var(--text); font-size:13px; font-family:'DM Sans',sans-serif; outline:none; resize:none; }
+    .form-group input:focus,.form-group textarea:focus { border-color:var(--blue); }
+    .star-rating-label { font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.8px; text-transform:uppercase; margin-bottom:7px; }
+    .stars { display:flex; gap:5px; margin-bottom:12px; }
+    .stars label { font-size:26px; cursor:pointer; filter:grayscale(1); opacity:.35; }
+    .stars label.on { filter:grayscale(0); opacity:1; }
+    .btn-review { width:100%; padding:13px; border-radius:11px; border:none; background:linear-gradient(135deg,var(--blue),#3b82f6); color:white; font-size:15px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; margin-top:6px; }
+    .review-ok { display:none; text-align:center; padding:28px; }
+    .faq-sec { padding:0 20px 70px; max-width:760px; margin:0 auto; }
+    .faq-sec h3 { font-family:'Syne',sans-serif; font-size:32px; font-weight:800; text-align:center; margin-bottom:28px; padding-top:55px; }
+    .faq-item { background:var(--bg2); border:1px solid var(--border); border-radius:13px; padding:18px 22px; margin-bottom:12px; }
+    .faq-item h4 { font-size:15px; font-weight:700; margin-bottom:7px; }
+    .faq-item p { font-size:13px; color:var(--muted2); line-height:1.7; }
+
+    .chat-bubble { position:fixed; bottom:26px; right:26px; width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--green2),var(--green)); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 4px 24px rgba(0,214,143,0.45); z-index:300; transition:0.3s; animation:chat-bounce 3s ease-in-out infinite; }
+    .chat-bubble.open { animation:none; background:linear-gradient(135deg,#f87171,#dc2626); box-shadow:0 4px 24px rgba(220,38,38,0.4); }
+    @keyframes chat-bounce { 0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)} }
+    .chat-notif-dot { position:absolute; top:-3px; right:-3px; width:18px; height:18px; border-radius:50%; background:#f59e0b; border:2px solid var(--bg); font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; color:#000; animation:blink 1.5s infinite; }
+    .chatbot-win { position:fixed; bottom:96px; right:26px; width:370px; max-height:570px; background:var(--bg2); border:1px solid rgba(0,214,143,0.25); border-radius:18px; z-index:299; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 56px rgba(0,0,0,0.6); transform:scale(0.87) translateY(20px); opacity:0; pointer-events:none; transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),opacity 0.2s; transform-origin:bottom right; }
+    .chatbot-win.open { transform:scale(1) translateY(0); opacity:1; pointer-events:all; }
+    .bot-head { background:linear-gradient(135deg,#0d2010,#0f2810); padding:13px 16px; display:flex; align-items:center; gap:10px; border-bottom:1px solid rgba(255,255,255,0.05); }
+    .bot-av { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,#4ade80,#22c55e); display:flex; align-items:center; justify-content:center; font-size:16px; }
+    .bot-name { font-size:13px; font-weight:700; color:white; display:flex; align-items:center; gap:7px; }
+    .bot-ai-tag { font-size:9px; font-weight:700; background:rgba(0,214,143,0.2); border:1px solid rgba(0,214,143,0.35); color:var(--green); padding:1px 7px; border-radius:20px; }
+    .bot-status { font-size:10px; color:var(--green); display:flex; align-items:center; gap:4px; }
+    .bot-status-dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:blink 2s infinite; }
+    .bot-msgs { flex:1; overflow-y:auto; padding:14px 12px; display:flex; flex-direction:column; gap:9px; }
+    .bot-msg, .user-msg { max-width:86%; padding:9px 13px; border-radius:14px; font-size:13px; line-height:1.55; animation:fadeUp 0.25s ease; }
+    .bot-msg { background:var(--bg3); border:1px solid var(--border); color:var(--text); align-self:flex-start; border-bottom-left-radius:4px; }
+    .user-msg { background:linear-gradient(135deg,#0d3d1f,#0f4d25); color:white; align-self:flex-end; border-bottom-right-radius:4px; }
+    .bot-msg strong { color:var(--green); }
+    .bot-loading { display:flex; align-items:center; gap:4px; padding:9px 13px; background:var(--bg3); border:1px solid var(--border); border-radius:14px; border-bottom-left-radius:4px; align-self:flex-start; }
+    .td { width:6px; height:6px; border-radius:50%; background:var(--muted); animation:td-anim 1.2s infinite; }
+    .td:nth-child(2){animation-delay:.2s} .td:nth-child(3){animation-delay:.4s}
+    @keyframes td-anim { 0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)} }
+    .quick-sec { padding:0 12px 10px; }
+    .quick-label { font-size:9px; font-weight:800; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:7px; }
+    .quick-btns { display:flex; flex-wrap:wrap; gap:5px; }
+    .quick-btn { padding:5px 11px; border-radius:20px; border:1px solid rgba(0,214,143,0.28); background:transparent; color:var(--green); font-size:11px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:0.2s; white-space:nowrap; }
+    .quick-btn:hover { background:rgba(0,214,143,0.1); }
+    .bot-footer { padding:9px 12px; border-top:1px solid var(--border); display:flex; gap:7px; background:rgba(0,0,0,0.25); }
+    .bot-input { flex:1; padding:8px 12px; border-radius:20px; border:1px solid var(--border); background:var(--bg3); color:var(--text); font-size:12px; font-family:'DM Sans',sans-serif; outline:none; }
+    .bot-input:focus { border-color:var(--green); }
+    .bot-send { width:36px; height:36px; border-radius:50%; border:none; background:linear-gradient(135deg,#4ade80,#22c55e); color:#000; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+    .modal-bg { position:fixed; inset:0; background:rgba(0,0,0,0.72); backdrop-filter:blur(6px); z-index:400; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+    .modal-bg.open { opacity:1; pointer-events:all; }
+    .modal { background:var(--bg2); border:1px solid rgba(61,127,255,0.22); border-radius:18px; padding:32px; max-width:400px; width:100%; }
+    .modal h3 { font-family:'Syne',sans-serif; font-size:24px; font-weight:800; margin-bottom:7px; }
+    .modal p { font-size:13px; color:var(--muted2); margin-bottom:18px; line-height:1.6; }
+    .modal input { width:100%; padding:11px 14px; border-radius:9px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:14px; font-family:'DM Sans',sans-serif; outline:none; margin-bottom:10px; }
+    .modal input:focus { border-color:var(--blue); }
+    .modal-btns { display:flex; gap:10px; }
+    .btn-modal-ok { flex:1; padding:11px; border-radius:9px; border:none; background:var(--blue); color:white; font-size:14px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+    .btn-modal-cancel { padding:11px 18px; border-radius:9px; border:1px solid var(--border); background:transparent; color:var(--muted2); font-size:14px; cursor:pointer; font-family:'DM Sans',sans-serif; }
+    .modal-err { color:#f87171; font-size:12px; display:none; margin-bottom:9px; }
+    .founder-modal { background:#070510; border-color:rgba(157,78,221,0.2); }
+    .founder-modal h3 { color:#c084fc; }
+    .founder-modal input { border-color:rgba(157,78,221,0.2); background:rgba(157,78,221,0.04); }
+    .founder-modal input:focus { border-color:rgba(157,78,221,0.5); }
+    .ban-modal { background:var(--bg2); border-color:rgba(255,61,92,0.2); }
+    .ban-modal h3 { color:#ff6b82; }
+    .ban-target-display { font-size:15px; font-weight:700; background:rgba(255,61,92,0.08); border:1px solid rgba(255,61,92,0.2); border-radius:8px; padding:7px 13px; margin-bottom:12px; }
+    .ban-reasons { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:12px; }
+    .ban-chip { padding:5px 13px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--muted2); font-size:11px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; transition:0.15s; }
+    .ban-chip.on,.ban-chip:hover { background:rgba(255,61,92,0.12); border-color:rgba(255,61,92,0.4); color:#ff6b82; }
+    .btn-ban-confirm { width:100%; padding:11px; border-radius:9px; border:none; background:var(--red); color:white; font-size:14px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+    .btn-ban-cancel { width:100%; margin-top:7px; padding:10px; border-radius:9px; border:1px solid var(--border); background:transparent; color:var(--muted2); font-size:13px; cursor:pointer; font-family:'DM Sans',sans-serif; }
+
+    @media(max-width:768px){
+      h1{font-size:44px} nav{padding:0 12px}
+      .nav-tabs .nav-tab{padding:6px 10px;font-size:11px}
+      .nav-discord{display:none} .adm-sidebar.open{width:100vw}
+      .stream-area,.bottom-layout{ padding:10px 12px }
+      .chatbot-win{width:calc(100vw - 16px);right:8px;bottom:84px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast">✓</div>
+<div class="push-toast" id="push-toast">
+  <div class="push-toast-icon">📺</div>
+  <div style="flex:1;">
+    <div class="push-toast-title" id="push-title">Diffusion en direct !</div>
+    <div class="push-toast-body" id="push-body">Un match commence.</div>
+    <div class="push-toast-src">Football Zone France</div>
+  </div>
+  <button class="push-close" onclick="dismissPush()">✕</button>
+</div>
+<div class="sync-ind" id="sync-ind"><span class="sync-dot"></span> Synchronisé</div>
+<div class="fb-badge" id="fb-badge">🔥 Firebase connecté</div>
+
+<nav>
+  <a class="nav-logo" onclick="goPage('home')">
+    <img src="logo.png" alt="FZF" onerror="this.style.display='none'">
+    <span>Football<span class="nav-logo-accent">Zone</span></span>
+  </a>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goPage('home')">🏠 Accueil</button>
+    <button class="nav-tab live-tab" onclick="goPage('live')"><span class="live-dot"></span>Live</button>
+    <button class="nav-tab iptv-tab" onclick="goPage('iptv')">📡 IPTV</button>
+  </div>
+  <div class="nav-right">
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+    <a href="https://discord.gg/ftzf" class="nav-discord" target="_blank">
+      <svg width="16" height="13" viewBox="0 0 18 14" fill="currentColor"><path d="M15.25 1.18A14.8 14.8 0 0 0 11.56 0c-.17.3-.36.7-.49 1.02a13.7 13.7 0 0 0-4.14 0A10.8 10.8 0 0 0 6.44 0 14.85 14.85 0 0 0 2.74 1.18 15.73 15.73 0 0 0 .02 11.36a14.94 14.94 0 0 0 4.57 2.31c.37-.5.7-1.04.98-1.6a9.7 9.7 0 0 1-1.54-.74c.13-.09.25-.19.37-.28a10.65 10.65 0 0 0 9.2 0c.12.1.25.19.37.28-.49.29-1 .54-1.54.74.28.56.61 1.1.98 1.6a14.9 14.9 0 0 0 4.57-2.31 15.7 15.7 0 0 0-2.73-10.18Z"/></svg>
+      Discord
+    </a>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-grid-overlay"></div>
+    <div class="hero-content">
+      <img src="logo.png" class="hero-logo" alt="FZF" onerror="this.style.display='none'">
+      <h1><div class="h1-line1">Football</div><div class="h1-line2">Zone France</div></h1>
+      <p class="hero-sub">Tous les matchs de football en direct — Ligue 1, Champions League, Premier League et bien plus. Rejoins la communauté.</p>
+      <a href="https://discord.gg/ftzf" class="btn-hero" target="_blank">🚀 Rejoindre le Discord</a>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-num">500+</div><div class="hero-stat-label">Membres</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">4K</div><div class="hero-stat-label">Qualité stream</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">24/7</div><div class="hero-stat-label">Support</div></div>
+      </div>
+    </div>
+  </div>
+  <section class="section">
+    <div class="section-title">🔥 Tout le Football au Même Endroit</div>
+    <div class="cards">
+      <div class="card"><span class="card-icon">📺</span><h3>Matchs en Direct</h3><p>Ligue 1, Champions League, Premier League, Liga, Serie A, Bundesliga — tout en un.</p></div>
+      <div class="card"><span class="card-icon">💬</span><h3>Communauté Active</h3><p>Des milliers de passionnés dans une ambiance conviviale sur notre Discord.</p></div>
+      <div class="card"><span class="card-icon">⚡</span><h3>Multi-Stream HD</h3><p>Jusqu'à 4 streams simultanés. Regarde plusieurs matchs à la fois.</p></div>
+    </div>
+  </section>
+  <div class="discord-section">
+    <h2>🚀 Rejoins la Communauté</h2>
+    <p>Accède aux matchs, discussions, annonces et événements exclusifs sur notre Discord officiel.</p>
+    <a href="https://discord.gg/ftzf" class="btn-hero" target="_blank">Rejoindre Maintenant</a>
+  </div>
+  <footer>© 2026 Football Zone France — Tous droits réservés</footer>
+</div>
+
+<!-- LIVE -->
+<div id="page-live" class="page">
+  <div class="live-layout">
+    <div class="adm-sidebar" id="adm-sidebar">
+      <div class="adm-top">
+        <div class="adm-brand">
+          <div class="adm-brand-icon" id="adm-brand-icon">⚙️</div>
+          <div class="adm-brand-text">
+            <div class="adm-brand-name" id="adm-brand-name">Panneau Admin</div>
+            <div class="adm-brand-sub" id="adm-brand-sub">Football Zone France v6.0</div>
+          </div>
+          <div class="adm-brand-status" id="adm-brand-status">ACTIF</div>
+        </div>
+        <div class="adm-nav-tabs">
+          <button class="adm-tab on" onclick="switchTab('stream')" id="tab-stream"><span class="adm-tab-icon">🖥</span><span class="adm-tab-label">Partage écran</span><span class="adm-tab-pill live" id="tab-stream-badge" style="display:none">LIVE</span></button>
+          <button class="adm-tab" onclick="switchTab('planning')" id="tab-planning"><span class="adm-tab-icon">📅</span><span class="adm-tab-label">Planning</span></button>
+          <button class="adm-tab" onclick="switchTab('chat')" id="tab-chat"><span class="adm-tab-icon">💬</span><span class="adm-tab-label">Chat & Mod</span></button>
+          <button class="adm-tab green-tab" onclick="switchTab('staff')" id="tab-staff"><span class="adm-tab-icon">🔐</span><span class="adm-tab-label">Canal Staff</span></button>
+          <button class="adm-tab" onclick="switchTab('notif')" id="tab-notif"><span class="adm-tab-icon">🔔</span><span class="adm-tab-label">Notifications</span></button>
+          <button class="adm-tab" onclick="switchTab('tools')" id="tab-tools"><span class="adm-tab-icon">🛠️</span><span class="adm-tab-label">Outils</span></button>
+          <button class="adm-tab founder-tab" onclick="switchTab('founder')" id="tab-founder" style="display:none"><span class="adm-tab-icon">👑</span><span class="adm-tab-label">Fondateur</span></button>
+        </div>
+      </div>
+
+      <div class="adm-panel on" id="panel-stream">
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line"></div><div class="adm-block-title">Mode d'affichage</div></div>
+          <div class="btn-row">
+            <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="setMode('single')" id="mbtn-single">1️⃣</button>
+            <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="setMode('dual')" id="mbtn-dual">2️⃣</button>
+            <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="setMode('tri')" id="mbtn-tri">3️⃣</button>
+            <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="setMode('quad')" id="mbtn-quad">4️⃣</button>
+          </div>
+        </div>
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line" style="background:#818cf8;"></div><div class="adm-block-title">Guide — Partage d'écran</div></div>
+          <div class="share-guide">
+            <div class="share-guide-title">🖥 Comment partager ton écran</div>
+            <div class="share-guide-steps">
+              <div class="share-step"><div class="share-step-num">1</div><div class="share-step-text">Clique sur <strong>🖥 Lancer le partage</strong> ci-dessous</div></div>
+              <div class="share-step"><div class="share-step-num">2</div><div class="share-step-text">Une fenêtre s'ouvre : choisis <strong>Onglet</strong>, <strong>Fenêtre</strong> ou <strong>Écran entier</strong></div></div>
+              <div class="share-step"><div class="share-step-num">3</div><div class="share-step-text">Sélectionne ce que tu veux et clique <strong>Partager</strong></div></div>
+              <div class="share-step"><div class="share-step-num">4</div><div class="share-step-text">Les visiteurs voient ton écran <strong>en temps réel</strong> via WebRTC</div></div>
+            </div>
+            <div class="share-tip">💡 Pour partager YouTube avec le son : choisis <b>Onglet</b> et coche <b>"Partager l'audio de l'onglet"</b></div>
+          </div>
+          <div id="slots-admin"></div>
+        </div>
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line" style="background:#6366f1;"></div><div class="adm-block-title">Compte à rebours</div></div>
+          <div class="adm-toggle">
+            <div class="adm-toggle-info"><div class="adm-toggle-name">Activer le countdown</div><div class="adm-toggle-desc">Timer avant le match</div></div>
+            <label class="toggle"><input type="checkbox" id="tog-countdown" onchange="toggleCountdownAdmin(this.checked)"><span class="toggle-slider"></span></label>
+          </div>
+          <div id="cd-admin-config" class="cd-config" style="display:none;">
+            <label class="adm-label">Nom du match</label>
+            <input type="text" class="adm-input" id="cd-match-name" placeholder="Ex : PSG vs Barça">
+            <label class="adm-label">Date & Heure</label>
+            <input type="datetime-local" class="adm-input" id="cd-datetime">
+            <button class="btn btn-full btn-purple" onclick="setCountdown()">⏱ Activer</button>
+          </div>
+        </div>
+        <div class="adm-block" id="stats-block" style="display:none;">
+          <div class="adm-block-head"><div class="adm-block-line g"></div><div class="adm-block-title">Stats live</div></div>
+          <div class="adm-stats">
+            <div class="adm-stat"><div class="adm-stat-val" id="stat-cur" style="color:#ff6b82;">0</div><div class="adm-stat-name">Visiteurs</div></div>
+            <div class="adm-stat"><div class="adm-stat-val" id="stat-peak" style="color:#fbbf24;">0</div><div class="adm-stat-name">Pic</div></div>
+            <div class="adm-stat"><div class="adm-stat-val" id="stat-dur" style="color:#4ade80;font-size:20px;">00:00</div><div class="adm-stat-name">Durée</div></div>
+            <div class="adm-stat"><div class="adm-stat-val" id="stat-viewers" style="color:#7baeff;">0</div><div class="adm-stat-name">Viewers WebRTC</div></div>
+          </div>
+          <button class="btn btn-full btn-red" onclick="resetStats()">🔄 Réinitialiser</button>
+        </div>
+      </div>
+
+      <div class="adm-panel" id="panel-planning">
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line"></div><div class="adm-block-title">Ajouter un match</div></div>
+          <label class="adm-label">Nom du match</label>
+          <input type="text" class="adm-input" id="plan-match" placeholder="Ex : Nice vs Lens">
+          <label class="adm-label">Date & Heure</label>
+          <input type="datetime-local" class="adm-input" id="plan-date">
+          <label class="adm-label">Compétition</label>
+          <input type="text" class="adm-input" id="plan-comp" placeholder="Ex : Ligue 1">
+          <div class="adm-toggle"><div class="adm-toggle-info"><div class="adm-toggle-name">Lien Discord</div><div class="adm-toggle-desc">Afficher le bouton Discord</div></div><label class="toggle"><input type="checkbox" id="plan-discord" checked><span class="toggle-slider"></span></label></div>
+          <button class="btn btn-full btn-blue" style="margin-top:4px;" onclick="addMatch()">➕ Ajouter</button>
+        </div>
+        <div class="adm-block" id="priv-planning-block" style="display:none;">
+          <div class="adm-block-head"><div class="adm-block-line p"></div><div class="adm-block-title">Planning privé <span class="priv-badge">🔒 STAFF</span></div></div>
+          <div style="font-size:11px;color:#c084fc;background:rgba(157,78,221,0.06);border:1px solid rgba(157,78,221,0.12);border-radius:8px;padding:7px 10px;margin-bottom:8px;">Visible uniquement par le staff connecté.</div>
+          <div id="plan-priv-admin-list"><div style="font-size:11px;color:var(--adm-muted2);text-align:center;padding:8px;">Aucun match privé.</div></div>
+        </div>
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line"></div><div class="adm-block-title">Matchs planifiés</div></div>
+          <div id="plan-public-admin-list"><div style="font-size:11px;color:var(--adm-muted2);text-align:center;padding:8px;">Aucun match.</div></div>
+        </div>
+      </div>
+
+      <div class="adm-panel" id="panel-chat">
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line"></div><div class="adm-block-title">Paramètres</div></div>
+          <div class="adm-toggle"><div class="adm-toggle-info"><div class="adm-toggle-name">💬 Chat live</div><div class="adm-toggle-desc">Permettre aux visiteurs d'écrire</div></div><label class="toggle"><input type="checkbox" id="tog-chat" onchange="toggleChat(this.checked)"><span class="toggle-slider"></span></label></div>
+          <div class="adm-toggle"><div class="adm-toggle-info"><div class="adm-toggle-name">🤖 Bot IA</div><div class="adm-toggle-desc">Chatbot sur le site</div></div><label class="toggle"><input type="checkbox" id="tog-chatbot" onchange="toggleChatbot(this.checked)" checked><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line"></div><div class="adm-block-title">Réponse admin</div></div>
+          <input type="text" class="adm-input" id="admin-reply" placeholder="Message admin..." maxlength="200" onkeydown="if(event.key==='Enter')sendAdminReply()">
+          <button class="btn btn-full btn-blue" onclick="sendAdminReply()">📢 Envoyer comme Admin</button>
+        </div>
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line y"></div><div class="adm-block-title">Annonce système</div></div>
+          <input type="text" class="adm-input" id="announce-in" placeholder="Message système...">
+          <div class="btn-row">
+            <button class="btn btn-ghost" onclick="sendAnnounce()">📢 Annoncer</button>
+            <button class="btn btn-red" onclick="clearChat()">🗑 Vider</button>
+          </div>
+        </div>
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line r"></div><div class="adm-block-title">Utilisateurs bannis</div></div>
+          <div id="ban-list-admin"><div style="font-size:11px;color:var(--adm-muted2);text-align:center;padding:8px;">Aucun banni.</div></div>
+          <button class="btn btn-full btn-red" style="margin-top:6px;" onclick="clearBans()">🗑 Tous les bans</button>
+        </div>
+      </div>
+
+      <div class="adm-panel" id="panel-staff">
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line g"></div><div class="adm-block-title">Canal Staff <span class="priv-badge" style="background:rgba(0,214,143,0.08);border-color:rgba(0,214,143,0.25);color:#00d68f;">🔐 PRIVÉ</span></div></div>
+          <div class="staff-chat-box">
+            <div class="staff-chat-head">
+              <span style="font-size:13px;">🔐</span>
+              <div class="staff-chat-title">Canal FZF Staff</div>
+              <span id="staff-online-count" style="font-size:10px;font-weight:700;color:#00d68f;background:rgba(0,214,143,0.1);border:1px solid rgba(0,214,143,0.2);padding:2px 7px;border-radius:20px;">1 connecté</span>
+            </div>
+            <div class="staff-chat-msgs" id="staff-msgs">
+              <div class="staff-msg sys"><div class="staff-msg-text">🔒 Canal privé — admins seulement.</div></div>
+            </div>
+            <div class="staff-chat-input-row">
+              <input type="text" class="staff-input" id="staff-input" placeholder="Message staff..." maxlength="200" onkeydown="if(event.key==='Enter')sendStaff()">
+              <button class="staff-send" onclick="sendStaff()">➤</button>
+            </div>
+          </div>
+        </div>
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line g"></div><div class="adm-block-title">Membres connectés</div></div>
+          <div id="staff-members-list"><div style="font-size:11px;color:var(--adm-muted2);text-align:center;padding:8px;">Chargement...</div></div>
+        </div>
+      </div>
+
+      <div class="adm-panel" id="panel-notif">
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line"></div><div class="adm-block-title">Envoyer une notification</div></div>
+          <label class="adm-label">Titre</label>
+          <input type="text" class="adm-input" id="notif-title" placeholder="Ex : 🔴 PSG vs Real — En direct !" maxlength="60">
+          <label class="adm-label">Message</label>
+          <input type="text" class="adm-input" id="notif-body" placeholder="Ex : Le match commence !" maxlength="120">
+          <div class="btn-row" style="margin-top:4px;">
+            <button class="btn btn-blue" onclick="sendNotif()">🔔 Envoyer</button>
+            <button class="btn btn-ghost" onclick="previewNotif()">👁 Aperçu</button>
+          </div>
+        </div>
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line y"></div><div class="adm-block-title">Auto-notification</div></div>
+          <div class="adm-toggle"><div class="adm-toggle-info"><div class="adm-toggle-name">🚀 Auto-notif stream</div><div class="adm-toggle-desc">Notifie au lancement d'un stream</div></div><label class="toggle"><input type="checkbox" id="tog-auto-notif" checked><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line"></div><div class="adm-block-title">Historique</div></div>
+          <div id="notif-log"><div style="font-size:11px;color:var(--adm-muted2);padding:6px 0;">Aucune notification.</div></div>
+        </div>
+      </div>
+
+      <div class="adm-panel" id="panel-tools">
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line g"></div><div class="adm-block-title">Visiteurs en temps réel</div></div>
+          <div class="visitors-box">
+            <div class="visitors-head">
+              <div class="visitors-title">🟢 En ligne</div>
+              <div class="visitors-count" id="adm-visitor-count">0</div>
+            </div>
+            <div id="adm-visitors-list"><div style="padding:10px 13px;font-size:11px;color:var(--adm-muted2);">Chargement...</div></div>
+          </div>
+        </div>
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line r"></div><div class="adm-block-title">Actions</div></div>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <button class="btn btn-ghost" style="justify-content:flex-start;" onclick="logoutAdmin()">🔒 Déconnexion</button>
+            <button onclick="openFounderModal()" style="display:flex;align-items:center;gap:7px;width:100%;padding:9px 13px;border-radius:9px;border:1px solid rgba(157,78,221,0.2);background:rgba(157,78,221,0.08);color:#c084fc;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">👑 Accès Fondateur</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="adm-panel" id="panel-founder">
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line p"></div><div class="adm-block-title">Staff connecté</div></div>
+          <div id="founder-staff-list"><div style="font-size:11px;color:var(--adm-muted2);text-align:center;padding:8px;">Aucun staff.</div></div>
+        </div>
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line p"></div><div class="adm-block-title">Planning privé <span class="priv-badge">🔒 ADMINS</span></div></div>
+          <label class="adm-label">Nom du match</label>
+          <input type="text" class="adm-input" style="border-color:rgba(157,78,221,0.15);" id="f-plan-match" placeholder="Ex : PSG vs Arsenal">
+          <label class="adm-label">Date & Heure</label>
+          <input type="datetime-local" class="adm-input" style="border-color:rgba(157,78,221,0.15);" id="f-plan-date">
+          <label class="adm-label">Compétition</label>
+          <input type="text" class="adm-input" style="border-color:rgba(157,78,221,0.15);" id="f-plan-comp" placeholder="Ex : Champions League">
+          <button class="btn btn-full btn-founder" onclick="addFounderPlan()">👑 Ajouter au planning privé</button>
+        </div>
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line r"></div><div class="adm-block-title">Révoquer un Admin</div></div>
+          <label class="adm-label">Pseudo</label>
+          <input type="text" class="adm-input" style="border-color:rgba(157,78,221,0.15);" id="rev-name" placeholder="Ex : AdminDupont" maxlength="30">
+          <label class="adm-label">Raison</label>
+          <input type="text" class="adm-input" style="border-color:rgba(157,78,221,0.15);" id="rev-reason" placeholder="Ex : Abus de pouvoir" maxlength="80">
+          <button class="btn btn-full btn-red" onclick="revokeAdmin()">🚫 Révoquer</button>
+        </div>
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line p"></div><div class="adm-block-title">Admins révoqués</div></div>
+          <div id="revoked-list"><div style="font-size:11px;color:var(--adm-muted2);text-align:center;padding:8px;">Aucune révocation.</div></div>
+        </div>
+        <div class="adm-block">
+          <div class="adm-block-head"><div class="adm-block-line g"></div><div class="adm-block-title">Visiteurs réels</div></div>
+          <div class="visitors-box">
+            <div class="visitors-head">
+              <div class="visitors-title">🟢 En ligne</div>
+              <div class="visitors-count" id="founder-visitor-count">0</div>
+            </div>
+            <div id="founder-visitors-list"><div style="padding:10px 13px;font-size:11px;color:var(--adm-muted2);">Chargement...</div></div>
+          </div>
+        </div>
+        <div class="adm-block">
+          <button class="btn btn-ghost" style="width:100%;justify-content:center;border-color:rgba(157,78,221,0.2);color:#c084fc;" onclick="logoutFounder()">👑 Déconnexion Fondateur</button>
+        </div>
+      </div>
+
+      <div class="adm-foot">
+        <div class="adm-foot-user">
+          <div class="adm-foot-av" id="adm-foot-av">A</div>
+          <div>
+            <div class="adm-foot-name" id="adm-foot-name">Admin</div>
+            <div class="adm-foot-role" id="adm-foot-role">Connecté</div>
+          </div>
+        </div>
+        <button class="btn btn-red" style="font-size:11px;padding:6px 11px;" onclick="logoutAdmin()" id="adm-foot-logout">Déco.</button>
+      </div>
+    </div>
+
+    <div class="live-content">
+      <div class="notif-bar" id="notif-bar">
+        <div class="notif-bar-text"><span>🔔</span>Reçois une alerte dès qu'une diffusion commence !</div>
+        <button class="btn-notif" onclick="requestNotif()">Activer</button>
+        <button class="btn-notif-later" onclick="dismissNotifBar()">Plus tard</button>
+      </div>
+      <div style="display:none;padding:7px 24px;background:rgba(0,214,143,0.04);border-bottom:1px solid rgba(0,214,143,0.1);" id="notif-on-bar">
+        <span class="notif-on-pill">Notifications activées ✓</span>
+      </div>
+
+      <div class="live-topbar">
+        <div class="live-topbar-left">
+          <div class="live-title">📺 Match en Direct</div>
+          <span id="live-badge" class="live-badge-off">HORS LIGNE</span>
+        </div>
+        <div class="viewers-pill" id="viewers-pill">
+          <span class="viewers-dot"></span>
+          <span id="viewer-count">0</span> visiteurs
+        </div>
+        <button class="btn-admin" id="admin-btn" onclick="toggleAdminSidebar()">🔒 Admin</button>
+      </div>
+
+      <div class="countdown-banner" id="cd-banner">
+        <div>
+          <div class="cd-label-top">PROCHAIN MATCH</div>
+          <div class="cd-match" id="cd-match-name">Match à venir</div>
+        </div>
+        <div>
+          <div class="cd-label-top" style="text-align:center;">DANS</div>
+          <div class="cd-units" id="cd-units">
+            <div class="cd-unit"><span class="cd-num-box" id="cd-d">00</span><div class="cd-unit-label">Jours</div></div>
+            <div class="cd-colon">:</div>
+            <div class="cd-unit"><span class="cd-num-box" id="cd-h">00</span><div class="cd-unit-label">Heures</div></div>
+            <div class="cd-colon">:</div>
+            <div class="cd-unit"><span class="cd-num-box" id="cd-m">00</span><div class="cd-unit-label">Min</div></div>
+            <div class="cd-colon">:</div>
+            <div class="cd-unit"><span class="cd-num-box" id="cd-s">00</span><div class="cd-unit-label">Sec</div></div>
+          </div>
+          <div class="cd-go" id="cd-go" style="display:none;">🔴 C'EST PARTI !</div>
+        </div>
+      </div>
+
+      <div class="stream-area">
+        <div class="stream-mode-bar" id="pub-mode-bar">
+          <span class="stream-mode-bar-label">VUE :</span>
+          <button class="mode-btn on" id="pub-m-single" onclick="setMode('single')">1 Écran</button>
+          <button class="mode-btn" id="pub-m-dual" onclick="setMode('dual')">2 Écrans</button>
+          <button class="mode-btn" id="pub-m-tri" onclick="setMode('tri')">3 Écrans</button>
+          <button class="mode-btn" id="pub-m-quad" onclick="setMode('quad')">4 Écrans</button>
+        </div>
+        <div class="stream-grid grid-1" id="stream-grid">
+          <div class="slot-wrap" id="slot-0">
+            <div class="slot-placeholder"><div class="ph-icon">📺</div><h3>Aucun match</h3><p>Le prochain stream sera annoncé sur Discord.</p><a href="https://discord.gg/ftzf" style="margin-top:8px;display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;border:none;background:#5865F2;color:white;font-size:12px;font-weight:700;text-decoration:none;" target="_blank">Annonces Discord</a></div>
+          </div>
+          <div class="slot-wrap" id="slot-1" style="display:none;"><div class="slot-placeholder"><div class="ph-icon">📺</div><h3>Écran 2</h3></div></div>
+          <div class="slot-wrap" id="slot-2" style="display:none;"><div class="slot-placeholder"><div class="ph-icon">📺</div><h3>Écran 3</h3></div></div>
+          <div class="slot-wrap" id="slot-3" style="display:none;"><div class="slot-placeholder"><div class="ph-icon">📺</div><h3>Écran 4</h3></div></div>
+        </div>
+        <div class="stream-info" id="stream-info">
+          <span class="live-dot"></span>
+          <span class="stream-match-name" id="match-name-display">Match en direct</span>
+          <a href="https://discord.gg/ftzf" style="display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:8px;border:none;background:#5865F2;color:white;font-size:12px;font-weight:700;text-decoration:none;" target="_blank">Discord</a>
+        </div>
+      </div>
+
+      <div class="bottom-layout">
+        <div>
+          <div class="planning-section">
+            <h3>📅 Prochains Matchs</h3>
+            <div class="planning-grid" id="planning-pub-grid"><div class="empty-planning">Aucun match planifié. Restez connectés !</div></div>
+          </div>
+          <div class="planning-section" id="priv-planning-section" style="display:none;border-top:1px solid rgba(157,78,221,0.15);background:rgba(157,78,221,0.02);">
+            <h3 style="color:#c084fc;">🔒 Planning Privé <span style="font-size:13px;font-weight:600;background:rgba(157,78,221,0.1);border:1px solid rgba(157,78,221,0.2);border-radius:8px;padding:2px 9px;">Staff only</span></h3>
+            <div class="planning-grid" id="planning-priv-grid"><div class="empty-planning">Aucun match privé.</div></div>
+          </div>
+        </div>
+        <div class="live-chat" id="live-chat">
+          <div class="chat-head">
+            <div class="chat-head-title">💬 Chat <span class="chat-online" id="chat-online">0 en ligne</span></div>
+          </div>
+          <div class="chat-msgs" id="chat-msgs">
+            <div class="msg-wrap sys"><div class="msg-text">💬 Chat désactivé — l'admin peut l'activer.</div></div>
+          </div>
+          <div class="chat-input-area" id="chat-inputs" style="display:none;">
+            <div class="chat-name-row">
+              <input type="text" class="chat-nick" id="chat-nick" placeholder="Pseudo *" maxlength="20">
+              <input type="text" class="chat-msg-in" id="chat-msg-in" placeholder="Ton message..." maxlength="200" onkeydown="if(event.key==='Enter')sendMsg()">
+            </div>
+            <div class="pseudo-warn" id="pseudo-warn">⚠️ Entre un pseudo avant d'écrire !</div>
+            <button class="chat-send" onclick="sendMsg()">➤ Envoyer</button>
+          </div>
+          <div class="chat-lock" id="chat-lock">
+            <div class="lock-ico">🔒</div>
+            <p>Le chat sera activé par l'admin lors du prochain match.</p>
+          </div>
+        </div>
+      </div>
+      <footer>© 2026 Football Zone France — Tous droits réservés</footer>
+    </div>
+  </div>
+</div>
+
+<!-- IPTV -->
+<div id="page-iptv" class="page">
+  <div class="iptv-hero">
+    <div class="iptv-tag">⚡ ABONNEMENTS IPTV SPORT</div>
+    <h2>📡 IPTV Football Zone</h2>
+    <p>Accède à tous les matchs en illimité sur n'importe quel appareil. Activation immédiate.</p>
+  </div>
+  <div class="iptv-plans">
+    <div class="plan-card starter">
+      <span class="plan-icon">⚡</span>
+      <div class="plan-name">Starter</div>
+      <div class="plan-duration">3 MOIS D'ACCÈS</div>
+      <div class="plan-price"><sup>€</sup>10</div>
+      <div class="plan-note">soit 3,33€/mois</div>
+      <ul class="plan-features">
+        <li><span class="feat-ok">✔</span> Tous les matchs Ligue 1</li>
+        <li><span class="feat-ok">✔</span> Ligue des Champions</li>
+        <li><span class="feat-ok">✔</span> Premier League & Liga</li>
+        <li><span class="feat-ok">✔</span> Serie A & Bundesliga</li>
+        <li><span class="feat-ok">✔</span> Compatible tous appareils</li>
+        <li><span class="feat-ok">✔</span> Support via Discord</li>
+      </ul>
+      <a href="https://discord.gg/ftzf" class="btn-buy starter" target="_blank">Commander — 10€</a>
+    </div>
+    <div class="plan-card lifetime">
+      <div class="plan-best">🔥 MEILLEURE OFFRE</div>
+      <span class="plan-icon">👑</span>
+      <div class="plan-name">À Vie</div>
+      <div class="plan-duration">ACCÈS ILLIMITÉ À VIE</div>
+      <div class="plan-price"><sup>€</sup>35</div>
+      <div class="plan-note">Paiement unique — sans abonnement</div>
+      <ul class="plan-features">
+        <li><span class="feat-ok">✔</span> Tout le catalogue Starter</li>
+        <li><span class="feat-ok">✔</span> Accès illimité à vie</li>
+        <li><span class="feat-ok">✔</span> Mises à jour incluses</li>
+        <li><span class="feat-ok">✔</span> Coupe du Monde & Euros</li>
+        <li><span class="feat-ok">✔</span> Priorité support Discord</li>
+        <li><span class="feat-ok">✔</span> Accès aux nouveaux serveurs</li>
+      </ul>
+      <a href="https://discord.gg/ftzf" class="btn-buy lifetime" target="_blank">Commander — 35€</a>
+    </div>
+  </div>
+  <div class="reviews-sec">
+    <h3>⭐ Ce que disent nos abonnés</h3>
+    <p class="reviews-sub">Plus de 500 membres satisfaits !</p>
+    <div class="reviews-grid" id="reviews-grid">
+      <div class="review-card"><div class="review-stars">⭐⭐⭐⭐⭐</div><p class="review-text">"Tous les matchs de la C1 sans aucun problème. Image parfaite et zéro coupure !"</p><div class="review-author"><div class="review-av">T</div><div><div class="review-name">Thomas M.</div><div class="review-plan">Abonné À Vie</div></div></div></div>
+      <div class="review-card"><div class="review-stars">⭐⭐⭐⭐⭐</div><p class="review-text">"Le plan à vie vaut clairement le coup. Coupe du Monde incluse pour 35€, c'est cadeau."</p><div class="review-author"><div class="review-av" style="background:linear-gradient(135deg,#f59e0b,#dc2626);">K</div><div><div class="review-name">Karim B.</div><div class="review-plan">Abonné À Vie</div></div></div></div>
+      <div class="review-card"><div class="review-stars">⭐⭐⭐⭐⭐</div><p class="review-text">"J'ai commencé avec le Starter pour tester et j'ai directement pris le à vie. Impeccable !"</p><div class="review-author"><div class="review-av" style="background:linear-gradient(135deg,#22c55e,#059669);">L</div><div><div class="review-name">Lucas D.</div><div class="review-plan">Starter → À Vie</div></div></div></div>
+    </div>
+    <div class="review-form" id="review-form">
+      <h4 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:5px;">✍️ Laisser un Avis</h4>
+      <p style="font-size:13px;color:var(--muted2);margin-bottom:20px;">Tu es abonné FZF IPTV ? Partage ton expérience !</p>
+      <div class="star-rating-label">Ta note</div>
+      <div class="stars" id="stars">
+        <label id="s1" onclick="setRating(1)">⭐</label><label id="s2" onclick="setRating(2)">⭐</label>
+        <label id="s3" onclick="setRating(3)">⭐</label><label id="s4" onclick="setRating(4)">⭐</label>
+        <label id="s5" onclick="setRating(5)">⭐</label>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Prénom</label><input type="text" id="rev-prenom" placeholder="Ex : Thomas" maxlength="20"></div>
+        <div class="form-group"><label>Abonnement</label><select id="rev-plan"><option value="Abonné Starter">Starter (3 mois)</option><option value="Abonné À Vie">À Vie</option></select></div>
+      </div>
+      <div class="form-group" style="margin-bottom:14px;"><label>Ton avis</label><textarea id="rev-text" rows="3" placeholder="Partage ton expérience..." maxlength="280"></textarea></div>
+      <button class="btn-review" onclick="submitReview()">📨 Publier mon avis</button>
+      <div class="review-ok" id="review-ok"><div style="font-size:48px;margin-bottom:12px;">🎉</div><h4 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:6px;">Merci !</h4><p style="color:var(--muted2);">Ton avis a été ajouté !</p></div>
+    </div>
+  </div>
+  <div class="faq-sec">
+    <h3>❓ Questions Fréquentes</h3>
+    <div class="faq-item"><h4>Comment accéder à l'IPTV après l'achat ?</h4><p>Après ta commande sur Discord, tu reçois les identifiants en message privé sous 24h maximum.</p></div>
+    <div class="faq-item"><h4>Sur quels appareils puis-je utiliser l'IPTV ?</h4><p>Compatible TV (Android TV, Firestick, Apple TV), smartphone, tablette, PC — via une app IPTV standard.</p></div>
+    <div class="faq-item"><h4>Comment payer ?</h4><p>Paiement via PayPal uniquement. Contacte un admin sur Discord pour commander.</p></div>
+    <div class="faq-item"><h4>Le plan "À Vie" est vraiment à vie ?</h4><p>Oui — un paiement unique de 35€ te donne accès définitif, sans renouvellement ni frais cachés.</p></div>
+  </div>
+  <footer>© 2026 Football Zone France — Tous droits réservés</footer>
+</div>
+
+<!-- MODALS -->
+<div class="modal-bg" id="modal-login">
+  <div class="modal">
+    <h3>🔒 Accès Admin</h3>
+    <p>Entre ton pseudo puis le mot de passe administrateur.</p>
+    <input type="text" id="login-pseudo" placeholder="Ton pseudo..." maxlength="25" onkeydown="if(event.key==='Enter')document.getElementById('login-pw').focus()">
+    <input type="password" id="login-pw" placeholder="Mot de passe admin..." onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="modal-err" id="login-err">❌ Informations incorrectes</div>
+    <div class="modal-btns">
+      <button class="btn-modal-ok" onclick="doLogin()">Se connecter</button>
+      <button class="btn-modal-cancel" onclick="closeModal('modal-login')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-founder">
+  <div class="modal founder-modal">
+    <h3>👑 Accès Fondateur</h3>
+    <p>Espace réservé au fondateur de Football Zone France.</p>
+    <input type="text" id="founder-pseudo" placeholder="Ton pseudo..." maxlength="25">
+    <input type="password" id="founder-pw" placeholder="Mot de passe fondateur..." onkeydown="if(event.key==='Enter')doFounderLogin()">
+    <div class="modal-err" id="founder-err">❌ Informations incorrectes</div>
+    <div class="modal-btns">
+      <button class="btn-modal-ok" style="background:linear-gradient(135deg,#7c3aed,#a855f7);" onclick="doFounderLogin()">👑 Connexion</button>
+      <button class="btn-modal-cancel" onclick="closeModal('modal-founder')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-ban">
+  <div class="modal ban-modal">
+    <h3>🚫 Bannir un utilisateur</h3>
+    <p>Sélectionne une raison et confirme.</p>
+    <div class="ban-target-display" id="ban-target-disp">Utilisateur</div>
+    <div class="ban-reasons">
+      <button class="ban-chip" onclick="selectBanReason(this,'Insultes')">😡 Insultes</button>
+      <button class="ban-chip" onclick="selectBanReason(this,'Spam')">🔁 Spam</button>
+      <button class="ban-chip" onclick="selectBanReason(this,'Contenu inapproprié')">⛔ Contenu</button>
+      <button class="ban-chip" onclick="selectBanReason(this,'Harcèlement')">🎯 Harcèlement</button>
+      <button class="ban-chip" onclick="selectBanReason(this,'Autre')">📝 Autre</button>
+    </div>
+    <button class="btn-ban-confirm" onclick="confirmBan()">🚫 Confirmer</button>
+    <button class="btn-ban-cancel" onclick="closeModal('modal-ban')">Annuler</button>
+  </div>
+</div>
+
+<!-- CHATBOT -->
+<button class="chat-bubble" id="chat-bubble" onclick="toggleBot()">
+  <span id="chat-bubble-icon">⚽</span>
+  <div class="chat-notif-dot" id="chat-notif-dot">1</div>
+</button>
+<div class="chatbot-win" id="chatbot-win">
+  <div class="bot-head">
+    <div class="bot-av">🤖</div>
+    <div>
+      <div class="bot-name">FZF Assistant <span class="bot-ai-tag">IA</span></div>
+      <div class="bot-status"><span class="bot-status-dot"></span> Propulsé par Claude</div>
+    </div>
+  </div>
+  <div class="bot-msgs" id="bot-msgs">
+    <div class="bot-msg">👋 Salut ! Je suis le bot de <strong>Football Zone France</strong>.<br><br>Je peux t'aider avec les abonnements IPTV, les matchs et la communauté. ⚽</div>
+  </div>
+  <div class="quick-sec" id="quick-sec">
+    <div class="quick-label">Questions fréquentes</div>
+    <div class="quick-btns">
+      <button class="quick-btn" onclick="quickAsk('Prix des abonnements IPTV ?')">💶 Prix</button>
+      <button class="quick-btn" onclick="quickAsk('Comment payer ?')">💳 Paiement</button>
+      <button class="quick-btn" onclick="quickAsk('Comment commander ?')">🛒 Commander</button>
+      <button class="quick-btn" onclick="quickAsk('Appareils compatibles ?')">📱 Appareils</button>
+      <button class="quick-btn" onclick="quickAsk('Différence Starter vs À Vie ?')">⚖️ Comparer</button>
+      <button class="quick-btn" onclick="quickAsk('Rejoindre le Discord FZF ?')">💬 Discord</button>
+    </div>
+  </div>
+  <div class="bot-footer">
+    <input type="text" class="bot-input" id="bot-input" placeholder="Pose ta question..." onkeydown="if(event.key==='Enter')sendBot()" maxlength="300">
+    <button class="bot-send" onclick="sendBot()">➤</button>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   FIREBASE
+══════════════════════════════════════════════════════════ */
+const firebaseConfig = {
+  apiKey:"AIzaSyClhfjRn6aNxiEEl7O8zVCeNV-xAiEKiKk",
+  authDomain:"footballzone-france.firebaseapp.com",
+  databaseURL:"https://footballzone-france-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"footballzone-france",
+  storageBucket:"footballzone-france.firebasestorage.app",
+  messagingSenderId:"491185640451",
+  appId:"1:491185640451:web:64cefeb7afbd1f0ecd6a36"
+};
+firebase.initializeApp(firebaseConfig);
+const DB = firebase.database();
+DB.ref('.info/connected').on('value',s=>{
+  const b=document.getElementById('fb-badge');
+  if(s.val()){ b.style.cssText=''; b.textContent='🔥 Firebase connecté'; }
+  else { b.style.cssText='background:rgba(255,61,92,0.1);border-color:rgba(255,61,92,0.3);color:#ff6b82;'; b.textContent='🔥 Reconnexion...'; }
+});
+
+/* ══════════════════════════════════════════════════════════
+   CONSTANTES & ÉTAT
+══════════════════════════════════════════════════════════ */
+const ADMIN_PW   = "FZF@admin#2847";
+const FOUNDER_PW = "Fzf$Founder!9361";
+
+const ICE_SERVERS = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun.cloudflare.com:3478' }
+  ]
+};
+
+let adminIn=false, founderIn=false, sidebarOpen=false, adminName='';
+let chatEnabled=false, botEnabled=true, botOpen=false, botHistory=[];
+let bans={}, plans=[], revokedAdmins={}, notifLog=[];
+let pendingBanUser='', pendingBanEl=null, banReason='';
+let cdTarget=null, cdInterval=null;
+let streamMode='single';
+let streamStart=null, durInterval=null;
+let pushTimer=null;
+
+let streams = [{label:'',on:false},{label:'',on:false},{label:'',on:false},{label:'',on:false}];
+
+/* ══════════════════════════════════════════════════════════
+   WEBRTC — ÉTAT
+══════════════════════════════════════════════════════════ */
+let localStreams   = [null,null,null,null];
+let adminPCs       = {};
+let viewerPCs      = {};
+
+/* ── SESSION ── */
+let sid = sessionStorage.getItem('fzf_sid6') || ('s_'+Date.now()+'_'+Math.random().toString(36).substr(2,6));
+sessionStorage.setItem('fzf_sid6', sid);
+const CITIES=['Paris','Lyon','Marseille','Toulouse','Bordeaux','Nantes','Lille','Nice','Rennes','Grenoble','Montpellier'];
+const myCity = CITIES[Math.floor(Math.random()*CITIES.length)];
+const myDev  = /Mobi|Android/i.test(navigator.userAgent)?'📱':'💻';
+
+function regVisitor(page){ const r=DB.ref('visitors/'+sid); r.set({page,ts:Date.now(),device:myDev,city:myCity}); r.onDisconnect().remove(); }
+setInterval(()=>regVisitor('Live'),30000);
+function saveSess(role,name){ localStorage.setItem('fzf_s6',JSON.stringify({role,name,ts:Date.now()})); }
+function loadSess(){ try{ const s=JSON.parse(localStorage.getItem('fzf_s6')); if(!s||Date.now()-s.ts>86400000){ localStorage.removeItem('fzf_s6'); return null; } return s; } catch(e){ return null; } }
+function clearSess(){ localStorage.removeItem('fzf_s6'); }
+
+/* ══════════════════════════════════════════════════════════
+   WEBRTC — ADMIN (BROADCASTER)
+══════════════════════════════════════════════════════════ */
+function watchForViewers(slotIdx) {
+  DB.ref(`webrtc/slots/${slotIdx}/offers`).on('child_added', async snap => {
+    const viewerSid = snap.key;
+    const offer     = snap.val();
+    if (!offer || !localStreams[slotIdx]) return;
+    await createAdminPeerConnection(slotIdx, viewerSid, offer);
+  });
+}
+
+async function createAdminPeerConnection(slotIdx, viewerSid, offer) {
+  if (adminPCs[slotIdx] && adminPCs[slotIdx][viewerSid]) {
+    adminPCs[slotIdx][viewerSid].close();
+  }
+  if (!adminPCs[slotIdx]) adminPCs[slotIdx] = {};
+
+  const pc = new RTCPeerConnection(ICE_SERVERS);
+  adminPCs[slotIdx][viewerSid] = pc;
+
+  localStreams[slotIdx].getTracks().forEach(track => {
+    pc.addTrack(track, localStreams[slotIdx]);
+  });
+
+  const iceRef = DB.ref(`webrtc/slots/${slotIdx}/ice_admin/${viewerSid}`);
+  pc.onicecandidate = e => {
+    if (e.candidate) iceRef.push(e.candidate.toJSON());
+  };
+
+  pc.onconnectionstatechange = () => {
+    updateViewerCount();
+    renderSlotsAdmin();
+    if (pc.connectionState === 'failed' || pc.connectionState === 'closed' || pc.connectionState === 'disconnected') {
+      setTimeout(() => {
+        if (adminPCs[slotIdx]) delete adminPCs[slotIdx][viewerSid];
+        DB.ref(`webrtc/slots/${slotIdx}/offers/${viewerSid}`).remove();
+        DB.ref(`webrtc/slots/${slotIdx}/answers/${viewerSid}`).remove();
+        DB.ref(`webrtc/slots/${slotIdx}/ice_admin/${viewerSid}`).remove();
+        DB.ref(`webrtc/slots/${slotIdx}/ice_viewer/${viewerSid}`).remove();
+      }, 3000);
+    }
+  };
+
+  DB.ref(`webrtc/slots/${slotIdx}/ice_viewer/${viewerSid}`).on('child_added', snap => {
+    if (snap.val()) pc.addIceCandidate(new RTCIceCandidate(snap.val())).catch(()=>{});
+  });
+
+  await pc.setRemoteDescription(new RTCSessionDescription(offer));
+  const answer = await pc.createAnswer();
+  await pc.setLocalDescription(answer);
+
+  await DB.ref(`webrtc/slots/${slotIdx}/answers/${viewerSid}`).set({
+    type: answer.type,
+    sdp: answer.sdp
+  });
+}
+
+function updateViewerCount() {
+  let total = 0;
+  Object.values(adminPCs).forEach(viewers => {
+    Object.values(viewers).forEach(pc => {
+      if (pc.connectionState === 'connected') total++;
+    });
+  });
+  const el = document.getElementById('stat-viewers');
+  if (el) el.textContent = total;
+}
+
+function stopSlotWebRTC(slotIdx) {
+  if (localStreams[slotIdx]) {
+    localStreams[slotIdx].getTracks().forEach(t => t.stop());
+    localStreams[slotIdx] = null;
+  }
+  if (adminPCs[slotIdx]) {
+    Object.values(adminPCs[slotIdx]).forEach(pc => pc.close());
+    adminPCs[slotIdx] = {};
+  }
+  DB.ref(`webrtc/slots/${slotIdx}/offers`).off();
+  DB.ref(`webrtc/slots/${slotIdx}`).remove();
+
+  streams[slotIdx] = { label: streams[slotIdx]?.label||'', on: false };
+  DB.ref('stream/meta').set({ streams: streams.map(s=>({label:s.label||'',on:!!s.on})), mode: streamMode });
+
+  const slot = document.getElementById('slot-'+slotIdx);
+  if (slot) {
+    slot.querySelectorAll('video,.slot-label,.slot-live-badge,.fs-btn,.stream-ctrl').forEach(e=>e.remove());
+    if (!slot.querySelector('.slot-placeholder')) {
+      const ph = document.createElement('div'); ph.className='slot-placeholder';
+      ph.innerHTML=`<div class="ph-icon">📺</div><h3>Écran ${slotIdx+1}</h3>`;
+      slot.appendChild(ph);
+    }
+  }
+  const anyOn = streams.some(s=>s.on);
+  if (!anyOn) {
+    if (durInterval) { clearInterval(durInterval); durInterval=null; }
+    streamStart=null;
+    const lbEl=document.getElementById('live-badge'),siEl=document.getElementById('stream-info');
+    if(lbEl){ lbEl.className='live-badge-off'; lbEl.textContent='HORS LIGNE'; }
+    if(siEl) siEl.classList.remove('show');
+    document.getElementById('stats-block').style.display='none';
+    const b=document.getElementById('tab-stream-badge'); if(b) b.style.display='none';
+  }
+  renderSlotsAdmin();
+  showToast('⏹ Écran '+(slotIdx+1)+' arrêté');
+}
+
+/* ══════════════════════════════════════════════════════════
+   WEBRTC — VISITOR (VIEWER)
+══════════════════════════════════════════════════════════ */
+async function connectToSlot(slotIdx) {
+  if (viewerPCs[slotIdx] &&
+      (viewerPCs[slotIdx].connectionState === 'connected' ||
+       viewerPCs[slotIdx].connectionState === 'connecting')) return;
+
+  if (viewerPCs[slotIdx]) {
+    viewerPCs[slotIdx].close();
+    delete viewerPCs[slotIdx];
+  }
+
+  const slot = document.getElementById('slot-'+slotIdx);
+  if (!slot) return;
+
+  showConnectingUI(slotIdx);
+
+  const pc = new RTCPeerConnection(ICE_SERVERS);
+  viewerPCs[slotIdx] = pc;
+
+  pc.ontrack = e => {
+    showRemoteStream(slotIdx, e.streams[0]);
+  };
+
+  pc.onconnectionstatechange = () => {
+    if (pc.connectionState === 'failed' || pc.connectionState === 'disconnected') {
+      showLivePlaceholder(slotIdx, streams[slotIdx]?.label || 'Match en direct');
+      setTimeout(() => {
+        if (streams[slotIdx]?.on) connectToSlot(slotIdx);
+      }, 3000);
+    }
+  };
+
+  const myIceRef = DB.ref(`webrtc/slots/${slotIdx}/ice_viewer/${sid}`);
+  pc.onicecandidate = e => {
+    if (e.candidate) myIceRef.push(e.candidate.toJSON());
+  };
+
+  const offer = await pc.createOffer({ offerToReceiveVideo: true, offerToReceiveAudio: true });
+  await pc.setLocalDescription(offer);
+
+  await DB.ref(`webrtc/slots/${slotIdx}/offers/${sid}`).set({
+    type: offer.type,
+    sdp: offer.sdp
+  });
+
+  DB.ref(`webrtc/slots/${slotIdx}/answers/${sid}`).on('value', async snap => {
+    const answer = snap.val();
+    if (!answer || pc.remoteDescription) return;
+    try {
+      await pc.setRemoteDescription(new RTCSessionDescription(answer));
+    } catch(e) {}
+  });
+
+  DB.ref(`webrtc/slots/${slotIdx}/ice_admin/${sid}`).on('child_added', snap => {
+    if (snap.val()) pc.addIceCandidate(new RTCIceCandidate(snap.val())).catch(()=>{});
+  });
+
+  window.addEventListener('beforeunload', () => cleanupViewerSlot(slotIdx));
+}
+
+function cleanupViewerSlot(slotIdx) {
+  if (viewerPCs[slotIdx]) {
+    viewerPCs[slotIdx].close();
+    delete viewerPCs[slotIdx];
+  }
+  DB.ref(`webrtc/slots/${slotIdx}/offers/${sid}`).remove();
+  DB.ref(`webrtc/slots/${slotIdx}/answers/${sid}`).remove();
+  DB.ref(`webrtc/slots/${slotIdx}/ice_viewer/${sid}`).remove();
+  DB.ref(`webrtc/slots/${slotIdx}/ice_admin/${sid}`).off();
+  DB.ref(`webrtc/slots/${slotIdx}/answers/${sid}`).off();
+}
+
+function disconnectFromSlot(slotIdx) {
+  cleanupViewerSlot(slotIdx);
+  const slot = document.getElementById('slot-'+slotIdx);
+  if (slot) {
+    slot.querySelectorAll('video,.slot-connecting,.slot-label,.slot-live-badge,.fs-btn').forEach(e=>e.remove());
+    if (!slot.querySelector('.slot-placeholder')) {
+      const ph=document.createElement('div'); ph.className='slot-placeholder';
+      ph.innerHTML=`<div class="ph-icon">📺</div><h3>Écran ${slotIdx+1}</h3>`;
+      slot.appendChild(ph);
+    }
+  }
+}
+
+function showConnectingUI(slotIdx) {
+  const slot = document.getElementById('slot-'+slotIdx); if(!slot) return;
+  slot.querySelectorAll('.slot-placeholder,.slot-live-placeholder,.slot-connecting').forEach(e=>e.remove());
+  const div = document.createElement('div'); div.className='slot-connecting';
+  div.innerHTML=`<div class="conn-spinner"></div><div class="conn-title">Connexion en cours...</div><div class="conn-sub">Chargement du stream</div>`;
+  slot.appendChild(div);
+}
+
+function showRemoteStream(slotIdx, mediaStream) {
+  const slot = document.getElementById('slot-'+slotIdx); if(!slot) return;
+  slot.querySelectorAll('.slot-placeholder,.slot-live-placeholder,.slot-connecting,video').forEach(e=>e.remove());
+
+  const vid = document.createElement('video');
+  vid.autoplay = true;
+  vid.playsInline = true;
+  vid.style.cssText = 'width:100%;height:100%;position:absolute;inset:0;object-fit:contain;background:#000;';
+  vid.srcObject = mediaStream;
+  slot.insertBefore(vid, slot.firstChild);
+
+  let lb = slot.querySelector('.slot-label');
+  if (!lb) { lb=document.createElement('div'); lb.className='slot-label'; slot.appendChild(lb); }
+  lb.textContent = 'Écran '+(slotIdx+1)+(streams[slotIdx]?.label?' · '+streams[slotIdx].label:'');
+
+  let lbg = slot.querySelector('.slot-live-badge');
+  if (!lbg) { lbg=document.createElement('div'); lbg.className='slot-live-badge'; lbg.textContent='🔴 LIVE'; slot.appendChild(lbg); }
+
+  const ctrl = document.createElement('div'); ctrl.className='stream-ctrl';
+  ctrl.innerHTML=`<button class="ctrl-btn" onclick="toggleMute(this,${slotIdx})">🔊</button><input type="range" class="ctrl-vol" min="0" max="1" step="0.05" value="1" oninput="setVol(this,${slotIdx})"><div class="ctrl-spacer"></div><span class="ctrl-live">🔴 LIVE</span>`;
+  slot.appendChild(ctrl);
+
+  addFsBtn(slot, slotIdx);
+  slot.classList.add('live-slot');
+}
+
+function showLivePlaceholder(slotIdx, label) {
+  const slot = document.getElementById('slot-'+slotIdx); if(!slot) return;
+  slot.querySelectorAll('.slot-placeholder,.slot-connecting,video,.slot-live-badge,.slot-label,.fs-btn,.stream-ctrl').forEach(e=>e.remove());
+  const ph = document.createElement('div'); ph.className='slot-live-placeholder';
+  ph.innerHTML=`<div class="slp-pulse">🔴</div><div class="slp-title">${label||'Match en direct'}</div><div class="slp-badge">🔴 EN DIRECT</div><div class="slp-sub" style="font-size:11px;color:var(--muted2);">Connexion WebRTC...</div>`;
+  slot.appendChild(ph);
+}
+
+/* ══════════════════════════════════════════════════════════
+   FIREBASE LISTENERS
+══════════════════════════════════════════════════════════ */
+DB.ref('visitors').on('value',snap=>{
+  const data=snap.val()||{}, now=Date.now();
+  const active=Object.entries(data).filter(([,v])=>now-v.ts<180000);
+  const cnt=active.length;
+  ['viewer-count','adm-visitor-count','founder-visitor-count'].forEach(id=>{
+    const e=document.getElementById(id); if(e) e.textContent=cnt;
+  });
+  const co=document.getElementById('chat-online'); if(co) co.textContent=cnt+' en ligne';
+  ['adm-visitors-list','founder-visitors-list'].forEach(cid=>{
+    const el=document.getElementById(cid); if(!el) return;
+    if(!active.length){ el.innerHTML='<div style="padding:10px 13px;font-size:11px;color:var(--adm-muted2);">Aucun visiteur.</div>'; return; }
+    el.innerHTML=active.map(([id2,v])=>{
+      const ago=Math.floor((now-v.ts)/1000),s2=ago<60?ago+'s':Math.floor(ago/60)+'min';
+      return `<div class="visitor-row"><span class="visitor-dot"></span><span style="font-size:13px;">${v.device}</span><span style="flex:1;color:var(--adm-text);font-weight:600;font-size:12px;">${v.city||'?'} — ${v.page}${id2===sid?' <b>(toi)</b>':''}</span><span style="font-size:10px;color:var(--adm-muted2);">${s2}</span></div>`;
+    }).join('');
+  });
+  let pk=parseInt(localStorage.getItem('fzf_pk6')||'0');
+  if(cnt>pk){ pk=cnt; localStorage.setItem('fzf_pk6',pk); }
+  const sc=document.getElementById('stat-cur'); if(sc) sc.textContent=cnt;
+  const sp=document.getElementById('stat-peak'); if(sp) sp.textContent=pk;
+  showSync();
+});
+
+DB.ref('stream/meta').on('value', snap => {
+  const d = snap.val(); if(!d) return;
+  if (d.streams) {
+    d.streams.forEach((s,i) => {
+      const wasOn = streams[i]?.on;
+      streams[i] = { label: s.label||'', on: !!s.on };
+
+      if (!adminIn && !founderIn) {
+        if (s.on && !wasOn) {
+          connectToSlot(i);
+        } else if (!s.on && wasOn) {
+          disconnectFromSlot(i);
+        }
+      }
+    });
+  }
+  if (d.mode) {
+    streamMode = d.mode;
+    applyGrid(streamMode);
+    renderModeButtons(streamMode);
+  }
+
+  const anyOn = streams.some(s=>s.on);
+  const lbEl=document.getElementById('live-badge'), siEl=document.getElementById('stream-info');
+  if (anyOn) {
+    if(lbEl){ lbEl.className='live-badge-on'; lbEl.textContent='🔴 EN DIRECT'; }
+    if(siEl) siEl.classList.add('show');
+    const f=streams.find(s=>s.on);
+    const mnd=document.getElementById('match-name-display'); if(mnd) mnd.textContent=(f&&f.label)||'Match en direct';
+    document.getElementById('viewers-pill').classList.add('show');
+  } else {
+    if(lbEl){ lbEl.className='live-badge-off'; lbEl.textContent='HORS LIGNE'; }
+    if(siEl) siEl.classList.remove('show');
+  }
+  if (adminIn||founderIn) renderSlotsAdmin();
+  showSync();
+});
+
+DB.ref('countdown').on('value',snap=>{ const d=snap.val(); if(!d) return; applyCountdown(d); const t=document.getElementById('tog-countdown'); if(t) t.checked=!!d.active; if(d.active){ const c=document.getElementById('cd-admin-config'); if(c) c.style.display='block'; } showSync(); });
+DB.ref('planning').on('value',snap=>{ const d=snap.val(); plans=d?Object.values(d):[]; plans.sort((a,b)=>new Date(a.date)-new Date(b.date)); renderPlanning(); showSync(); });
+DB.ref('chat_toggle').on('value',snap=>{ const d=snap.val(); if(d===null) return; const t=document.getElementById('tog-chat'); if(t) t.checked=!!d.enabled; applyChat(!!d.enabled,true); showSync(); });
+DB.ref('chat_messages').limitToLast(100).on('value',snap=>{ const d=snap.val(); if(!d) return; const area=document.getElementById('chat-msgs'); if(!area) return; area.innerHTML=''; Object.values(d).forEach(m=>appendMsg(m.type,m.username,m.text,m.time,false,true)); showSync(); });
+DB.ref('bans').on('value',snap=>{ bans=snap.val()||{}; renderBans(); });
+DB.ref('staff_chat').limitToLast(50).on('value',snap=>{ const d=snap.val(); if(!d||!adminIn) return; const area=document.getElementById('staff-msgs'); if(!area) return; area.innerHTML='<div class="staff-msg sys"><div class="staff-msg-text">🔒 Canal privé activé.</div></div>'; Object.values(d).forEach(m=>appendStaffMsg(m,true)); showSync(); });
+DB.ref('staff_online').on('value',snap=>{ const d=snap.val()||{}; const list=Object.values(d); const b=document.getElementById('staff-online-count'); if(b) b.textContent=list.length+' connecté'+(list.length>1?'s':''); renderStaffMembers(list); renderFounderStaff(list); showSync(); });
+DB.ref('notif_log').limitToLast(20).on('value',snap=>{ const d=snap.val(); notifLog=d?Object.values(d):[]; renderNotifLog(); });
+DB.ref('revoked_admins').on('value',snap=>{ revokedAdmins=snap.val()||{}; renderRevoked(); });
+
+function regStaff(name,role){ const r=DB.ref('staff_online/'+sid); r.set({name,role,loginTime:Date.now(),sessionId:sid}); r.onDisconnect().remove(); }
+function unregStaff(){ DB.ref('staff_online/'+sid).remove(); }
+function showSync(){ const e=document.getElementById('sync-ind'); e.classList.add('show'); setTimeout(()=>e.classList.remove('show'),2000); }
+
+/* ══════════════════════════════════════════════════════════
+   THEME
+══════════════════════════════════════════════════════════ */
+function toggleTheme(){ const h=document.documentElement; const d=h.getAttribute('data-theme')==='dark'; h.setAttribute('data-theme',d?'light':'dark'); document.getElementById('theme-btn').textContent=d?'☀️':'🌙'; localStorage.setItem('fzf-theme6',d?'light':'dark'); }
+const th=localStorage.getItem('fzf-theme6'); if(th){ document.documentElement.setAttribute('data-theme',th); document.getElementById('theme-btn').textContent=th==='light'?'☀️':'🌙'; }
+
+/* ══════════════════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════════════════ */
+function goPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  const idx={home:0,live:1,iptv:2}[name]||0;
+  document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+  regVisitor(name);
+}
+function switchTab(tab){
+  ['stream','planning','chat','staff','notif','tools','founder'].forEach(t=>{
+    const te=document.getElementById('tab-'+t), pe=document.getElementById('panel-'+t);
+    if(te) te.classList.toggle('on',t===tab);
+    if(pe) pe.classList.toggle('on',t===tab);
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   ADMIN LOGIN
+══════════════════════════════════════════════════════════ */
+function toggleAdminSidebar(){
+  if(!adminIn&&!founderIn){
+    const s=loadSess();
+    const li=document.getElementById('modal-login');
+    document.getElementById('login-pseudo').value=s?.name||'';
+    document.getElementById('login-pw').value='';
+    document.getElementById('login-err').style.display='none';
+    li.classList.add('open'); setTimeout(()=>document.getElementById('login-pseudo').focus(),100);
+    return;
+  }
+  sidebarOpen=!sidebarOpen;
+  document.getElementById('adm-sidebar').classList.toggle('open',sidebarOpen);
+  document.getElementById('adm-sidebar').classList.toggle('founder-open',founderIn&&sidebarOpen);
+  document.getElementById('admin-btn').classList.toggle('active',sidebarOpen);
+  document.getElementById('admin-btn').classList.toggle('founder-active',founderIn&&sidebarOpen);
+}
+
+function doLogin(){
+  const pseudo=document.getElementById('login-pseudo').value.trim();
+  const pw=document.getElementById('login-pw').value;
+  const err=document.getElementById('login-err'); err.style.display='none';
+  if(!pseudo){ err.textContent='⚠️ Entre ton pseudo.'; err.style.display='block'; return; }
+  if(revokedAdmins[pseudo]){ err.textContent='🚫 Ce compte a été révoqué.'; err.style.display='block'; return; }
+  if(pw===ADMIN_PW){
+    adminName=pseudo; adminIn=true;
+    closeModal('modal-login'); openSidebar(false);
+    regStaff(pseudo,'Administrateur'); saveSess('admin',pseudo);
+  } else { err.textContent='❌ Mot de passe incorrect.'; err.style.display='block'; document.getElementById('login-pw').value=''; }
+}
+
+function openFounderModal(){
+  document.getElementById('founder-pseudo').value=adminName||'';
+  document.getElementById('founder-pw').value='';
+  document.getElementById('founder-err').style.display='none';
+  document.getElementById('modal-founder').classList.add('open');
+  setTimeout(()=>document.getElementById('founder-pseudo').focus(),100);
+}
+
+function doFounderLogin(){
+  const pseudo=document.getElementById('founder-pseudo').value.trim();
+  const pw=document.getElementById('founder-pw').value;
+  const err=document.getElementById('founder-err'); err.style.display='none';
+  if(!pseudo){ err.textContent='⚠️ Entre ton pseudo.'; err.style.display='block'; return; }
+  if(pw===FOUNDER_PW){
+    adminName=pseudo; founderIn=true; adminIn=true;
+    closeModal('modal-founder'); openSidebar(true);
+    regStaff(pseudo,'👑 Fondateur'); saveSess('founder',pseudo);
+  } else { err.textContent='❌ Mot de passe incorrect.'; err.style.display='block'; document.getElementById('founder-pw').value=''; }
+}
+
+function openSidebar(isFounder){
+  sidebarOpen=true;
+  const sb=document.getElementById('adm-sidebar');
+  sb.classList.add('open'); if(isFounder) sb.classList.add('founder-open');
+  const btn=document.getElementById('admin-btn');
+  btn.classList.add('active'); if(isFounder){ btn.classList.add('founder-active'); btn.textContent='👑 Fondateur'; } else btn.textContent='🔓 '+adminName;
+  if(isFounder){
+    document.getElementById('tab-founder').style.display='flex';
+    document.getElementById('adm-brand-icon').textContent='👑'; document.getElementById('adm-brand-icon').classList.add('founder-icon');
+    document.getElementById('adm-brand-name').textContent='Fondateur';
+    document.getElementById('adm-brand-status').style.color='#c084fc';
+    document.getElementById('adm-foot-av').classList.add('f');
+    document.getElementById('adm-foot-name').classList.add('f');
+    document.getElementById('adm-foot-name').textContent='👑 '+adminName;
+    document.getElementById('adm-foot-role').innerHTML='<span style="color:#a855f7;">Fondateur</span>';
+    document.getElementById('adm-foot-logout').style.display='none';
+  } else {
+    document.getElementById('adm-foot-av').textContent=adminName.charAt(0).toUpperCase();
+    document.getElementById('adm-foot-name').textContent=adminName;
+  }
+  document.getElementById('viewers-pill').classList.add('show');
+  document.getElementById('priv-planning-block').style.display='block';
+  document.getElementById('priv-planning-section').style.display='block';
+  renderSlotsAdmin();
+  renderBans();
+  renderPlanning();
+  streams.forEach((s,i) => { if(s.on) watchForViewers(i); });
+}
+
+function logoutAdmin(){
+  for(let i=0;i<4;i++){ if(localStreams[i]) stopSlotWebRTC(i); }
+  unregStaff(); clearSess(); adminIn=false; founderIn=false;
+  sidebarOpen=false;
+  document.getElementById('adm-sidebar').classList.remove('open','founder-open');
+  const btn=document.getElementById('admin-btn'); btn.classList.remove('active','founder-active'); btn.textContent='🔒 Admin';
+  document.getElementById('viewers-pill').classList.remove('show');
+  document.getElementById('priv-planning-block').style.display='none';
+  document.getElementById('priv-planning-section').style.display='none';
+}
+
+function logoutFounder(){
+  if(!confirm('Se déconnecter du mode Fondateur ?')) return;
+  for(let i=0;i<4;i++){ if(localStreams[i]) stopSlotWebRTC(i); }
+  unregStaff(); clearSess(); founderIn=false; adminIn=false; sidebarOpen=false;
+  document.getElementById('adm-sidebar').classList.remove('open','founder-open');
+  const btn=document.getElementById('admin-btn'); btn.classList.remove('active','founder-active'); btn.textContent='🔒 Admin';
+  document.getElementById('tab-founder').style.display='none';
+  document.getElementById('adm-brand-icon').textContent='⚙️'; document.getElementById('adm-brand-icon').classList.remove('founder-icon');
+  document.getElementById('adm-brand-name').textContent='Panneau Admin';
+  document.getElementById('adm-brand-status').style.color='';
+  document.getElementById('adm-foot-av').classList.remove('f');
+  document.getElementById('adm-foot-name').classList.remove('f');
+  document.getElementById('adm-foot-name').textContent='Admin';
+  document.getElementById('adm-foot-role').innerHTML='Connecté';
+  document.getElementById('adm-foot-logout').style.display='';
+  document.getElementById('viewers-pill').classList.remove('show');
+  document.getElementById('priv-planning-block').style.display='none';
+  document.getElementById('priv-planning-section').style.display='none';
+}
+
+function revokeAdmin(){
+  if(!founderIn) return;
+  const name=document.getElementById('rev-name').value.trim(), reason=document.getElementById('rev-reason').value.trim();
+  if(!name||!reason){ alert('Remplis nom et raison.'); return; }
+  if(!confirm('Révoquer "'+name+'" ? Raison : '+reason)) return;
+  DB.ref('revoked_admins/'+name.replace(/[.#$/\[\]]/g,'_')).set({reason,date:new Date().toLocaleDateString('fr-FR')});
+  document.getElementById('rev-name').value=''; document.getElementById('rev-reason').value='';
+  showToast('🚫 '+name+' révoqué');
+}
+
+function renderRevoked(){
+  const el=document.getElementById('revoked-list'), keys=Object.keys(revokedAdmins);
+  if(!keys.length){ el.innerHTML='<div style="font-size:11px;color:var(--adm-muted2);text-align:center;padding:8px;">Aucune révocation.</div>'; return; }
+  el.innerHTML=keys.map(k=>`<div class="revoked-item"><div><div class="revoked-name">🚫 ${k}</div><div style="font-size:10px;color:var(--adm-muted2);">${revokedAdmins[k].reason} — ${revokedAdmins[k].date}</div></div><button class="restore-btn" onclick="restoreAdmin('${k}')">Restaurer</button></div>`).join('');
+}
+function restoreAdmin(name){ if(!founderIn) return; if(!confirm('Restaurer "'+name+'" ?')) return; DB.ref('revoked_admins/'+name.replace(/[.#$/\[\]]/g,'_')).remove(); showToast('✅ '+name+' restauré'); }
+
+function renderStaffMembers(list){
+  const el=document.getElementById('staff-members-list'); if(!el) return;
+  if(!list.length){ el.innerHTML='<div style="font-size:11px;color:var(--adm-muted2);text-align:center;padding:8px;">Aucun staff.</div>'; return; }
+  el.innerHTML=list.map(s=>{ const iF=s.role&&s.role.includes('Fondateur'); return `<div class="staff-member"><div class="staff-av${iF?' f':''}">${(s.name||'?').charAt(0).toUpperCase()}</div><div style="flex:1;"><div class="staff-name">${s.name}${s.sessionId===sid?' (toi)':''}</div><div class="staff-role">${s.role}</div></div><div class="staff-online"></div></div>`; }).join('');
+}
+function renderFounderStaff(list){
+  const el=document.getElementById('founder-staff-list'); if(!el) return;
+  if(!list.length){ el.innerHTML='<div style="font-size:11px;color:var(--adm-muted2);text-align:center;padding:8px;">Aucun staff.</div>'; return; }
+  el.innerHTML=list.map(s=>{ const iF=s.role&&s.role.includes('Fondateur'); const lg=s.loginTime?new Date(s.loginTime).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'?'; return `<div class="staff-member"><div class="staff-av${iF?' f':''}">${(s.name||'?').charAt(0).toUpperCase()}</div><div style="flex:1;"><div class="staff-name">${s.name}${s.sessionId===sid?' (toi)':''}</div><div class="staff-role">${s.role} · depuis ${lg}</div></div><div class="staff-online"></div></div>`; }).join('');
+}
+
+const SCOLS=['#7baeff','#4ade80','#fbbf24','#f87171','#a78bfa','#fb923c','#34d399','#c084fc'];
+function staffColor(n){ return SCOLS[Math.abs((n||'').split('').reduce((a,c)=>a+c.charCodeAt(0),0))%SCOLS.length]; }
+function appendStaffMsg(msg,silent=false){
+  const area=document.getElementById('staff-msgs'); if(!area) return;
+  const div=document.createElement('div');
+  if(msg.system){ div.className='staff-msg sys'; div.innerHTML=`<div class="staff-msg-text">${msg.text}</div>`; }
+  else {
+    const iF=msg.role&&msg.role.includes('Fondateur');
+    const col=staffColor(msg.name);
+    div.className='staff-msg';
+    div.innerHTML=`<div class="staff-msg-head"><div class="staff-msg-av${iF?' f':''}">${(msg.name||'?').charAt(0).toUpperCase()}</div><span class="staff-msg-name${iF?' f':''}" style="color:${iF?'#c084fc':col};">${msg.name}${iF?' 👑':''}</span><span class="staff-msg-time">${msg.time}</span></div><div class="staff-msg-text">${msg.text}</div>`;
+  }
+  area.appendChild(div); area.scrollTop=area.scrollHeight;
+}
+function sendStaff(){
+  if(!adminIn) return;
+  const inp=document.getElementById('staff-input'), txt=inp.value.trim(); if(!txt) return; inp.value='';
+  const now=new Date(), time=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const role=founderIn?'👑 Fondateur':'Administrateur';
+  DB.ref('staff_chat').push({name:adminName,role,text:txt,time,system:false,ts:Date.now()});
+}
+
+closeModal = id => document.getElementById(id).classList.remove('open');
+document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); }));
+
+/* ══════════════════════════════════════════════════════════
+   ADMIN SCREEN SHARE
+══════════════════════════════════════════════════════════ */
+document.addEventListener('contextmenu',e=>{ if(e.target.closest('.slot-wrap')) e.preventDefault(); });
+
+function renderSlotsAdmin(){
+  const c=document.getElementById('slots-admin'); if(!c) return;
+  const cnt=({single:1,dual:2,tri:3,quad:4})[streamMode]||1;
+  let html='';
+  for(let i=0;i<cnt;i++){
+    const s=streams[i]||{label:'',on:false};
+    const isSharing=!!localStreams[i];
+    const viewerCnt=adminPCs[i]?Object.values(adminPCs[i]).filter(p=>p.connectionState==='connected').length:0;
+
+    let statusHtml='';
+    if(isSharing){
+      statusHtml=`<div class="webrtc-status"><span class="webrtc-dot"></span>Stream actif — ${viewerCnt} viewer${viewerCnt>1?'s':''}</div>`;
+    }
+
+    const shareBtn=isSharing
+      ?`<button class="btn btn-blue" style="flex:1;justify-content:center;opacity:.6;cursor:default;" disabled>🔴 En cours</button>`
+      :`<button class="btn btn-blue" style="flex:1;justify-content:center;" id="share-btn-${i}" onclick="launchSlot(${i})">🖥 Lancer le partage</button>`;
+
+    html+=`<div class="stream-slot-adm${s.on?' active':''}" style="margin-bottom:10px;">
+      <div class="slot-head">
+        <div class="slot-num${s.on?' live-num':''}">${i+1}</div>
+        <div class="slot-title">Écran ${i+1}</div>
+        ${s.on?`<span class="slot-badge">🔴 LIVE</span>`:''}
+        ${isSharing&&viewerCnt>0?`<span class="slot-viewers">👁 ${viewerCnt}</span>`:''}
+      </div>
+      ${statusHtml}
+      <label class="adm-label">Nom du match</label>
+      <input type="text" class="adm-input" id="lbl-${i}" value="${s.label||''}" placeholder="Ex: PSG vs Real Madrid">
+      <div class="btn-row">
+        ${shareBtn}
+        <button class="btn btn-red" onclick="stopSlotWebRTC(${i})">⏹</button>
+      </div>
+    </div>`;
+  }
+  c.innerHTML=html;
+}
+
+async function launchSlot(slotIdx){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia){
+    alert('Ton navigateur ne supporte pas le partage d\'écran.\nUtilise Chrome, Edge ou Firefox récent.');
+    return;
+  }
+  const label = (document.getElementById('lbl-'+slotIdx)?.value||'').trim();
+  const btn = document.getElementById('share-btn-'+slotIdx);
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Sélection...'; }
+  try {
+    const mediaStream = await navigator.mediaDevices.getDisplayMedia({
+      video:{ cursor:'always', frameRate:30, width:{ideal:1920}, height:{ideal:1080} },
+      audio:true
+    });
+
+    if(localStreams[slotIdx]){ localStreams[slotIdx].getTracks().forEach(t=>t.stop()); }
+    localStreams[slotIdx] = mediaStream;
+
+    mediaStream.getVideoTracks()[0].addEventListener('ended', ()=>stopSlotWebRTC(slotIdx));
+
+    streams[slotIdx] = { label, on: true };
+    DB.ref('stream/meta').set({ streams: streams.map(s=>({label:s.label||'',on:!!s.on})), mode: streamMode });
+
+    showAdminLocalPreview(slotIdx, mediaStream, label);
+    watchForViewers(slotIdx);
+
+    if(!durInterval){ streamStart=Date.now(); durInterval=setInterval(updateDur,1000); }
+    document.getElementById('stats-block').style.display='block';
+    const b=document.getElementById('tab-stream-badge'); if(b) b.style.display='';
+    renderSlotsAdmin();
+
+    if(document.getElementById('tog-auto-notif')?.checked && streams.filter(s=>s.on).length===1){
+      const t=label?('🔴 '+label+' — En direct !'):'🔴 Diffusion en cours !';
+      sendNotification(t,'Le match est en direct sur Football Zone France.');
+    }
+    showToast('🔴 Écran '+(slotIdx+1)+' partagé !');
+  } catch(e) {
+    if(e.name==='NotAllowedError') showToast('ℹ️ Partage annulé');
+    else { console.error(e); showToast('⚠️ Erreur: '+e.message); }
+    if(btn){ btn.disabled=false; btn.textContent='🖥 Lancer le partage'; }
+  }
+}
+
+function showAdminLocalPreview(slotIdx, mediaStream, label){
+  const slot = document.getElementById('slot-'+slotIdx); if(!slot) return;
+  slot.querySelectorAll('.slot-placeholder,.slot-live-placeholder,.slot-connecting,video,.slot-label,.slot-live-badge,.fs-btn,.stream-ctrl').forEach(e=>e.remove());
+
+  const vid = document.createElement('video');
+  vid.autoplay = true;
+  vid.playsInline = true;
+  vid.muted = true;
+  vid.style.cssText = 'width:100%;height:100%;position:absolute;inset:0;object-fit:contain;background:#000;';
+  vid.srcObject = mediaStream;
+  slot.insertBefore(vid, slot.firstChild);
+
+  let lb = document.createElement('div'); lb.className='slot-label';
+  lb.textContent = 'Écran '+(slotIdx+1)+' (LOCAL)'+(label?' · '+label:'');
+  slot.appendChild(lb);
+
+  let lbg = document.createElement('div'); lbg.className='slot-live-badge'; lbg.textContent='🔴 LIVE';
+  slot.appendChild(lbg);
+
+  addFsBtn(slot, slotIdx);
+  slot.classList.add('live-slot');
+
+  const lbEl=document.getElementById('live-badge'), siEl=document.getElementById('stream-info');
+  if(lbEl){ lbEl.className='live-badge-on'; lbEl.textContent='🔴 EN DIRECT'; }
+  if(siEl) siEl.classList.add('show');
+  const mnd=document.getElementById('match-name-display');
+  if(mnd) mnd.textContent=label||'Match en direct';
+}
+
+/* ══════════════════════════════════════════════════════════
+   GRID / MODE
+══════════════════════════════════════════════════════════ */
+const SLOT_COUNTS={single:1,dual:2,tri:3,quad:4};
+function setMode(mode){
+  streamMode=mode;
+  DB.ref('stream/meta').set({ streams: streams.map(s=>({label:s.label||'',on:!!s.on})), mode });
+  renderModeButtons(mode); applyGrid(mode); renderSlotsAdmin();
+}
+function renderModeButtons(mode){
+  ['single','dual','tri','quad'].forEach(m=>{
+    const ab=document.getElementById('mbtn-'+m); if(ab) ab.className='btn '+(m===mode?'btn-blue':'btn-ghost');
+    const pb=document.getElementById('pub-m-'+m); if(pb) pb.classList.toggle('on',m===mode);
+  });
+}
+function applyGrid(mode){
+  const grid=document.getElementById('stream-grid'); if(!grid) return;
+  const cnt=SLOT_COUNTS[mode]||1;
+  grid.className='stream-grid grid-'+cnt;
+  for(let i=0;i<4;i++){ const s=document.getElementById('slot-'+i); if(s) s.style.display=i<cnt?'':'none'; }
+  const bar=document.getElementById('pub-mode-bar'); if(bar) bar.classList.toggle('show',cnt>1);
+}
+
+/* ══════════════════════════════════════════════════════════
+   VIDEO CONTROLS
+══════════════════════════════════════════════════════════ */
+function addFsBtn(slotEl, i){
+  if(slotEl.querySelector('.fs-btn')) return;
+  const btn=document.createElement('button'); btn.className='fs-btn'; btn.innerHTML='⛶'; btn.title='Plein écran';
+  btn.addEventListener('click',e=>{ e.stopPropagation(); enterFS(i); }); slotEl.appendChild(btn);
+}
+function enterFS(i){ const s=document.getElementById('slot-'+i); if(!s) return; document.fullscreenElement?document.exitFullscreen():s.requestFullscreen&&s.requestFullscreen(); }
+function toggleMute(btn, slotIdx){ const v=document.getElementById('slot-'+slotIdx)?.querySelector('video'); if(!v) return; v.muted=!v.muted; btn.textContent=v.muted?'🔇':'🔊'; }
+function setVol(range, slotIdx){ const v=document.getElementById('slot-'+slotIdx)?.querySelector('video'); if(!v) return; v.volume=parseFloat(range.value); v.muted=parseFloat(range.value)===0; }
+
+/* ══════════════════════════════════════════════════════════
+   COUNTDOWN
+══════════════════════════════════════════════════════════ */
+function toggleCountdownAdmin(on){ document.getElementById('cd-admin-config').style.display=on?'block':'none'; if(!on){ document.getElementById('cd-banner').classList.remove('show'); if(cdInterval){ clearInterval(cdInterval); cdInterval=null; } DB.ref('countdown').set({active:false}); } }
+function setCountdown(){ const dt=document.getElementById('cd-datetime').value, name=document.getElementById('cd-match-name').value.trim(); if(!dt){ alert('Sélectionne une date.'); return; } DB.ref('countdown').set({target:new Date(dt).getTime(),matchName:name,active:true}); showToast('⏱ Countdown activé !'); }
+function applyCountdown(s){ if(!s||!s.active) return; cdTarget=s.target; if(s.matchName) document.getElementById('cd-banner').querySelector('.cd-match').textContent=s.matchName; document.getElementById('cd-banner').classList.add('show'); if(cdInterval) clearInterval(cdInterval); cdInterval=setInterval(updateCD,1000); updateCD(); }
+function updateCD(){ if(!cdTarget) return; const diff=cdTarget-Date.now(); if(diff<=0){ document.getElementById('cd-units').style.display='none'; document.getElementById('cd-go').style.display='block'; clearInterval(cdInterval); return; } document.getElementById('cd-units').style.display='flex'; document.getElementById('cd-go').style.display='none'; const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),sec=Math.floor((diff%60000)/1000); document.getElementById('cd-d').textContent=String(d).padStart(2,'0'); document.getElementById('cd-h').textContent=String(h).padStart(2,'0'); document.getElementById('cd-m').textContent=String(m).padStart(2,'0'); document.getElementById('cd-s').textContent=String(sec).padStart(2,'0'); }
+
+/* ══════════════════════════════════════════════════════════
+   PLANNING
+══════════════════════════════════════════════════════════ */
+function addMatch(){ const match=document.getElementById('plan-match').value.trim(), date=document.getElementById('plan-date').value, comp=document.getElementById('plan-comp').value.trim(), discord=document.getElementById('plan-discord').checked; if(!match||!date){ alert('Remplis le nom et la date.'); return; } const nm={id:Date.now(),match,date,comp,discord,author:adminName,isFounder:founderIn,privateAdmin:false}; DB.ref('planning/'+nm.id).set(nm); document.getElementById('plan-match').value=''; document.getElementById('plan-date').value=''; document.getElementById('plan-comp').value=''; showToast('✅ Match ajouté !'); }
+function removeMatch(id){ DB.ref('planning/'+id).remove(); }
+function addFounderPlan(){ if(!founderIn) return; const match=document.getElementById('f-plan-match').value.trim(), date=document.getElementById('f-plan-date').value, comp=document.getElementById('f-plan-comp').value.trim(); if(!match||!date){ alert('Remplis nom et date.'); return; } const nm={id:Date.now(),match,date,comp,discord:true,author:adminName,isFounder:true,privateAdmin:true}; DB.ref('planning/'+nm.id).set(nm); document.getElementById('f-plan-match').value=''; document.getElementById('f-plan-date').value=''; document.getElementById('f-plan-comp').value=''; showToast('✅ Match privé ajouté !'); }
+
+function renderPlanning(){
+  const pub=plans.filter(m=>!m.privateAdmin), priv=plans.filter(m=>m.privateAdmin);
+  const fmt=d=>{ const dt=new Date(d); return dt.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})+' à '+dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); };
+  const fmtShort=d=>{ const dt=new Date(d); return dt.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})+' '+dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); };
+  const isNearLive=d=>Math.abs(new Date(d)-Date.now())<7200000;
+  const pal=document.getElementById('plan-public-admin-list');
+  if(pal){ if(!pub.length) pal.innerHTML='<div style="font-size:11px;color:var(--adm-muted2);text-align:center;padding:8px;">Aucun match.</div>'; else pal.innerHTML=pub.map(m=>`<div class="plan-item"><div class="plan-dot${isNearLive(m.date)?' live':''}"></div><div class="plan-info"><div class="plan-match">${m.match}</div><div class="plan-date">${fmtShort(m.date)}${m.comp?' · '+m.comp:''}</div></div><button class="plan-del" onclick="removeMatch(${m.id})">✕</button></div>`).join(''); }
+  const prl=document.getElementById('plan-priv-admin-list');
+  if(prl){ if(!priv.length) prl.innerHTML='<div style="font-size:11px;color:var(--adm-muted2);text-align:center;padding:8px;">Aucun match privé.</div>'; else prl.innerHTML=priv.map(m=>`<div class="plan-item" style="border-color:rgba(157,78,221,0.2);"><div class="plan-dot priv"></div><div class="plan-info"><div class="plan-match">${m.match} <span class="priv-badge">🔒</span></div><div class="plan-date">${fmtShort(m.date)}</div></div><button class="plan-del" onclick="removeMatch(${m.id})">✕</button></div>`).join(''); }
+  const pg=document.getElementById('planning-pub-grid');
+  if(pg){ if(!pub.length) pg.innerHTML='<div class="empty-planning">Aucun match planifié. Restez connectés !</div>'; else pg.innerHTML=pub.map(m=>{ const live=isNearLive(m.date); return `<div class="plan-card-pub${live?' is-live':''}"><div class="plan-card-top"><div class="plan-card-dot${live?' live':''}"></div><div class="plan-card-match">${m.match}</div></div><div class="plan-card-date">${fmt(m.date)}</div>${m.comp?`<div style="font-size:10px;color:var(--muted);margin-top:2px;">${m.comp}</div>`:''}<div class="plan-card-footer">${m.discord?`<a href="https://discord.gg/ftzf" class="dc-link" target="_blank">Discord</a>`:''}<div class="plan-card-author${m.isFounder?' founder':''}">par ${m.author||'Admin'}${m.isFounder?' 👑':''}</div></div></div>`; }).join(''); }
+  const prvg=document.getElementById('planning-priv-grid');
+  if(prvg){ if(!priv.length) prvg.innerHTML='<div class="empty-planning">Aucun match privé.</div>'; else prvg.innerHTML=priv.map(m=>`<div class="plan-card-pub is-priv"><div class="plan-card-top"><div class="plan-card-dot priv"></div><div class="plan-card-match">${m.match} <span class="priv-badge">🔒</span></div></div><div class="plan-card-date">${fmt(m.date)}</div>${m.comp?`<div style="font-size:10px;color:var(--muted);margin-top:2px;">${m.comp}</div>`:''}<div class="plan-card-footer"><div class="plan-card-author founder">👑 ${m.author||'Fondateur'}</div></div></div>`).join(''); }
+}
+
+/* ══════════════════════════════════════════════════════════
+   CHAT
+══════════════════════════════════════════════════════════ */
+function toggleChat(on){ DB.ref('chat_toggle').set({enabled:on}); applyChat(on); }
+function applyChat(on,silent=false){ chatEnabled=on; const lock=document.getElementById('chat-lock'), inp=document.getElementById('chat-inputs'); if(on){ lock.style.display='none'; inp.style.display='flex'; } else { lock.style.display='flex'; inp.style.display='none'; } }
+const CHAT_COLORS=['#7baeff','#f87171','#4ade80','#fbbf24','#a78bfa','#fb923c','#34d399','#f472b6'];
+function chatColor(n){ return CHAT_COLORS[Math.abs((n||'').split('').reduce((a,c)=>a+c.charCodeAt(0),0))%CHAT_COLORS.length]; }
+function appendMsg(type,username,text,time,allowBan=false,silent=false){
+  if(type!=='system'&&type!=='admin'&&bans[username]) return;
+  const area=document.getElementById('chat-msgs'); const div=document.createElement('div');
+  div.className='msg-wrap'+(type==='system'?' sys':'')+(type==='admin'?' adm':''); div.dataset.user=username;
+  if(type==='system'){ div.innerHTML=`<div class="msg-text">${text}</div>`; }
+  else if(type==='admin'){ div.innerHTML=`<div class="msg-head"><div class="msg-av" style="background:linear-gradient(135deg,#f59e0b,#d97706);">👑</div><span class="msg-user-name" style="color:#fbbf24;">Admin FZF</span><span class="msg-time">${time}</span></div><div class="msg-text">${text}</div>`; }
+  else { const col=chatColor(username); const ba=adminIn&&allowBan?`<div class="msg-admin-act"><button class="ban-btn" onclick="openBanModal('${username.replace(/'/g,"\\'")}',this.closest('.msg-wrap'))">🚫</button><button class="del-btn" onclick="this.closest('.msg-wrap').remove()">🗑</button></div>`:''; div.innerHTML=`<div class="msg-head"><div class="msg-av" style="background:${col};">${username.charAt(0).toUpperCase()}</div><span class="msg-user-name" style="color:${col};">${username}</span><span class="msg-time">${time}</span></div><div class="msg-text">${text}</div>${ba}`; }
+  area.appendChild(div); area.scrollTop=area.scrollHeight;
+}
+function sendMsg(){ if(!chatEnabled) return; const nick=document.getElementById('chat-nick').value.trim(), msg=document.getElementById('chat-msg-in').value.trim(); if(!nick){ document.getElementById('pseudo-warn').classList.add('show'); document.getElementById('chat-nick').focus(); setTimeout(()=>document.getElementById('pseudo-warn').classList.remove('show'),3000); return; } if(!msg||bans[nick]) return; document.getElementById('chat-msg-in').value=''; const now=new Date(), time=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'); DB.ref('chat_messages').push({type:'user',username:nick,text:msg,time,ts:Date.now()}); }
+function sendAdminReply(){ if(!adminIn) return; const msg=document.getElementById('admin-reply').value.trim(); if(!msg) return; document.getElementById('admin-reply').value=''; const now=new Date(), time=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'); DB.ref('chat_messages').push({type:'admin',username:'Admin FZF',text:msg,time,ts:Date.now()}); }
+function clearChat(){ if(!confirm('Vider tout le chat ?')) return; DB.ref('chat_messages').remove(); }
+function sendAnnounce(){ const msg=document.getElementById('announce-in').value.trim(); if(!msg) return; const now=new Date(), time=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'); DB.ref('chat_messages').push({type:'system',username:'',text:'📢 Admin : '+msg,time,ts:Date.now()}); document.getElementById('announce-in').value=''; }
+
+function openBanModal(user,el){ if(!adminIn) return; pendingBanUser=user; pendingBanEl=el; banReason=''; document.getElementById('ban-target-disp').textContent='🚫 '+user; document.querySelectorAll('.ban-chip').forEach(c=>c.classList.remove('on')); document.getElementById('modal-ban').classList.add('open'); }
+function selectBanReason(el,r){ banReason=r; document.querySelectorAll('.ban-chip').forEach(c=>c.classList.remove('on')); el.classList.add('on'); }
+function confirmBan(){ if(!pendingBanUser||!banReason){ alert('Sélectionne une raison.'); return; } DB.ref('bans/'+pendingBanUser.replace(/[.#$/\[\]]/g,'_')).set(banReason); if(pendingBanEl) pendingBanEl.style.opacity='0.3'; closeModal('modal-ban'); DB.ref('chat_messages').push({type:'system',username:'',text:'🚫 '+pendingBanUser+' a été banni ('+banReason+').',time:'',ts:Date.now()}); showToast('🚫 '+pendingBanUser+' banni'); pendingBanUser=''; pendingBanEl=null; }
+function renderBans(){ const el=document.getElementById('ban-list-admin'), keys=Object.keys(bans); if(!keys.length){ el.innerHTML='<div style="font-size:11px;color:var(--adm-muted2);text-align:center;padding:8px;">Aucun banni.</div>'; return; } el.innerHTML=keys.map(u=>`<div class="ban-item"><div><div class="ban-user">🚫 ${u}</div><div class="ban-reason">${bans[u]}</div></div><button class="unban-btn" onclick="unban('${u}')">Débannir</button></div>`).join(''); }
+function unban(u){ DB.ref('bans/'+u.replace(/[.#$/\[\]]/g,'_')).remove(); }
+function clearBans(){ if(!confirm('Supprimer tous les bans ?')) return; DB.ref('bans').remove(); }
+
+/* ══════════════════════════════════════════════════════════
+   NOTIFICATIONS
+══════════════════════════════════════════════════════════ */
+function requestNotif(){ if(!('Notification' in window)){ alert('Ton navigateur ne supporte pas les notifications push.'); return; } Notification.requestPermission().then(p=>{ if(p==='granted'){ document.getElementById('notif-bar').style.display='none'; document.getElementById('notif-on-bar').style.display='block'; new Notification('🎉 Notifications FZF activées !',{body:'Tu seras alerté dès qu\'un match commence.',icon:'logo.png',tag:'fzf-welcome'}); } }); }
+function dismissNotifBar(){ document.getElementById('notif-bar').style.display='none'; localStorage.setItem('fzf-notif-dis','1'); }
+window.addEventListener('load',()=>{ if(typeof Notification!=='undefined'){ if(Notification.permission==='granted'){ document.getElementById('notif-bar').style.display='none'; document.getElementById('notif-on-bar').style.display='block'; } else if(localStorage.getItem('fzf-notif-dis')||Notification.permission==='denied') document.getElementById('notif-bar').style.display='none'; } });
+
+function sendNotification(title,body){ if(typeof Notification!=='undefined'&&Notification.permission==='granted'){ try{ const n=new Notification(title,{body,icon:'logo.png',tag:'fzf-live-'+Date.now(),requireInteraction:true}); n.onclick=()=>{ window.focus(); n.close(); goPage('live'); }; } catch(e){} } showPushToast(title,body); DB.ref('notif_log').push({title,body,ts:Date.now(),sentBy:adminName||'Système'}); }
+function sendNotif(){ if(!adminIn) return; const t=document.getElementById('notif-title').value.trim()||'🔴 Diffusion FZF !', b=document.getElementById('notif-body').value.trim()||'Un match commence.'; sendNotification(t,b); document.getElementById('notif-title').value=''; document.getElementById('notif-body').value=''; showToast('🔔 Notification envoyée !'); }
+function previewNotif(){ const t=document.getElementById('notif-title').value.trim()||'🔴 Aperçu', b=document.getElementById('notif-body').value.trim()||'Aperçu.'; showPushToast(t,b); }
+function renderNotifLog(){ const el=document.getElementById('notif-log'); if(!el) return; if(!notifLog.length){ el.innerHTML='<div style="font-size:11px;color:var(--adm-muted2);padding:6px 0;">Aucune notification.</div>'; return; } el.innerHTML=notifLog.slice().reverse().map(n=>{ const d=new Date(n.ts), ts=d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+' '+d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}); return `<div class="notif-entry"><div class="notif-entry-title">${n.title}</div><div class="notif-entry-body">${n.body}</div><div class="notif-entry-meta">⏱ ${ts} — par ${n.sentBy||'?'}</div></div>`; }).join(''); }
+
+function showPushToast(title,body){ if(pushTimer){ clearTimeout(pushTimer); pushTimer=null; } document.getElementById('push-title').textContent=title; document.getElementById('push-body').textContent=body; const t=document.getElementById('push-toast'); t.classList.remove('show'); void t.offsetWidth; t.classList.add('show'); pushTimer=setTimeout(dismissPush,6000); }
+function dismissPush(){ if(pushTimer){ clearTimeout(pushTimer); pushTimer=null; } document.getElementById('push-toast').classList.remove('show'); }
+
+/* ══════════════════════════════════════════════════════════
+   STATS
+══════════════════════════════════════════════════════════ */
+function updateDur(){ if(!streamStart) return; const e=Math.floor((Date.now()-streamStart)/1000); const el=document.getElementById('stat-dur'); if(el) el.textContent=Math.floor(e/60).toString().padStart(2,'0')+':'+(e%60).toString().padStart(2,'0'); setInterval(updateViewerCount,5000); }
+function resetStats(){ streamStart=Date.now(); localStorage.setItem('fzf_pk6','0'); }
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+
+/* ══════════════════════════════════════════════════════════
+   CHATBOT IA
+══════════════════════════════════════════════════════════ */
+const PRESETS=[
+  {kw:['paypal','paiement','payer'],r:'💳 **Paiement**\n\nNous acceptons uniquement **PayPal**.\n\nContacte un admin → discord.gg/ftzf'},
+  {kw:['prix','coût','combien','tarif'],r:'💶 **Tarifs FZF IPTV**\n\n⚡ **Starter — 10€** (3 mois)\n👑 **À Vie — 35€** (unique)\n\n→ discord.gg/ftzf'},
+  {kw:['commander','acheter'],r:'🛒 **Commander :**\n1. Rejoins discord.gg/ftzf\n2. Contacte un admin\n3. Paiement **PayPal**\n4. Accès en 24h ✅'},
+  {kw:['appareil','compatible','télé','tv','smartphone','firestick'],r:'📱 **Appareils compatibles**\n✅ Smart TV / Android TV\n✅ Firestick / Apple TV\n✅ iPhone / Android\n✅ PC / Mac / Tablette'},
+  {kw:['starter','à vie','différence'],r:'⚖️ **Starter vs À Vie**\n\n⚡ Starter (10€/3 mois)\n👑 À Vie (35€ unique) — illimité + Coupe du Monde 🔥'},
+  {kw:['discord','rejoindre'],r:'💬 **Rejoindre FZF :**\n→ discord.gg/ftzf'},
+  {kw:['bonjour','salut','hello','coucou'],r:'👋 Salut ! Bienvenue sur **Football Zone France** !\n\nComment puis-je t\'aider ? ⚽'},
+];
+function presetResponse(msg){ const m=msg.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); for(const p of PRESETS){ if(p.kw.some(k=>m.includes(k.normalize('NFD').replace(/[\u0300-\u036f]/g,'')))) return p.r; } return null; }
+const BOT_SYS='Tu es le bot officiel de Football Zone France (FZF), service IPTV et streaming foot français. Réponds TOUJOURS en français. Sois sympathique, concis. INFOS: Starter 10€/3 mois, À Vie 35€. Discord: discord.gg/ftzf. PayPal seulement. 24h activation. Sois bref (max 4 lignes).';
+function toggleChatbot(on){ botEnabled=on; document.getElementById('chat-bubble').style.display=on?'flex':'none'; if(!on&&botOpen) toggleBot(); }
+function toggleBot(){ if(!botEnabled) return; botOpen=!botOpen; document.getElementById('chatbot-win').classList.toggle('open',botOpen); document.getElementById('chat-bubble').classList.toggle('open',botOpen); document.getElementById('chat-bubble-icon').textContent=botOpen?'✕':'⚽'; document.getElementById('chat-notif-dot').style.display='none'; if(botOpen) setTimeout(()=>document.getElementById('bot-input').focus(),300); }
+function addBotMsg(text){ const msgs=document.getElementById('bot-msgs'); const div=document.createElement('div'); div.className='bot-msg'; div.innerHTML=text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>'); msgs.appendChild(div); msgs.scrollTop=msgs.scrollHeight; }
+function addUserMsg(text){ const msgs=document.getElementById('bot-msgs'); const div=document.createElement('div'); div.className='user-msg'; div.textContent=text; msgs.appendChild(div); msgs.scrollTop=msgs.scrollHeight; }
+function showBotLoad(){ const msgs=document.getElementById('bot-msgs'); const div=document.createElement('div'); div.className='bot-loading'; div.id='bot-load'; div.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>'; msgs.appendChild(div); msgs.scrollTop=msgs.scrollHeight; }
+function removeBotLoad(){ const e=document.getElementById('bot-load'); if(e) e.remove(); }
+async function processBot(msg){ addUserMsg(msg); document.getElementById('quick-sec').style.display='none'; const preset=presetResponse(msg); if(preset){ showBotLoad(); await new Promise(r=>setTimeout(r,550)); removeBotLoad(); addBotMsg(preset); botHistory.push({role:'user',content:msg},{role:'assistant',content:preset}); return; } botHistory.push({role:'user',content:msg}); showBotLoad(); try{ const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:BOT_SYS,messages:botHistory})}); const data=await res.json(); removeBotLoad(); if(data.content&&data.content[0]&&data.content[0].text){ const reply=data.content[0].text; botHistory.push({role:'assistant',content:reply}); addBotMsg(reply); } else addBotMsg('Désolé, une erreur est survenue. Contacte-nous sur **discord.gg/ftzf** 💬'); } catch(e){ removeBotLoad(); addBotMsg('Connexion IA impossible. Contacte-nous sur **discord.gg/ftzf** 💬'); } }
+function sendBot(){ const inp=document.getElementById('bot-input'), msg=inp.value.trim(); if(!msg) return; inp.value=''; processBot(msg); }
+function quickAsk(q){ processBot(q); }
+
+/* ══════════════════════════════════════════════════════════
+   REVIEWS
+══════════════════════════════════════════════════════════ */
+let rating=0;
+function setRating(n){ rating=n; for(let i=1;i<=5;i++) document.getElementById('s'+i).classList.toggle('on',i<=n); }
+function submitReview(){ const name=document.getElementById('rev-prenom').value.trim(), text=document.getElementById('rev-text').value.trim(), plan=document.getElementById('rev-plan').value; if(!name) return alert('Entre ton prénom.'); if(!text) return alert('Écris ton avis.'); if(!rating) return alert('Donne une note.'); const stars='⭐'.repeat(rating); const cols=['linear-gradient(135deg,#2563eb,#60a5fa)','linear-gradient(135deg,#dc2626,#f87171)','linear-gradient(135deg,#22c55e,#4ade80)','linear-gradient(135deg,#f59e0b,#fbbf24)','linear-gradient(135deg,#8b5cf6,#a78bfa)']; const c=cols[Math.floor(Math.random()*cols.length)]; const card=document.createElement('div'); card.className='review-card'; card.style.animation='fadeUp 0.4s ease'; card.innerHTML=`<div class="review-stars">${stars}</div><p class="review-text">"${text}"</p><div class="review-author"><div class="review-av" style="background:${c};">${name.charAt(0).toUpperCase()}</div><div><div class="review-name">${name}</div><div class="review-plan">${plan}</div></div></div>`; document.getElementById('reviews-grid').insertBefore(card,document.getElementById('reviews-grid').firstChild); const f=document.getElementById('review-form'); f.querySelectorAll('h4,p,.star-rating-label,.stars,.form-row,.form-group,.btn-review').forEach(el=>el.style.display='none'); document.getElementById('review-ok').style.display='block'; setTimeout(()=>{ document.getElementById('review-ok').style.display='none'; f.querySelectorAll('h4,p,.star-rating-label,.stars,.form-row,.form-group,.btn-review').forEach(el=>el.style.display=''); document.getElementById('rev-prenom').value=''; document.getElementById('rev-text').value=''; rating=0; for(let i=1;i<=5;i++) document.getElementById('s'+i).classList.remove('on'); },3500); }
+
+/* ══════════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════════ */
+const sess = loadSess();
+if(sess){ adminName=sess.name||'Admin'; if(sess.role==='founder'){ adminIn=true; founderIn=true; openSidebar(true); regStaff(adminName,'👑 Fondateur'); } else { adminIn=true; openSidebar(false); regStaff(adminName,'Administrateur'); } }
+regVisitor('Live');
+
+setInterval(()=>{ DB.ref('visitors').once('value').then(snap=>{ const d=snap.val(); if(!d) return; const now=Date.now(); Object.entries(d).forEach(([k,v])=>{ if(now-v.ts>180000) DB.ref('visitors/'+k).remove(); }); }); },60000);
+
+window.addEventListener('beforeunload', ()=>{
+  for(let i=0;i<4;i++){
+    if(!adminIn) cleanupViewerSlot(i);
+    else if(localStreams[i]) {
+      localStreams[i].getTracks().forEach(t=>t.stop());
+      DB.ref(`webrtc/slots/${i}`).remove();
+    }
+  }
+});
+
+setInterval(updateViewerCount, 5000);
+</script>
+</body>
+</html>
