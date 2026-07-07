@@ -1,6 +1,6 @@
 bash
 
-cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
+cat > /home/claude/index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="fr" data-theme="dark">
   <head>
@@ -1656,3 +1656,5 @@ setInterval(updateViewerCount,5000);
 </script>
 </body>
 </html>
+HTMLEOF
+wc -l /home/claude/index.html
