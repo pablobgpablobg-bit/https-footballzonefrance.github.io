@@ -1093,7 +1093,31 @@ DB.ref('.info/connected').on('value',s=>{
 
 const ADMIN_PW   = "FZF@admin#2847";
 const FOUNDER_PW = "Fzf$Founder!9361";
-const ICE_SERVERS = { iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun.cloudflare.com:3478'}] };
+const ICE_SERVERS = {
+  iceServers: [
+    { urls: 'stun:stun.relay.metered.ca:80' },
+    {
+      urls: 'turn:global.relay.metered.ca:80',
+      username: 'bddf77e03b0ca3a4e0cffa2b',
+      credential: 'WprO9BpCX2IZNIeV'
+    },
+    {
+      urls: 'turn:global.relay.metered.ca:80?transport=tcp',
+      username: 'bddf77e03b0ca3a4e0cffa2b',
+      credential: 'WprO9BpCX2IZNIeV'
+    },
+    {
+      urls: 'turn:global.relay.metered.ca:443',
+      username: 'bddf77e03b0ca3a4e0cffa2b',
+      credential: 'WprO9BpCX2IZNIeV'
+    },
+    {
+      urls: 'turns:global.relay.metered.ca:443?transport=tcp',
+      username: 'bddf77e03b0ca3a4e0cffa2b',
+      credential: 'WprO9BpCX2IZNIeV'
+    }
+  ]
+};
 
 let adminIn=false, founderIn=false, sidebarOpen=false, adminName='';
 let chatEnabled=false, botEnabled=true, botOpen=false, botHistory=[];
