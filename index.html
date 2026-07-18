@@ -1146,11 +1146,21 @@ async function createAdminPeerConnection(slotIdx,viewerSid,offer){
       },3000);
     }
   };
-  DB.ref(`webrtc/slots/${slotIdx}/ice_viewer/${viewerSid}`).on('child_added',snap=>{if(snap.val())pc.addIceCandidate(new RTCIceCandidate(snap.val())).catch(()=>{});});
+  let remoteSet=false;
+  const pendingIce=[];
+  DB.ref(`webrtc/slots/${slotIdx}/ice_viewer/${viewerSid}`).on('child_added',snap=>{
+    const c=snap.val();if(!c)return;
+    if(remoteSet)pc.addIceCandidate(new RTCIceCandidate(c)).catch(()=>{});
+    else pendingIce.push(c);
+  });
   await pc.setRemoteDescription(new RTCSessionDescription(offer));
+  remoteSet=true;
+  pendingIce.forEach(c=>pc.addIceCandidate(new RTCIceCandidate(c)).catch(()=>{}));
+  pendingIce.length=0;
   const answer=await pc.createAnswer();
   await pc.setLocalDescription(answer);
   await DB.ref(`webrtc/slots/${slotIdx}/answers/${viewerSid}`).set({type:answer.type,sdp:answer.sdp});
+}
 }
 function updateViewerCount(){
   let total=0;
@@ -1199,12 +1209,23 @@ async function connectToSlot(slotIdx){
   pc.onicecandidate=e=>{if(e.candidate)myIceRef.push(e.candidate.toJSON());};
   const offer=await pc.createOffer({offerToReceiveVideo:true,offerToReceiveAudio:true});
   await pc.setLocalDescription(offer);
-  await DB.ref(`webrtc/slots/${slotIdx}/offers/${sid}`).set({type:offer.type,sdp:offer.sdp});
-  DB.ref(`webrtc/slots/${slotIdx}/answers/${sid}`).on('value',async snap=>{
-    const answer=snap.val();if(!answer||pc.remoteDescription)return;
-    try{await pc.setRemoteDescription(new RTCSessionDescription(answer));}catch(e){}
-  });
-  DB.ref(`webrtc/slots/${slotIdx}/ice_admin/${sid}`).on('child_added',snap=>{if(snap.val())pc.addIceCandidate(new RTCIceCandidate(snap.val())).catch(()=>{});});
+await DB.ref(`webrtc/slots/${slotIdx}/offers/${sid}`).set({type:offer.type,sdp:offer.sdp});
+let remoteSet=false;
+const pendingIce=[];
+DB.ref(`webrtc/slots/${slotIdx}/answers/${sid}`).on('value',async snap=>{
+  const answer=snap.val();if(!answer||pc.remoteDescription)return;
+  try{
+    await pc.setRemoteDescription(new RTCSessionDescription(answer));
+    remoteSet=true;
+    pendingIce.forEach(c=>pc.addIceCandidate(new RTCIceCandidate(c)).catch(()=>{}));
+    pendingIce.length=0;
+  }catch(e){}
+});
+DB.ref(`webrtc/slots/${slotIdx}/ice_admin/${sid}`).on('child_added',snap=>{
+  const c=snap.val();if(!c)return;
+  if(remoteSet)pc.addIceCandidate(new RTCIceCandidate(c)).catch(()=>{});
+  else pendingIce.push(c);
+});
   window.addEventListener('beforeunload',()=>cleanupViewerSlot(slotIdx));
 }
 function cleanupViewerSlot(slotIdx){
