@@ -1161,7 +1161,6 @@ async function createAdminPeerConnection(slotIdx,viewerSid,offer){
   await pc.setLocalDescription(answer);
   await DB.ref(`webrtc/slots/${slotIdx}/answers/${viewerSid}`).set({type:answer.type,sdp:answer.sdp});
 }
-}
 function updateViewerCount(){
   let total=0;
   Object.values(adminPCs).forEach(viewers=>Object.values(viewers).forEach(pc=>{if(pc.connectionState==='connected')total++;}));
