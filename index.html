@@ -1538,6 +1538,7 @@ async function launchSlot(slotIdx){
     if(localStreams[slotIdx])localStreams[slotIdx].getTracks().forEach(t=>t.stop());
    localStreams[slotIdx].getTracks().forEach(track=>pc.addTrack(track,localStreams[slotIdx]));
 setEncodingBitrate(pc, 4000);
+const iceRef=DB.ref(`webrtc/slots/${slotIdx}/ice_admin/${viewerSid}`);
     mediaStream.getVideoTracks()[0].addEventListener('ended',()=>stopSlotWebRTC(slotIdx));
     streams[slotIdx]={label,on:true};
     DB.ref('stream/meta').set({streams:streams.map(s=>({label:s.label||'',on:!!s.on})),mode:streamMode});
