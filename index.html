@@ -1150,6 +1150,16 @@ function watchForViewers(slotIdx){
     await createAdminPeerConnection(slotIdx,viewerSid,offer);
   });
 }
+async function setEncodingBitrate(pc, kbps) {
+  const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
+  if (!sender) return;
+  const params = sender.getParameters();
+  if (!params.encodings || !params.encodings.length) params.encodings = [{}];
+  params.encodings[0].maxBitrate = kbps * 1000;
+  params.encodings[0].degradationPreference = 'maintain-resolution';
+  try { await sender.setParameters(params); } catch(e) { console.warn('setParameters failed', e); }
+}
+  
 async function createAdminPeerConnection(slotIdx,viewerSid,offer){
   if(adminPCs[slotIdx]&&adminPCs[slotIdx][viewerSid])adminPCs[slotIdx][viewerSid].close();
   if(!adminPCs[slotIdx])adminPCs[slotIdx]={};
@@ -1526,7 +1536,8 @@ async function launchSlot(slotIdx){
   try{
     const mediaStream=await navigator.mediaDevices.getDisplayMedia({video:{cursor:'always',frameRate:30,width:{ideal:1920},height:{ideal:1080}},audio:true});
     if(localStreams[slotIdx])localStreams[slotIdx].getTracks().forEach(t=>t.stop());
-    localStreams[slotIdx]=mediaStream;
+   localStreams[slotIdx].getTracks().forEach(track=>pc.addTrack(track,localStreams[slotIdx]));
+setEncodingBitrate(pc, 4000);
     mediaStream.getVideoTracks()[0].addEventListener('ended',()=>stopSlotWebRTC(slotIdx));
     streams[slotIdx]={label,on:true};
     DB.ref('stream/meta').set({streams:streams.map(s=>({label:s.label||'',on:!!s.on})),mode:streamMode});
